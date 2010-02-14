@@ -25,6 +25,7 @@ int rcGetDeltaTimeUsec(rcTimeVal start, rcTimeVal end)
 
 // Linux, BSD, OSX
 
+#include <cstddef>
 #include <sys/time.h>
 
 rcTimeVal rcGetPerformanceTimer()
