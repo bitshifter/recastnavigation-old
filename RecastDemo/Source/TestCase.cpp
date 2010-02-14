@@ -27,6 +27,9 @@
 #include "imgui.h"
 #include "Recast.h"
 
+#ifdef _MSC_VER
+#define snprintf sprintf_s
+#endif 
 
 TestCase::TestCase() :
 	m_tests(0)
