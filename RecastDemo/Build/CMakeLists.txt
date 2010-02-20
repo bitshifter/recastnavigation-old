@@ -109,17 +109,21 @@ SET(recast_HDRS
 
 # Visual Studio project folders
 IF(MSVC)
+	SOURCE_GROUP("DebugUtils\\Include" FILES ${debugutils_HDRS})
+	SOURCE_GROUP("DebugUtils\\Source" FILES ${debugutils_SRCS})
 	SET(debugutils_SRCS ${debugutils_SRCS} ${debugutils_HDRS})
-	SOURCE_GROUP(DebugUtils FILES ${debugutils_SRCS})
 	
+	SOURCE_GROUP("Detour\\Include" FILES ${detour_HDRS})
+	SOURCE_GROUP("Detour\\Source" FILES ${detour_SRCS})
 	SET(detour_SRCS ${detour_SRCS} ${detour_HDRS})
-	SOURCE_GROUP(Detour FILES ${detour_SRCS})
 
+	SOURCE_GROUP("Recast\\Include" FILES ${recast_HDRS})
+	SOURCE_GROUP("Recast\\Source" FILES ${recast_SRCS})
 	SET(recast_SRCS ${recast_SRCS} ${recast_HDRS})
-	SOURCE_GROUP(Recast FILES ${recast_SRCS})
 	
-	SET(recastdemo_SRCS ${recastdemo_SRCS} ${recastdemo_SRCS})
-	SOURCE_GROUP(Demo FILES ${recastdemo_SRCS})
+	SOURCE_GROUP("Demo\\Include" FILES ${recastdemo_HDRS})
+	SOURCE_GROUP("Demo\\Source" FILES ${recastdemo_SRCS})
+	SET(recastdemo_SRCS ${recastdemo_SRCS} ${recastdemo_HDRS})
 ENDIF(MSVC)
 
 FIND_PACKAGE(OpenGL REQUIRED)
