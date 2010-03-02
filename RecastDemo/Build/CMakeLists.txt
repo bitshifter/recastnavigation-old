@@ -38,6 +38,7 @@ SET(recastdemo_SRCS
 	../Source/NavMeshTesterTool.cpp 
 	../Source/OffMeshConnectionTool.cpp
 	../Source/Sample.cpp 
+	../Source/Sample_Debug.cpp
 	../Source/Sample_SoloMeshSimple.cpp 
 	../Source/Sample_SoloMeshTiled.cpp 
 	../Source/Sample_TileMesh.cpp
@@ -53,6 +54,7 @@ SET(recastdemo_HDRS
 	../Include/NavMeshTesterTool.h
 	../Include/OffMeshConnectionTool.h
 	../Include/Sample.h
+	../Include/Sample_Debug.h
 	../Include/Sample_SoloMeshSimple.h
 	../Include/Sample_SoloMeshTiled.h
 	../Include/Sample_TileMesh.h
