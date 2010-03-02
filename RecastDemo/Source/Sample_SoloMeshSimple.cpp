@@ -490,7 +490,7 @@ bool Sample_SoloMeshSimple::handleBuild()
 		if (rcGetLog())
 			rcGetLog()->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
 	}
-		
+
 	//
 	// Step 5. Trace and simplify region contours.
 	//
