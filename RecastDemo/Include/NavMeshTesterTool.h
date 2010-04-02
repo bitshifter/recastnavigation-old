@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -61,6 +61,7 @@ class NavMeshTesterTool : public SampleTool
 	float m_epos[3];
 	float m_hitPos[3];
 	float m_hitNormal[3];
+	bool m_hitResult;
 	float m_distanceToWall;
 	bool m_sposSet;
 	bool m_eposSet;

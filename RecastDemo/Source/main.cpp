@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -47,7 +47,11 @@
 struct FileList
 {
 	static const int MAX_FILES = 256;
-	inline FileList() : size(0) {}
+	inline FileList() : size(0)
+	{
+		memset(files, 0, sizeof(char*)*MAX_FILES);
+	}
+	
 	inline ~FileList()
 	{
 		clear();
@@ -638,6 +642,37 @@ int main(int argc, char *argv[])
 				showSample = false;
 			}
 
+			if (geom || sample)
+			{
+				const float* bmin = 0;
+				const float* bmax = 0;
+				if (sample)
+				{
+					bmin = sample->getBoundsMin();
+					bmax = sample->getBoundsMax();
+				}
+				else if (geom)
+				{
+					bmin = geom->getMeshBoundsMin();
+					bmax = geom->getMeshBoundsMax();
+				}
+				// Reset camera and fog to match the mesh bounds.
+				if (bmin && bmax)
+				{
+					camr = sqrtf(rcSqr(bmax[0]-bmin[0]) +
+								 rcSqr(bmax[1]-bmin[1]) +
+								 rcSqr(bmax[2]-bmin[2])) / 2;
+					camx = (bmax[0] + bmin[0]) / 2 + camr;
+					camy = (bmax[1] + bmin[1]) / 2 + camr;
+					camz = (bmax[2] + bmin[2]) / 2 + camr;
+					camr *= 3;
+				}
+				rx = 45;
+				ry = -45;
+				glFogf(GL_FOG_START, camr*0.2f);
+				glFogf(GL_FOG_END, camr*1.25f);
+			}
+			
 			imguiEndScrollArea();
 		}
 		

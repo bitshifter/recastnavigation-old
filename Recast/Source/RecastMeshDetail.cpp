@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -31,7 +31,7 @@ static const unsigned RC_UNSET_HEIGHT = 0xffff;
 
 struct rcHeightPatch
 {
-	inline rcHeightPatch() : data(0) {}
+	inline rcHeightPatch() : data(0), xmin(0), ymin(0), width(0), height(0) {}
 	inline ~rcHeightPatch() { delete [] data; }
 	unsigned short* data;
 	int xmin, ymin, width, height;
@@ -770,15 +770,13 @@ static void getHeightData(const rcCompactHeightfield& chf,
 	}
 	
 	// Find center of the polygon using flood fill.
-	int pcx = 0, pcy = 0, pcz = 0;
+	int pcx = 0, pcz = 0;
 	for (int j = 0; j < npoly; ++j)
 	{
 		pcx += (int)verts[poly[j]*3+0];
-		pcy += (int)verts[poly[j]*3+1];
 		pcz += (int)verts[poly[j]*3+2];
 	}
 	pcx /= npoly;
-	pcy /= npoly;
 	pcz /= npoly;
 	
 	for (int i = 0; i < stack.size(); i += 3)
