@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -107,7 +107,7 @@ bool duDumpPolyMeshDetailToObj(rcPolyMeshDetail& dmesh, const char* filepath)
 
 
 static const int CHF_MAGIC = ('r' << 24) | ('c' << 16) | ('h' << 8) | 'f';
-static const int CHF_VERSION = 1;
+static const int CHF_VERSION = 2;
 
 bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, const char* filepath)
 {
@@ -137,12 +137,11 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, const char* file
 	fwrite(&chf.cs, sizeof(chf.cs), 1, fp);
 	fwrite(&chf.ch, sizeof(chf.ch), 1, fp);
 
-	int tmp;
+	int tmp = 0;
 	if (chf.cells) tmp |= 1;
 	if (chf.spans) tmp |= 2;
 	if (chf.dist) tmp |= 4;
-	if (chf.regs) tmp |= 8;
-	if (chf.areas) tmp |= 16;
+	if (chf.areas) tmp |= 8;
 
 	fwrite(&tmp, sizeof(tmp), 1, fp);
 
@@ -152,8 +151,6 @@ bool duDumpCompactHeightfield(struct rcCompactHeightfield& chf, const char* file
 		fwrite(chf.spans, sizeof(rcCompactSpan)*chf.spanCount, 1, fp);
 	if (chf.dist)
 		fwrite(chf.dist, sizeof(unsigned short)*chf.spanCount, 1, fp);
-	if (chf.regs)
-		fwrite(chf.regs, sizeof(unsigned short)*chf.spanCount, 1, fp);
 	if (chf.areas)
 		fwrite(chf.areas, sizeof(unsigned char)*chf.spanCount, 1, fp);
 
@@ -242,17 +239,6 @@ bool duReadCompactHeightfield(struct rcCompactHeightfield& chf, const char* file
 		fread(chf.dist, sizeof(unsigned short)*chf.spanCount, 1, fp);
 	}
 	if (tmp & 8)
-	{
-		chf.regs = new unsigned short[chf.spanCount];
-		if (!chf.regs)
-		{
-			printf("duReadCompactHeightfield: Could not alloc regs (%d)\n", chf.spanCount);
-			fclose(fp);
-			return false;
-		}
-		fread(chf.regs, sizeof(unsigned short)*chf.spanCount, 1, fp);
-	}
-	if (tmp & 16)
 	{
 		chf.areas = new unsigned char[chf.spanCount];
 		if (!chf.areas)

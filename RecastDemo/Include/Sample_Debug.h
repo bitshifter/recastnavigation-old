@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -29,6 +29,12 @@ class Sample_Debug : public Sample
 {
 protected:
 	rcCompactHeightfield* m_chf;
+	rcContourSet* m_cset;
+
+	float m_ext[3];
+	float m_center[3];
+	float m_bmin[3], m_bmax[3];
+	dtPolyRef m_ref;
 	
 public:
 	Sample_Debug();

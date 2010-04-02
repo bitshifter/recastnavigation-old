@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -202,6 +202,8 @@ bool rcBuildCompactHeightfield(const int walkableHeight, const int walkableClimb
 	}
 
 	// Find neighbour connections.
+	const float MAX_LAYERS = RC_NOT_CONNECTED-1;
+	int tooHighNeighbour = 0;
 	for (int y = 0; y < h; ++y)
 	{
 		for (int x = 0; x < w; ++x)
@@ -234,7 +236,13 @@ bool rcBuildCompactHeightfield(const int walkableHeight, const int walkableClimb
 						if ((top - bot) >= walkableHeight && rcAbs((int)ns.y - (int)s.y) <= walkableClimb)
 						{
 							// Mark direction as walkable.
-							rcSetCon(s, dir, k - (int)nc.index);
+							const int idx = k - (int)nc.index;
+							if (idx < 0 || idx > MAX_LAYERS)
+							{
+								tooHighNeighbour = rcMax(tooHighNeighbour, idx);
+								continue;
+							}
+							rcSetCon(s, dir, idx);
 							break;
 						}
 					}
@@ -242,6 +250,12 @@ bool rcBuildCompactHeightfield(const int walkableHeight, const int walkableClimb
 				}
 			}
 		}
+	}
+	
+	if (tooHighNeighbour > MAX_LAYERS)
+	{
+		if (rcGetLog())
+			rcGetLog()->log(RC_LOG_ERROR, "rcBuildCompactHeightfield: Heighfield has too many layers %d (max: %d)", tooHighNeighbour, MAX_LAYERS);
 	}
 	
 	rcTimeVal endTime = rcGetPerformanceTimer();

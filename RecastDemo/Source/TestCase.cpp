@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2009 Mikko Mononen memon@inside.org
+// Copyright (c) 2009-2010 Mikko Mononen memon@inside.org
 //
 // This software is provided 'as-is', without any express or implied
 // warranty.  In no event will the authors be held liable for any damages
@@ -27,9 +27,9 @@
 #include "imgui.h"
 #include "Recast.h"
 
-#ifdef _MSC_VER
-#define snprintf sprintf_s
-#endif 
+#ifdef WIN32
+#define snprintf _snprintf
+#endif
 
 TestCase::TestCase() :
 	m_tests(0)
