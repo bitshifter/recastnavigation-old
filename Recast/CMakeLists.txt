@@ -18,10 +18,6 @@ SET(recast_HDRS
 	Include/Recast.h
 )
 
-IF(WIN32)
-	SET(recast_SRCS ${recast_SRCS} ${recast_HDRS})
-ENDIF(WIN32)
-
 INCLUDE_DIRECTORIES(Include)
 
-ADD_LIBRARY(Recast ${recast_SRCS})
+ADD_LIBRARY(Recast ${recast_SRCS} ${recast_HDRS})

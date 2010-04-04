@@ -13,10 +13,6 @@ SET(debugutils_HDRS
 	Include/RecastDump.h
 )
 
-IF(WIN32)
-	SET(debugutils_SRCS ${debugutils_SRCS} ${debugutils_HDRS})
-ENDIF(WIN32)
-
 INCLUDE_DIRECTORIES(Include ../Detour/Include ../Recast/Include)
 
-ADD_LIBRARY(DebugUtils ${debugutils_SRCS})
+ADD_LIBRARY(DebugUtils ${debugutils_SRCS} ${debugutils_HDRS})

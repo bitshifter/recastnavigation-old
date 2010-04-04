@@ -40,14 +40,13 @@ IF(WIN32)
 	FIND_LIBRARY(SDL_LIBRARY NAME SDL PATHS Contrib/SDL/lib)
 	FIND_LIBRARY(SDLMAIN_LIBRARY NAME SDLmain PATHS Contrib/SDL/lib)
 	SET(SDL_INCLUDE_DIR Contrib/SDL/include)
-	SET(recastdemo_SRCS ${recastdemo_SRCS} ${recastdemo_HDRS})
 ELSE(WIN32)
 	FIND_PACKAGE(SDL REQUIRED)
 ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(Include Contrib ../DebugUtils/Include ../Detour/Include ../Recast/Include ${SDL_INCLUDE_DIR})
 
-ADD_EXECUTABLE(RecastDemo WIN32 ${recastdemo_SRCS})
+ADD_EXECUTABLE(RecastDemo WIN32 ${recastdemo_SRCS} ${recastdemo_HDRS})
 TARGET_LINK_LIBRARIES(RecastDemo DebugUtils Detour Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_LIBRARIES})
 
 IF(MSVC)

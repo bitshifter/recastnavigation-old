@@ -13,11 +13,7 @@ SET(detour_HDRS
 	Include/DetourNode.h
 )
 
-IF(WIN32)
-	SET(detour_SRCS ${detour_SRCS} ${detour_HDRS})
-ENDIF(WIN32)
-
 INCLUDE_DIRECTORIES(Include)
 
-ADD_LIBRARY(Detour ${detour_SRCS})
+ADD_LIBRARY(Detour ${detour_SRCS} ${detour_HDRS})
 
