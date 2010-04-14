@@ -401,12 +401,12 @@ void dtNavMesh::connectExtOffMeshLinks(dtMeshTile* tile, dtMeshTile* target, int
 			unsigned int idx = allocLink(tile);
 			if (idx != DT_NULL_LINK)
 			{
-				unsigned short landPolyIdx = decodePolyIdPoly(ref);
+				const unsigned short landPolyIdx = (unsigned short)decodePolyIdPoly(ref);
 				dtPoly* landPoly = &tile->polys[landPolyIdx];
 				dtLink* link = &tile->links[idx];
 				link->ref = getTilePolyRefBase(target) | (unsigned int)(targetCon->poly);
 				link->edge = 0;
-				link->side = side;
+				link->side = (unsigned char)side;
 				link->bmin = link->bmax = 0;
 				// Add to linked list.
 				link->next = landPoly->firstLink;
@@ -509,7 +509,7 @@ void dtNavMesh::connectIntOffMeshLinks(dtMeshTile* tile)
 					unsigned int idx = allocLink(tile);
 					if (idx != DT_NULL_LINK)
 					{
-						unsigned short landPolyIdx = decodePolyIdPoly(ref);
+						const unsigned short landPolyIdx = (unsigned short)decodePolyIdPoly(ref);
 						dtPoly* landPoly = &tile->polys[landPolyIdx];
 						dtLink* link = &tile->links[idx];
 						link->ref = base | (unsigned int)(con->poly);
@@ -1568,19 +1568,24 @@ int dtNavMesh::findStraightPath(const float* startPos, const float* endPos,
 					vcopy(portalApex, portalLeft);
 					apexIndex = leftIndex;
 					
-					unsigned char flags = (leftPolyType == DT_POLYTYPE_OFFMESH_CONNECTION) ? DT_STRAIGHTPATH_OFFMESH_CONNECTION : 0;
+					unsigned char flags = 0;
+					if (!leftPolyRef)
+						flags = DT_STRAIGHTPATH_END;
+					else if (rightPolyType == DT_POLYTYPE_OFFMESH_CONNECTION)
+						flags = DT_STRAIGHTPATH_OFFMESH_CONNECTION;
 					dtPolyRef ref = leftPolyRef;
 					
 					if (!vequal(&straightPath[(straightPathSize-1)*3], portalApex))
 					{
+						// Append new vertex.
 						vcopy(&straightPath[straightPathSize*3], portalApex);
 						if (straightPathFlags)
 							straightPathFlags[straightPathSize] = flags;
 						if (straightPathRefs)
 							straightPathRefs[straightPathSize] = ref;
-							
 						straightPathSize++;
-						if (straightPathSize >= maxStraightPathSize)
+						// If reached end of path or there is no space to append more vertices, return.
+						if (flags == DT_STRAIGHTPATH_END || straightPathSize >= maxStraightPathSize)
 							return straightPathSize;
 					}
 					else
@@ -1619,19 +1624,24 @@ int dtNavMesh::findStraightPath(const float* startPos, const float* endPos,
 					vcopy(portalApex, portalRight);
 					apexIndex = rightIndex;
 
-					unsigned char flags = (rightPolyType == DT_POLYTYPE_OFFMESH_CONNECTION) ? DT_STRAIGHTPATH_OFFMESH_CONNECTION : 0;
+					unsigned char flags = 0;
+					if (!rightPolyRef)
+						flags = DT_STRAIGHTPATH_END;
+					else if (rightPolyType == DT_POLYTYPE_OFFMESH_CONNECTION)
+						flags = DT_STRAIGHTPATH_OFFMESH_CONNECTION;
 					dtPolyRef ref = rightPolyRef;
 					
 					if (!vequal(&straightPath[(straightPathSize-1)*3], portalApex))
 					{
+						// Append new vertex.
 						vcopy(&straightPath[straightPathSize*3], portalApex);
 						if (straightPathFlags)
 							straightPathFlags[straightPathSize] = flags;
 						if (straightPathRefs)
 							straightPathRefs[straightPathSize] = ref;
-						
 						straightPathSize++;
-						if (straightPathSize >= maxStraightPathSize)
+						// If reached end of path or there is no space to append more vertices, return.
+						if (flags == DT_STRAIGHTPATH_END || straightPathSize >= maxStraightPathSize)
 							return straightPathSize;
 					}
 					else
@@ -1657,14 +1667,20 @@ int dtNavMesh::findStraightPath(const float* startPos, const float* endPos,
 		}
 	}
 	
+	// If the point already exists, remove it and add reappend the actual end location.  
+	if (straightPathSize && vequal(&straightPath[(straightPathSize-1)*3], closestEndPos))
+		straightPathSize--;
+		
 	// Add end point.
-	vcopy(&straightPath[straightPathSize*3], closestEndPos);
-	if (straightPathFlags)
-		straightPathFlags[straightPathSize] = DT_STRAIGHTPATH_END;
-	if (straightPathRefs)
-		straightPathRefs[straightPathSize] = 0;
-	
-	straightPathSize++;
+	if (straightPathSize < maxStraightPathSize)
+	{
+		vcopy(&straightPath[straightPathSize*3], closestEndPos);
+		if (straightPathFlags)
+			straightPathFlags[straightPathSize] = DT_STRAIGHTPATH_END;
+		if (straightPathRefs)
+			straightPathRefs[straightPathSize] = 0;
+		straightPathSize++;
+	}
 	
 	return straightPathSize;
 }
