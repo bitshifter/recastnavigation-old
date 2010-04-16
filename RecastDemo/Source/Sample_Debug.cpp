@@ -153,14 +153,14 @@ void Sample_Debug::handleRender()
 	}
 		
 	if (m_navMesh)
-		duDebugDrawNavMesh(&dd, m_navMesh, DU_DRAWNAVMESH_CLOSEDLIST|DU_DRAWNAVMESH_OFFMESHCONS);
+		duDebugDrawNavMesh(&dd, *m_navMesh, DU_DRAWNAVMESH_CLOSEDLIST|DU_DRAWNAVMESH_OFFMESHCONS);
 
-	if (m_ref)
-		duDebugDrawNavMeshPoly(&dd, m_navMesh, m_ref, duRGBA(255,0,0,128));
+	if (m_ref && m_navMesh)
+		duDebugDrawNavMeshPoly(&dd, *m_navMesh, m_ref, duRGBA(255,0,0,128));
 
 	float bmin[3], bmax[3];
-	vsub(bmin, m_center, m_ext);
-	vadd(bmax, m_center, m_ext);
+	rcVsub(bmin, m_center, m_ext);
+	rcVadd(bmax, m_center, m_ext);
 	duDebugDrawBoxWire(&dd, bmin[0],bmin[1],bmin[2], bmax[0],bmax[1],bmax[2], duRGBA(255,255,255,128), 1.0f);
 	duDebugDrawCross(&dd, m_center[0], m_center[1], m_center[2], 1.0f, duRGBA(255,255,255,128), 2.0f);
 

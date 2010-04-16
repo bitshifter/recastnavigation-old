@@ -115,7 +115,7 @@ public:
 	virtual void handleClick(const float* p, bool shift)
 	{
 		m_hitPosSet = true;
-		vcopy(m_hitPos,p);
+		rcVcopy(m_hitPos,p);
 		if (m_sample)
 		{
 			if (shift)
@@ -157,6 +157,7 @@ public:
 Sample_TileMesh::Sample_TileMesh() :
 	m_keepInterResults(false),
 	m_buildAll(true),
+	m_totalBuildTimeMs(0),
 	m_triflags(0),
 	m_solid(0),
 	m_chf(0),
@@ -362,6 +363,12 @@ void Sample_TileMesh::handleSettings()
 		m_navMesh = loadAll("all_tiles_navmesh.bin");
 	}
 	
+	char msg[64];
+	snprintf(msg, 64, "Build Time: %.1fms", m_totalBuildTimeMs);
+	imguiLabel(msg);
+	
+	imguiSeparator();
+	
 	imguiSeparator();
 	
 }
@@ -440,7 +447,7 @@ void Sample_TileMesh::handleRender()
 	duDebugDrawBoxWire(&dd, m_tileBmin[0],m_tileBmin[1],m_tileBmin[2], m_tileBmax[0],m_tileBmax[1],m_tileBmax[2], m_tileCol, 2.0f);
 	
 	if (m_navMesh)
-		duDebugDrawNavMesh(&dd, m_navMesh, m_navMeshDrawFlags);
+		duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
 	
 	if (m_tool)
 		m_tool->handleRender();
@@ -502,7 +509,7 @@ bool Sample_TileMesh::handleBuild()
 	}
 
 	dtNavMeshParams params;
-	vcopy(params.orig, m_geom->getMeshBoundsMin());
+	rcVcopy(params.orig, m_geom->getMeshBoundsMin());
 	params.tileWidth = m_tileSize*m_cellSize;
 	params.tileHeight = m_tileSize*m_cellSize;
 	params.maxTiles = m_maxTiles;
@@ -526,9 +533,9 @@ bool Sample_TileMesh::handleBuild()
 
 void Sample_TileMesh::buildTile(const float* pos)
 {
-	if (!m_navMesh)
-		return;
-	
+	if (!m_geom) return;
+	if (!m_navMesh) return;
+		
 	const float* bmin = m_geom->getMeshBoundsMin();
 	const float* bmax = m_geom->getMeshBoundsMax();
 	
@@ -562,8 +569,8 @@ void Sample_TileMesh::buildTile(const float* pos)
 
 void Sample_TileMesh::removeTile(const float* pos)
 {
-	if (!m_navMesh)
-		return;
+	if (!m_geom) return;
+	if (!m_navMesh) return;
 	
 	const float* bmin = m_geom->getMeshBoundsMin();
 	const float* bmax = m_geom->getMeshBoundsMax();
@@ -587,6 +594,9 @@ void Sample_TileMesh::removeTile(const float* pos)
 
 void Sample_TileMesh::buildAllTiles()
 {
+	if (!m_geom) return;
+	if (!m_navMesh) return;
+	
 	const float* bmin = m_geom->getMeshBoundsMin();
 	const float* bmax = m_geom->getMeshBoundsMax();
 	int gw = 0, gh = 0;
@@ -595,6 +605,10 @@ void Sample_TileMesh::buildAllTiles()
 	const int tw = (gw + ts-1) / ts;
 	const int th = (gh + ts-1) / ts;
 	const float tcs = m_tileSize*m_cellSize;
+
+
+	// Start the build process.	
+	rcTimeVal totStartTime = rcGetPerformanceTimer();
 
 	for (int y = 0; y < th; ++y)
 	{
@@ -620,6 +634,11 @@ void Sample_TileMesh::buildAllTiles()
 			}
 		}
 	}
+	
+	// Start the build process.	
+	rcTimeVal totEndTime = rcGetPerformanceTimer();
+
+	m_totalBuildTimeMs = rcGetDeltaTimeUsec(totStartTime, totEndTime)/1000.0f;
 }
 
 void Sample_TileMesh::removeAllTiles()
@@ -673,8 +692,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	m_cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
 	
-	vcopy(m_cfg.bmin, bmin);
-	vcopy(m_cfg.bmax, bmax);
+	rcVcopy(m_cfg.bmin, bmin);
+	rcVcopy(m_cfg.bmax, bmax);
 	m_cfg.bmin[0] -= m_cfg.borderSize*m_cfg.cs;
 	m_cfg.bmin[2] -= m_cfg.borderSize*m_cfg.cs;
 	m_cfg.bmax[0] += m_cfg.borderSize*m_cfg.cs;
@@ -941,8 +960,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.walkableClimb = m_agentMaxClimb;
 		params.tileX = tx;
 		params.tileY = ty;
-		vcopy(params.bmin, bmin);
-		vcopy(params.bmax, bmax);
+		rcVcopy(params.bmin, bmin);
+		rcVcopy(params.bmax, bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
 		params.tileSize = m_cfg.tileSize;

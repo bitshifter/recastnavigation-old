@@ -81,7 +81,7 @@ public:
 	virtual void handleClick(const float* p, bool /*shift*/)
 	{
 		m_hitPosSet = true;
-		vcopy(m_hitPos,p);
+		rcVcopy(m_hitPos,p);
 		if (m_sample)
 			m_sample->setHighlightedTile(m_hitPos);
 	}
@@ -131,6 +131,7 @@ Sample_SoloMeshTiled::Sample_SoloMeshTiled() :
 	m_measurePerTileTimings(false),
 	m_keepInterResults(false),
 	m_tileSize(64),
+	m_totalBuildTimeMs(0),
 	m_pmesh(0),
 	m_dmesh(0),
 	m_tileSet(0),
@@ -188,6 +189,12 @@ void Sample_SoloMeshTiled::handleSettings()
 		m_keepInterResults = !m_keepInterResults;
 	if (imguiCheck("Measure Per Tile Timings", m_measurePerTileTimings))
 		m_measurePerTileTimings = !m_measurePerTileTimings;
+	
+	imguiSeparator();
+
+	char msg[64];
+	snprintf(msg, 64, "Build Time: %.1fms", m_totalBuildTimeMs);
+	imguiLabel(msg);
 	
 	imguiSeparator();
 }
@@ -362,9 +369,9 @@ void Sample_SoloMeshTiled::handleRender()
 		 m_drawMode == DRAWMODE_NAVMESH_INVIS))
 	{
 		if (m_drawMode != DRAWMODE_NAVMESH_INVIS)
-			duDebugDrawNavMesh(&dd, m_navMesh, m_navMeshDrawFlags);
+			duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
 		if (m_drawMode == DRAWMODE_NAVMESH_BVTREE)
-			duDebugDrawNavMeshBVTree(&dd, m_navMesh);
+			duDebugDrawNavMeshBVTree(&dd, *m_navMesh);
 	}
 	
 	glDepthMask(GL_TRUE);
@@ -709,8 +716,8 @@ bool Sample_SoloMeshTiled::handleBuild()
 	// Set the area where the navigation will be build.
 	// Here the bounds of the input mesh are used, but the
 	// area could be specified by an user defined box, etc.
-	vcopy(m_cfg.bmin, bmin);
-	vcopy(m_cfg.bmax, bmax);
+	rcVcopy(m_cfg.bmin, bmin);
+	rcVcopy(m_cfg.bmax, bmax);
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
 	
 	// Reset build times gathering.
@@ -728,8 +735,8 @@ bool Sample_SoloMeshTiled::handleBuild()
 			rcGetLog()->log(RC_LOG_ERROR, "buildTiledNavigation: Out of memory 'tileSet'.");
 		return false;
 	}
-	vcopy(m_tileSet->bmin, m_cfg.bmin);
-	vcopy(m_tileSet->bmax, m_cfg.bmax);
+	rcVcopy(m_tileSet->bmin, m_cfg.bmin);
+	rcVcopy(m_tileSet->bmax, m_cfg.bmax);
 	m_tileSet->cs = m_cfg.cs;
 	m_tileSet->ch = m_cfg.ch;
 	m_tileSet->width = (m_cfg.width + m_cfg.tileSize-1) / m_cfg.tileSize;
@@ -1074,8 +1081,8 @@ bool Sample_SoloMeshTiled::handleBuild()
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
 		params.walkableClimb = m_agentMaxClimb;
-		vcopy(params.bmin, m_pmesh->bmin);
-		vcopy(params.bmax, m_pmesh->bmax);
+		rcVcopy(params.bmin, m_pmesh->bmin);
+		rcVcopy(params.bmax, m_pmesh->bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
 		
@@ -1144,6 +1151,8 @@ bool Sample_SoloMeshTiled::handleBuild()
 		
 		rcGetLog()->log(RC_LOG_PROGRESS, "TOTAL: %.1fms", rcGetDeltaTimeUsec(totStartTime, totEndTime)/1000.0f);
 	}
+
+	m_totalBuildTimeMs = rcGetDeltaTimeUsec(totStartTime, totEndTime)/1000.0f;
 
 	if (m_tool)
 		m_tool->init(this);
