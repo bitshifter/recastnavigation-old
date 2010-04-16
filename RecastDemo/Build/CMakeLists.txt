@@ -29,7 +29,8 @@ ENDIF(INTERNAL_CREATE_RELATIVE_PATH_PROJECTFILES)
 # RecastDemo sources
 SET(recastdemo_SRCS 
 	../Source/ChunkyTriMesh.cpp 
-	../Source/ConvexVolumeTool.cpp 
+	../Source/ConvexVolumeTool.cpp
+	../Source/Filelist.cpp
 	../Source/imgui.cpp 
 	../Source/imguiRenderGL.cpp 
 	../Source/InputGeom.cpp 
@@ -42,11 +43,13 @@ SET(recastdemo_SRCS
 	../Source/Sample_SoloMeshSimple.cpp 
 	../Source/Sample_SoloMeshTiled.cpp 
 	../Source/Sample_TileMesh.cpp
+	../Source/SlideShow.cpp
 	../Source/TestCase.cpp)
 
 SET(recastdemo_HDRS
 	../Include/ChunkyTriMesh.h
 	../Include/ConvexVolumeTool.h
+	../Include/Filelist.h
 	../Include/imgui.h
 	../Include/imguiRenderGL.h
 	../Include/InputGeom.h
@@ -59,6 +62,7 @@ SET(recastdemo_HDRS
 	../Include/Sample_SoloMeshTiled.h
 	../Include/Sample_TileMesh.h
 	../Include/SDLMain.h
+	../Include/SlideShow.h
 	../Include/TestCase.h
 )
 
