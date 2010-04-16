@@ -44,6 +44,7 @@
 
 Sample_SoloMeshSimple::Sample_SoloMeshSimple() :
 	m_keepInterResults(true),
+	m_totalBuildTimeMs(0),
 	m_triflags(0),
 	m_solid(0),
 	m_chf(0),
@@ -85,6 +86,12 @@ void Sample_SoloMeshSimple::handleSettings()
 	if (imguiCheck("Keep Itermediate Results", m_keepInterResults))
 		m_keepInterResults = !m_keepInterResults;
 
+	imguiSeparator();
+	
+	char msg[64];
+	snprintf(msg, 64, "Build Time: %.1fms", m_totalBuildTimeMs);
+	imguiLabel(msg);
+	
 	imguiSeparator();
 }
 
@@ -227,9 +234,9 @@ void Sample_SoloMeshSimple::handleRender()
 		m_drawMode == DRAWMODE_NAVMESH_INVIS))
 	{
 		if (m_drawMode != DRAWMODE_NAVMESH_INVIS)
-			duDebugDrawNavMesh(&dd, m_navMesh, m_navMeshDrawFlags);
+			duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
 		if (m_drawMode == DRAWMODE_NAVMESH_BVTREE)
-			duDebugDrawNavMeshBVTree(&dd, m_navMesh);
+			duDebugDrawNavMeshBVTree(&dd, *m_navMesh);
 	}
 		
 	glDepthMask(GL_TRUE);
@@ -363,8 +370,8 @@ bool Sample_SoloMeshSimple::handleBuild()
 	// Set the area where the navigation will be build.
 	// Here the bounds of the input mesh are used, but the
 	// area could be specified by an user defined box, etc.
-	vcopy(m_cfg.bmin, bmin);
-	vcopy(m_cfg.bmax, bmax);
+	rcVcopy(m_cfg.bmin, bmin);
+	rcVcopy(m_cfg.bmax, bmax);
 	rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
 
 	// Reset build times gathering.
@@ -615,8 +622,8 @@ bool Sample_SoloMeshSimple::handleBuild()
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
 		params.walkableClimb = m_agentMaxClimb;
-		vcopy(params.bmin, m_pmesh->bmin);
-		vcopy(params.bmax, m_pmesh->bmax);
+		rcVcopy(params.bmin, m_pmesh->bmin);
+		rcVcopy(params.bmax, m_pmesh->bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
 		
@@ -683,6 +690,8 @@ bool Sample_SoloMeshSimple::handleBuild()
 		
 		rcGetLog()->log(RC_LOG_PROGRESS, "TOTAL: %.1fms", rcGetDeltaTimeUsec(totStartTime, totEndTime)/1000.0f);
 	}
+	
+	m_totalBuildTimeMs = rcGetDeltaTimeUsec(totStartTime, totEndTime)/1000.0f;
 	
 	if (m_tool)
 		m_tool->init(this);
