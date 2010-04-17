@@ -1,0 +1,496 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3F1D411637E4001271489555 /* ChunkyTriMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 186D234A250E001271489555 /* ChunkyTriMesh.cpp */; };
+		1C606D804D9F001271489555 /* ConvexVolumeTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 503D77082713001271489555 /* ConvexVolumeTool.cpp */; };
+		72D20F6B03A1001271489555 /* Filelist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B6C6CAA5482001271489555 /* Filelist.cpp */; };
+		487F6E002538001271489555 /* InputGeom.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD339A46807001271489555 /* InputGeom.cpp */; };
+		5EF61CEA5069001271489555 /* MeshLoaderObj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CA16446715A001271489555 /* MeshLoaderObj.cpp */; };
+		1514747534CA001271489555 /* NavMeshTesterTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7005355773B3001271489555 /* NavMeshTesterTool.cpp */; };
+		740C61131952001271489555 /* OffMeshConnectionTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4CF844B32BD2001271489555 /* OffMeshConnectionTool.cpp */; };
+		162E2F521568001271489555 /* Sample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41AC3C7F05FD001271489555 /* Sample.cpp */; };
+		01D717A53D0D001271489555 /* Sample_Debug.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 19D04F264F0D001271489555 /* Sample_Debug.cpp */; };
+		1869433D3E3E001271489555 /* Sample_SoloMeshSimple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 270F64462153001271489555 /* Sample_SoloMeshSimple.cpp */; };
+		5C864857680B001271489555 /* Sample_SoloMeshTiled.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68D333437396001271489555 /* Sample_SoloMeshTiled.cpp */; };
+		3D23095C0DD2001271489555 /* Sample_TileMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 115115502CBE001271489555 /* Sample_TileMesh.cpp */; };
+		5C74613879A4001271489555 /* SlideShow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 56764B094A52001271489555 /* SlideShow.cpp */; };
+		40EA7CDF6070001271489555 /* TestCase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 71DD7B0848CA001271489555 /* TestCase.cpp */; };
+		1F4B3C5907F4001271489555 /* imgui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7DF723EF44B6001271489555 /* imgui.cpp */; };
+		512001B3038F001271489555 /* imguiRenderGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D8A252C3B37001271489555 /* imguiRenderGL.cpp */; };
+		65EA5028223C001271489555 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 392B130418DF001271489555 /* main.cpp */; };
+		60EF33D26A55001271489555 /* libDebugUtilsD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 007F35DA4665001271489555 /* libDebugUtilsD.a */; };
+		68D201C74D8D001271489555 /* libDetourD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D9A30A74BDA001271489555 /* libDetourD.a */; };
+		277E149C5759001271489555 /* libRecastD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 054120DE30BA001271489555 /* libRecastD.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		48AE4DD63DC9001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37B474EF4986001271489555 /* DebugUtils.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7A5B5EB96ED1001271489555;
+			remoteInfo = "libDebugUtilsD.a";
+		};
+		1CF52D5124C0001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37B474EF4986001271489555 /* DebugUtils.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 60F546F85A93001271489555;
+			remoteInfo = "libDebugUtilsD.a";
+		};
+		509128615B04001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25A6531D26AE001271489555 /* Detour.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 7493385C41AA001271489555;
+			remoteInfo = "libDetourD.a";
+		};
+		37E8482B28F9001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 25A6531D26AE001271489555 /* Detour.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 289F3DA00408001271489555;
+			remoteInfo = "libDetourD.a";
+		};
+		660F02AB2384001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C613AF36092001271489555 /* Recast.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5A4C24415372001271489555;
+			remoteInfo = "libRecastD.a";
+		};
+		5FCC37C63625001271489555 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C613AF36092001271489555 /* Recast.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7A7305A53BA4001271489555;
+			remoteInfo = "libRecastD.a";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		5C583B014086001271489555 /* ChunkyTriMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ChunkyTriMesh.h"; path = "ChunkyTriMesh.h"; sourceTree = "<group>"; };
+		375D72EA08B1001271489555 /* ConvexVolumeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ConvexVolumeTool.h"; path = "ConvexVolumeTool.h"; sourceTree = "<group>"; };
+		605658592396001271489555 /* Filelist.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Filelist.h"; path = "Filelist.h"; sourceTree = "<group>"; };
+		283C159A0777001271489555 /* InputGeom.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "InputGeom.h"; path = "InputGeom.h"; sourceTree = "<group>"; };
+		35467BAA0A23001271489555 /* MeshLoaderObj.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "MeshLoaderObj.h"; path = "MeshLoaderObj.h"; sourceTree = "<group>"; };
+		58CB5B7641E9001271489555 /* NavMeshTesterTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "NavMeshTesterTool.h"; path = "NavMeshTesterTool.h"; sourceTree = "<group>"; };
+		0EF00E33425E001271489555 /* OffMeshConnectionTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "OffMeshConnectionTool.h"; path = "OffMeshConnectionTool.h"; sourceTree = "<group>"; };
+		12ED7EB95FC9001271489555 /* SDLMain.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SDLMain.h"; path = "SDLMain.h"; sourceTree = "<group>"; };
+		443B13FF26B0001271489555 /* Sample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sample.h"; path = "Sample.h"; sourceTree = "<group>"; };
+		1DCC12D61120001271489555 /* Sample_Debug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sample_Debug.h"; path = "Sample_Debug.h"; sourceTree = "<group>"; };
+		35F16F2F4C22001271489555 /* Sample_SoloMeshSimple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sample_SoloMeshSimple.h"; path = "Sample_SoloMeshSimple.h"; sourceTree = "<group>"; };
+		7678268C3F0C001271489555 /* Sample_SoloMeshTiled.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sample_SoloMeshTiled.h"; path = "Sample_SoloMeshTiled.h"; sourceTree = "<group>"; };
+		7F2A06E21766001271489555 /* Sample_TileMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Sample_TileMesh.h"; path = "Sample_TileMesh.h"; sourceTree = "<group>"; };
+		22C02F1F2D00001271489555 /* SlideShow.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "SlideShow.h"; path = "SlideShow.h"; sourceTree = "<group>"; };
+		2A38646528AB001271489555 /* TestCase.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "TestCase.h"; path = "TestCase.h"; sourceTree = "<group>"; };
+		345C3D310422001271489555 /* imgui.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "imgui.h"; path = "imgui.h"; sourceTree = "<group>"; };
+		76454C211255001271489555 /* imguiRenderGL.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "imguiRenderGL.h"; path = "imguiRenderGL.h"; sourceTree = "<group>"; };
+		186D234A250E001271489555 /* ChunkyTriMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "ChunkyTriMesh.cpp"; path = "ChunkyTriMesh.cpp"; sourceTree = "<group>"; };
+		503D77082713001271489555 /* ConvexVolumeTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "ConvexVolumeTool.cpp"; path = "ConvexVolumeTool.cpp"; sourceTree = "<group>"; };
+		5B6C6CAA5482001271489555 /* Filelist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Filelist.cpp"; path = "Filelist.cpp"; sourceTree = "<group>"; };
+		1FD339A46807001271489555 /* InputGeom.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "InputGeom.cpp"; path = "InputGeom.cpp"; sourceTree = "<group>"; };
+		4CA16446715A001271489555 /* MeshLoaderObj.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "MeshLoaderObj.cpp"; path = "MeshLoaderObj.cpp"; sourceTree = "<group>"; };
+		7005355773B3001271489555 /* NavMeshTesterTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "NavMeshTesterTool.cpp"; path = "NavMeshTesterTool.cpp"; sourceTree = "<group>"; };
+		4CF844B32BD2001271489555 /* OffMeshConnectionTool.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "OffMeshConnectionTool.cpp"; path = "OffMeshConnectionTool.cpp"; sourceTree = "<group>"; };
+		41AC3C7F05FD001271489555 /* Sample.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Sample.cpp"; path = "Sample.cpp"; sourceTree = "<group>"; };
+		19D04F264F0D001271489555 /* Sample_Debug.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Sample_Debug.cpp"; path = "Sample_Debug.cpp"; sourceTree = "<group>"; };
+		270F64462153001271489555 /* Sample_SoloMeshSimple.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Sample_SoloMeshSimple.cpp"; path = "Sample_SoloMeshSimple.cpp"; sourceTree = "<group>"; };
+		68D333437396001271489555 /* Sample_SoloMeshTiled.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Sample_SoloMeshTiled.cpp"; path = "Sample_SoloMeshTiled.cpp"; sourceTree = "<group>"; };
+		115115502CBE001271489555 /* Sample_TileMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Sample_TileMesh.cpp"; path = "Sample_TileMesh.cpp"; sourceTree = "<group>"; };
+		56764B094A52001271489555 /* SlideShow.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "SlideShow.cpp"; path = "SlideShow.cpp"; sourceTree = "<group>"; };
+		71DD7B0848CA001271489555 /* TestCase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "TestCase.cpp"; path = "TestCase.cpp"; sourceTree = "<group>"; };
+		7DF723EF44B6001271489555 /* imgui.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "imgui.cpp"; path = "imgui.cpp"; sourceTree = "<group>"; };
+		5D8A252C3B37001271489555 /* imguiRenderGL.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "imguiRenderGL.cpp"; path = "imguiRenderGL.cpp"; sourceTree = "<group>"; };
+		392B130418DF001271489555 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "main.cpp"; path = "main.cpp"; sourceTree = "<group>"; };
+		65435F9330F9001271489555 /* RecastDemoD */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; name = "RecastDemoD"; path = "RecastDemoD"; sourceTree = BUILT_PRODUCTS_DIR; };
+		37B474EF4986001271489555 /* DebugUtils.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "DebugUtils.xcodeproj"; path = "DebugUtils.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		25A6531D26AE001271489555 /* Detour.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Detour.xcodeproj"; path = "Detour.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		6C613AF36092001271489555 /* Recast.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "Recast.xcodeproj"; path = "Recast.xcodeproj"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		732E6BCE3908001271489555 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				60EF33D26A55001271489555 /* libDebugUtilsD.a in Frameworks */,
+				68D201C74D8D001271489555 /* libDetourD.a in Frameworks */,
+				277E149C5759001271489555 /* libRecastD.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		70851D6A314E001271489555 /* RecastDemo */ = {
+			isa = PBXGroup;
+			children = (
+				154646E65990001271489555 /* RecastDemo */,
+				73BD269E6D46001271489555 /* Products */,
+				3E0F03124E7E001271489555 /* Projects */,
+			);
+			name = RecastDemo;
+			sourceTree = "<group>";
+		};
+		154646E65990001271489555 /* RecastDemo */ = {
+			isa = PBXGroup;
+			children = (
+				7ED66A701825001271489555 /* Include */,
+				38A45F0F110E001271489555 /* Source */,
+			);
+			name = RecastDemo;
+			path = ../../RecastDemo;
+			sourceTree = "<group>";
+		};
+		7ED66A701825001271489555 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				5C583B014086001271489555 /* ChunkyTriMesh.h */,
+				375D72EA08B1001271489555 /* ConvexVolumeTool.h */,
+				605658592396001271489555 /* Filelist.h */,
+				283C159A0777001271489555 /* InputGeom.h */,
+				35467BAA0A23001271489555 /* MeshLoaderObj.h */,
+				58CB5B7641E9001271489555 /* NavMeshTesterTool.h */,
+				0EF00E33425E001271489555 /* OffMeshConnectionTool.h */,
+				12ED7EB95FC9001271489555 /* SDLMain.h */,
+				443B13FF26B0001271489555 /* Sample.h */,
+				1DCC12D61120001271489555 /* Sample_Debug.h */,
+				35F16F2F4C22001271489555 /* Sample_SoloMeshSimple.h */,
+				7678268C3F0C001271489555 /* Sample_SoloMeshTiled.h */,
+				7F2A06E21766001271489555 /* Sample_TileMesh.h */,
+				22C02F1F2D00001271489555 /* SlideShow.h */,
+				2A38646528AB001271489555 /* TestCase.h */,
+				345C3D310422001271489555 /* imgui.h */,
+				76454C211255001271489555 /* imguiRenderGL.h */,
+			);
+			name = Include;
+			path = Include;
+			sourceTree = "<group>";
+		};
+		38A45F0F110E001271489555 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				186D234A250E001271489555 /* ChunkyTriMesh.cpp */,
+				503D77082713001271489555 /* ConvexVolumeTool.cpp */,
+				5B6C6CAA5482001271489555 /* Filelist.cpp */,
+				1FD339A46807001271489555 /* InputGeom.cpp */,
+				4CA16446715A001271489555 /* MeshLoaderObj.cpp */,
+				7005355773B3001271489555 /* NavMeshTesterTool.cpp */,
+				4CF844B32BD2001271489555 /* OffMeshConnectionTool.cpp */,
+				41AC3C7F05FD001271489555 /* Sample.cpp */,
+				19D04F264F0D001271489555 /* Sample_Debug.cpp */,
+				270F64462153001271489555 /* Sample_SoloMeshSimple.cpp */,
+				68D333437396001271489555 /* Sample_SoloMeshTiled.cpp */,
+				115115502CBE001271489555 /* Sample_TileMesh.cpp */,
+				56764B094A52001271489555 /* SlideShow.cpp */,
+				71DD7B0848CA001271489555 /* TestCase.cpp */,
+				7DF723EF44B6001271489555 /* imgui.cpp */,
+				5D8A252C3B37001271489555 /* imguiRenderGL.cpp */,
+				392B130418DF001271489555 /* main.cpp */,
+			);
+			name = Source;
+			path = Source;
+			sourceTree = "<group>";
+		};
+		73BD269E6D46001271489555 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				65435F9330F9001271489555 /* RecastDemoD */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3E0F03124E7E001271489555 /* Projects */ = {
+			isa = PBXGroup;
+			children = (
+				37B474EF4986001271489555 /* DebugUtils.xcodeproj */,
+				25A6531D26AE001271489555 /* Detour.xcodeproj */,
+				6C613AF36092001271489555 /* Recast.xcodeproj */,
+			);
+			name = Projects;
+			sourceTree = "<group>";
+		};
+		351A12A052F0001271489555 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				007F35DA4665001271489555 /* libDebugUtilsD.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		23893E945D82001271489555 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2D9A30A74BDA001271489555 /* libDetourD.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3D4163E00D09001271489555 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				054120DE30BA001271489555 /* libRecastD.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		7BEA39D60FB9001271489555 /* RecastDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 14C452AB5A6B001271489555 /* Build configuration list for PBXNativeTarget "RecastDemo" */;
+			buildPhases = (
+				63420A604F5B001271489555 /* Resources */,
+				2CC90ADF0536001271489555 /* Sources */,
+				732E6BCE3908001271489555 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				297C28426990001271489555 /* PBXTargetDependency */,
+				656F1AE547E6001271489555 /* PBXTargetDependency */,
+				32BC007403FC001271489555 /* PBXTargetDependency */,
+			);
+			name = RecastDemo;
+			productInstallPath = "$(HOME)/bin";
+			productName = RecastDemo;
+			productReference = 65435F9330F9001271489555 /* RecastDemoD */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "RecastDemo" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 70851D6A314E001271489555 /* RecastDemo */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 351A12A052F0001271489555 /* Products */;
+					ProjectRef = 37B474EF4986001271489555 /* DebugUtils.xcodeproj */;
+				},
+				{
+					ProductGroup = 23893E945D82001271489555 /* Products */;
+					ProjectRef = 25A6531D26AE001271489555 /* Detour.xcodeproj */;
+				},
+				{
+					ProductGroup = 3D4163E00D09001271489555 /* Products */;
+					ProjectRef = 6C613AF36092001271489555 /* Recast.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				7BEA39D60FB9001271489555 /* RecastDemoD */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		007F35DA4665001271489555 /* libDebugUtilsD.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "lib/libDebugUtilsD.a";
+			remoteRef = 48AE4DD63DC9001271489555 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		2D9A30A74BDA001271489555 /* libDetourD.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "lib/libDetourD.a";
+			remoteRef = 509128615B04001271489555 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		054120DE30BA001271489555 /* libRecastD.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "lib/libRecastD.a";
+			remoteRef = 660F02AB2384001271489555 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		63420A604F5B001271489555 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2CC90ADF0536001271489555 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F1D411637E4001271489555 /* ChunkyTriMesh.cpp in Sources */,
+				1C606D804D9F001271489555 /* ConvexVolumeTool.cpp in Sources */,
+				72D20F6B03A1001271489555 /* Filelist.cpp in Sources */,
+				487F6E002538001271489555 /* InputGeom.cpp in Sources */,
+				5EF61CEA5069001271489555 /* MeshLoaderObj.cpp in Sources */,
+				1514747534CA001271489555 /* NavMeshTesterTool.cpp in Sources */,
+				740C61131952001271489555 /* OffMeshConnectionTool.cpp in Sources */,
+				162E2F521568001271489555 /* Sample.cpp in Sources */,
+				01D717A53D0D001271489555 /* Sample_Debug.cpp in Sources */,
+				1869433D3E3E001271489555 /* Sample_SoloMeshSimple.cpp in Sources */,
+				5C864857680B001271489555 /* Sample_SoloMeshTiled.cpp in Sources */,
+				3D23095C0DD2001271489555 /* Sample_TileMesh.cpp in Sources */,
+				5C74613879A4001271489555 /* SlideShow.cpp in Sources */,
+				40EA7CDF6070001271489555 /* TestCase.cpp in Sources */,
+				1F4B3C5907F4001271489555 /* imgui.cpp in Sources */,
+				512001B3038F001271489555 /* imguiRenderGL.cpp in Sources */,
+				65EA5028223C001271489555 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin PBXTargetDependency section */
+		297C28426990001271489555 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "libDebugUtilsD.a";
+			targetProxy = 1CF52D5124C0001271489555 /* PBXContainerItemProxy */;
+		};
+		656F1AE547E6001271489555 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "libDetourD.a";
+			targetProxy = 37E8482B28F9001271489555 /* PBXContainerItemProxy */;
+		};
+		32BC007403FC001271489555 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "libRecastD.a";
+			targetProxy = 5FCC37C63625001271489555 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1FCA4DF42D86001271489555 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = ../../RecastDemo/Bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "RecastDemoD";
+			};
+			name = "Debug";
+		};
+		48FB452228CE001271489555 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				CONFIGURATION_BUILD_DIR = ../../RecastDemo/Bin;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PRODUCT_NAME = "RecastDemo";
+			};
+			name = "Release";
+		};
+		52BA1EED57D2001271489555 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../RecastDemo/Include",
+					"../../RecastDemo/Contrib",
+					"../../DebugUtils/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Debug/RecastDemo";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "../../RecastDemo/Bin";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Debug";
+		};
+		1ECA167B79BC001271489555 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../RecastDemo/Include",
+					"../../RecastDemo/Contrib",
+					"../../DebugUtils/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Release/RecastDemo";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "../../RecastDemo/Bin";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Release";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		14C452AB5A6B001271489555 /* Build configuration list for PBXNativeTarget "RecastDemoD" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FCA4DF42D86001271489555 /* Debug */,
+				48FB452228CE001271489555 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "RecastDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52BA1EED57D2001271489555 /* Debug */,
+				1ECA167B79BC001271489555 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

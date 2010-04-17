@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugUtils", "DebugUtils.vcproj", "{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Detour", "Detour.vcproj", "{9AB87D1B-FF16-A517-6137-63E6104DDD0A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Recast", "Recast.vcproj", "{33835C89-3723-787C-A89F-20EE4685BCF9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RecastDemo", "RecastDemo.vcproj", "{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7} = {E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}
+		{9AB87D1B-FF16-A517-6137-63E6104DDD0A} = {9AB87D1B-FF16-A517-6137-63E6104DDD0A}
+		{33835C89-3723-787C-A89F-20EE4685BCF9} = {33835C89-3723-787C-A89F-20EE4685BCF9}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}.Debug|Win32.Build.0 = Debug|Win32
+		{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}.Release|Win32.ActiveCfg = Release|Win32
+		{E3B8F95E-81C2-9FBE-5581-FDFB9502C8B7}.Release|Win32.Build.0 = Release|Win32
+		{9AB87D1B-FF16-A517-6137-63E6104DDD0A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9AB87D1B-FF16-A517-6137-63E6104DDD0A}.Debug|Win32.Build.0 = Debug|Win32
+		{9AB87D1B-FF16-A517-6137-63E6104DDD0A}.Release|Win32.ActiveCfg = Release|Win32
+		{9AB87D1B-FF16-A517-6137-63E6104DDD0A}.Release|Win32.Build.0 = Release|Win32
+		{33835C89-3723-787C-A89F-20EE4685BCF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{33835C89-3723-787C-A89F-20EE4685BCF9}.Debug|Win32.Build.0 = Debug|Win32
+		{33835C89-3723-787C-A89F-20EE4685BCF9}.Release|Win32.ActiveCfg = Release|Win32
+		{33835C89-3723-787C-A89F-20EE4685BCF9}.Release|Win32.Build.0 = Release|Win32
+		{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}.Debug|Win32.Build.0 = Debug|Win32
+		{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}.Release|Win32.ActiveCfg = Release|Win32
+		{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
