@@ -53,11 +53,11 @@ project "Recast"
   
 project "RecastDemo"
   language "C++"
-  kind     "ConsoleApp"
+  kind     "WindowedApp"
   location ( default_location )
   includedirs { "../RecastDemo/Include", "../RecastDemo/Contrib", "../DebugUtils/Include", "../Detour/Include", "../Recast/Include" }
   files  { "../RecastDemo/Include/*.h", "../RecastDemo/Source/*.cpp" }
-
+  
   -- project dependencies
   links { "DebugUtils", "Detour", "Recast" }
 
