@@ -1,14 +1,24 @@
 solution "recastnavigation"
   configurations { "Debug", "Release" }
-  
+
+  -- manual cleanup of generated builds
+  if _ACTION == "clean" then
+    os.rmdir("linux")
+    os.rmdir("vs2008")
+    os.rmdir("xcode3")
+  end
+
   -- default linux makefiles to the linux dir, otherwise use the action
   if _OS == "linux" and _ACTION == "gmake" then
     default_location = "linux"
-  else
+  elseif _ACTION ~= nil then
     default_location = _ACTION
   end
-  location ( default_location )
   
+  if default_location ~= nil then
+    location ( default_location )
+  end
+    
   -- extra warnings, no exceptions or rtti
   flags { "ExtraWarnings", "NoExceptions", "NoRTTI" }
   
@@ -30,31 +40,39 @@ solution "recastnavigation"
 project "DebugUtils"
   language "C++"
   kind     "StaticLib"
-  location ( default_location )
+  if default_location ~= nil then
+    location ( default_location )
+    targetdir ( default_location .. "/lib" )
+  end
   includedirs { "../DebugUtils/Include", "../Detour/Include", "../Recast/Include" }
   files { "../DebugUtils/Include/*.h", "../DebugUtils/Source/*.cpp" }
-  targetdir ( default_location .. "/lib" )
 
 project "Detour"
   language "C++"
   kind     "StaticLib"
-  location ( default_location )
+  if default_location ~= nil then
+    location ( default_location )
+    targetdir ( default_location .. "/lib" )
+  end
   includedirs { "../Detour/Include" }
   files { "../Detour/Include/*.h", "../Detour/Source/*.cpp" }
-  targetdir ( default_location .. "/lib" )
 
 project "Recast"
   language "C++"
   kind "StaticLib"
-  location ( default_location )
+  if default_location ~= nil then
+    location ( default_location )
+    targetdir ( default_location .. "/lib" )
+  end
   includedirs { "../Recast/Include" }
   files { "../Recast/Include/*.h", "../Recast/Source/*.cpp" }
-  targetdir ( default_location .. "/lib" )
   
 project "RecastDemo"
   language "C++"
   kind     "WindowedApp"
-  location ( default_location )
+  if default_location ~= nil then
+    location ( default_location )
+  end
   includedirs { "../RecastDemo/Include", "../RecastDemo/Contrib", "../DebugUtils/Include", "../Detour/Include", "../Recast/Include" }
   files  { "../RecastDemo/Include/*.h", "../RecastDemo/Source/*.cpp" }
   
