@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="RecastDemo"
-	ProjectGUID="{1C8D6093-89CE-1C1A-D073-12AC9A57A4AC}"
+	ProjectGUID="{40C0C49F-6C85-35D3-6B61-F9060011A224}"
 	RootNamespace="RecastDemo"
 	Keyword="Win32Proj"
 	>
@@ -72,7 +72,7 @@
 				AdditionalLibraryDirectories="..\..\RecastDemo\Contrib\SDL\lib"
 				GenerateDebugInformation="true"
 				ProgramDataBaseFileName="$(OutDir)\RecastDemoD.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				EntryPointSymbol="mainCRTStartup"
 				TargetMachine="1"
 			/>
@@ -156,7 +156,7 @@
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\RecastDemo\Contrib\SDL\lib"
 				GenerateDebugInformation="false"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				EntryPointSymbol="mainCRTStartup"
