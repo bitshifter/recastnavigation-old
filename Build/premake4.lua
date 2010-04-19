@@ -93,3 +93,7 @@ project "RecastDemo"
     libdirs { "../RecastDemo/Contrib/SDL/lib" }
     links { "opengl32", "glu32", "sdlmain", "sdl" }
  
+  -- macosx files etc
+  configuration { "macosx" }
+    files { "../RecastDemo/Source/SDLMain.m" }
+
