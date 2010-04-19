@@ -7,37 +7,37 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		08CC491F7754001271562119 /* Recast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7933144C6C61001271562119 /* Recast.cpp */; };
-		18710FF33466001271562119 /* RecastArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 014C756D78F2001271562119 /* RecastArea.cpp */; };
-		73BB719E235E001271562119 /* RecastContour.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E1D571662A1001271562119 /* RecastContour.cpp */; };
-		31C77A85605A001271562119 /* RecastFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 77356B071B88001271562119 /* RecastFilter.cpp */; };
-		58E9596F18A7001271562119 /* RecastLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00681C7D05F5001271562119 /* RecastLog.cpp */; };
-		3C885B6F7613001271562119 /* RecastMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 502752A22CF4001271562119 /* RecastMesh.cpp */; };
-		2CCF752D7B74001271562119 /* RecastMeshDetail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33DD5CBB6B80001271562119 /* RecastMeshDetail.cpp */; };
-		43D817054429001271562119 /* RecastRasterization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6136234A528A001271562119 /* RecastRasterization.cpp */; };
-		02BF400329B6001271562119 /* RecastRegion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 67370E3B2F30001271562119 /* RecastRegion.cpp */; };
-		690F19551FA3001271562119 /* RecastTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 631A406B4633001271562119 /* RecastTimer.cpp */; };
+		6E537A857E36001271674281 /* Recast.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0A1565746C6F001271674281 /* Recast.cpp */; };
+		1B2512A40F37001271674281 /* RecastArea.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C1D539218CD001271674281 /* RecastArea.cpp */; };
+		23C06EF0117B001271674281 /* RecastContour.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 730D3585118F001271674281 /* RecastContour.cpp */; };
+		5B293AA63DC4001271674281 /* RecastFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 29A775767778001271674281 /* RecastFilter.cpp */; };
+		01EF3C0621DE001271674281 /* RecastLog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2E6841E367B5001271674281 /* RecastLog.cpp */; };
+		6818347001D8001271674281 /* RecastMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7BA8461C0753001271674281 /* RecastMesh.cpp */; };
+		7F1C1BB2680F001271674281 /* RecastMeshDetail.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 664E008D556A001271674281 /* RecastMeshDetail.cpp */; };
+		1FE332800C86001271674281 /* RecastRasterization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E540EBF1D95001271674281 /* RecastRasterization.cpp */; };
+		28D637503CA3001271674281 /* RecastRegion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 315E5C2701FC001271674281 /* RecastRegion.cpp */; };
+		4E5067A83A8D001271674281 /* RecastTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 669B65B97E86001271674281 /* RecastTimer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7968782A3A91001271562119 /* Recast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Recast.h"; path = "Recast.h"; sourceTree = "<group>"; };
-		0F7E44D14EA0001271562119 /* RecastLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastLog.h"; path = "RecastLog.h"; sourceTree = "<group>"; };
-		21F7259B5881001271562119 /* RecastTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastTimer.h"; path = "RecastTimer.h"; sourceTree = "<group>"; };
-		7933144C6C61001271562119 /* Recast.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Recast.cpp"; path = "Recast.cpp"; sourceTree = "<group>"; };
-		014C756D78F2001271562119 /* RecastArea.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastArea.cpp"; path = "RecastArea.cpp"; sourceTree = "<group>"; };
-		2E1D571662A1001271562119 /* RecastContour.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastContour.cpp"; path = "RecastContour.cpp"; sourceTree = "<group>"; };
-		77356B071B88001271562119 /* RecastFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastFilter.cpp"; path = "RecastFilter.cpp"; sourceTree = "<group>"; };
-		00681C7D05F5001271562119 /* RecastLog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastLog.cpp"; path = "RecastLog.cpp"; sourceTree = "<group>"; };
-		502752A22CF4001271562119 /* RecastMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastMesh.cpp"; path = "RecastMesh.cpp"; sourceTree = "<group>"; };
-		33DD5CBB6B80001271562119 /* RecastMeshDetail.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastMeshDetail.cpp"; path = "RecastMeshDetail.cpp"; sourceTree = "<group>"; };
-		6136234A528A001271562119 /* RecastRasterization.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastRasterization.cpp"; path = "RecastRasterization.cpp"; sourceTree = "<group>"; };
-		67370E3B2F30001271562119 /* RecastRegion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastRegion.cpp"; path = "RecastRegion.cpp"; sourceTree = "<group>"; };
-		631A406B4633001271562119 /* RecastTimer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastTimer.cpp"; path = "RecastTimer.cpp"; sourceTree = "<group>"; };
-		6F2C1F5E65BC001271562119 /* libRecastD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libRecastD.a"; path = "libRecastD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		068565FC3181001271674281 /* Recast.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Recast.h"; path = "Recast.h"; sourceTree = "<group>"; };
+		4530464C533F001271674281 /* RecastLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastLog.h"; path = "RecastLog.h"; sourceTree = "<group>"; };
+		073C29F05387001271674281 /* RecastTimer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastTimer.h"; path = "RecastTimer.h"; sourceTree = "<group>"; };
+		0A1565746C6F001271674281 /* Recast.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "Recast.cpp"; path = "Recast.cpp"; sourceTree = "<group>"; };
+		4C1D539218CD001271674281 /* RecastArea.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastArea.cpp"; path = "RecastArea.cpp"; sourceTree = "<group>"; };
+		730D3585118F001271674281 /* RecastContour.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastContour.cpp"; path = "RecastContour.cpp"; sourceTree = "<group>"; };
+		29A775767778001271674281 /* RecastFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastFilter.cpp"; path = "RecastFilter.cpp"; sourceTree = "<group>"; };
+		2E6841E367B5001271674281 /* RecastLog.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastLog.cpp"; path = "RecastLog.cpp"; sourceTree = "<group>"; };
+		7BA8461C0753001271674281 /* RecastMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastMesh.cpp"; path = "RecastMesh.cpp"; sourceTree = "<group>"; };
+		664E008D556A001271674281 /* RecastMeshDetail.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastMeshDetail.cpp"; path = "RecastMeshDetail.cpp"; sourceTree = "<group>"; };
+		0E540EBF1D95001271674281 /* RecastRasterization.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastRasterization.cpp"; path = "RecastRasterization.cpp"; sourceTree = "<group>"; };
+		315E5C2701FC001271674281 /* RecastRegion.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastRegion.cpp"; path = "RecastRegion.cpp"; sourceTree = "<group>"; };
+		669B65B97E86001271674281 /* RecastTimer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastTimer.cpp"; path = "RecastTimer.cpp"; sourceTree = "<group>"; };
+		728314D45EEE001271674281 /* libRecastD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libRecastD.a"; path = "libRecastD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0BB467E942E8001271562119 /* Frameworks */ = {
+		36D53F296019001271674281 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -47,58 +47,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A863B7415AB001271562119 /* Recast */ = {
+		3F11766A57E7001271674281 /* Recast */ = {
 			isa = PBXGroup;
 			children = (
-				47232E3A459D001271562119 /* Recast */,
-				01B7697C7245001271562119 /* Products */,
+				22E1025730B2001271674281 /* Recast */,
+				702F635100A9001271674281 /* Products */,
 			);
 			name = Recast;
 			sourceTree = "<group>";
 		};
-		47232E3A459D001271562119 /* Recast */ = {
+		22E1025730B2001271674281 /* Recast */ = {
 			isa = PBXGroup;
 			children = (
-				1A8840BC037A001271562119 /* Include */,
-				3CF212B2773D001271562119 /* Source */,
+				396A7FEC05E7001271674281 /* Include */,
+				7A233A2879B8001271674281 /* Source */,
 			);
 			name = Recast;
 			path = ../../Recast;
 			sourceTree = "<group>";
 		};
-		1A8840BC037A001271562119 /* Include */ = {
+		396A7FEC05E7001271674281 /* Include */ = {
 			isa = PBXGroup;
 			children = (
-				7968782A3A91001271562119 /* Recast.h */,
-				0F7E44D14EA0001271562119 /* RecastLog.h */,
-				21F7259B5881001271562119 /* RecastTimer.h */,
+				068565FC3181001271674281 /* Recast.h */,
+				4530464C533F001271674281 /* RecastLog.h */,
+				073C29F05387001271674281 /* RecastTimer.h */,
 			);
 			name = Include;
 			path = Include;
 			sourceTree = "<group>";
 		};
-		3CF212B2773D001271562119 /* Source */ = {
+		7A233A2879B8001271674281 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				7933144C6C61001271562119 /* Recast.cpp */,
-				014C756D78F2001271562119 /* RecastArea.cpp */,
-				2E1D571662A1001271562119 /* RecastContour.cpp */,
-				77356B071B88001271562119 /* RecastFilter.cpp */,
-				00681C7D05F5001271562119 /* RecastLog.cpp */,
-				502752A22CF4001271562119 /* RecastMesh.cpp */,
-				33DD5CBB6B80001271562119 /* RecastMeshDetail.cpp */,
-				6136234A528A001271562119 /* RecastRasterization.cpp */,
-				67370E3B2F30001271562119 /* RecastRegion.cpp */,
-				631A406B4633001271562119 /* RecastTimer.cpp */,
+				0A1565746C6F001271674281 /* Recast.cpp */,
+				4C1D539218CD001271674281 /* RecastArea.cpp */,
+				730D3585118F001271674281 /* RecastContour.cpp */,
+				29A775767778001271674281 /* RecastFilter.cpp */,
+				2E6841E367B5001271674281 /* RecastLog.cpp */,
+				7BA8461C0753001271674281 /* RecastMesh.cpp */,
+				664E008D556A001271674281 /* RecastMeshDetail.cpp */,
+				0E540EBF1D95001271674281 /* RecastRasterization.cpp */,
+				315E5C2701FC001271674281 /* RecastRegion.cpp */,
+				669B65B97E86001271674281 /* RecastTimer.cpp */,
 			);
 			name = Source;
 			path = Source;
 			sourceTree = "<group>";
 		};
-		01B7697C7245001271562119 /* Products */ = {
+		702F635100A9001271674281 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6F2C1F5E65BC001271562119 /* libRecastD.a */,
+				728314D45EEE001271674281 /* libRecastD.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -106,13 +106,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		07A556BF5316001271562119 /* Recast */ = {
+		376D76B86AA7001271674281 /* Recast */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2EAB26054DB5001271562119 /* Build configuration list for PBXNativeTarget "Recast" */;
+			buildConfigurationList = 77824B6A3519001271674281 /* Build configuration list for PBXNativeTarget "Recast" */;
 			buildPhases = (
-				24BF59E32A70001271562119 /* Resources */,
-				104006B21F9E001271562119 /* Sources */,
-				0BB467E942E8001271562119 /* Frameworks */,
+				795A31B835A6001271674281 /* Resources */,
+				4EC530D45159001271674281 /* Sources */,
+				36D53F296019001271674281 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -120,7 +120,7 @@
 			);
 			name = Recast;
 			productName = Recast;
-			productReference = 6F2C1F5E65BC001271562119 /* libRecastD.a */;
+			productReference = 728314D45EEE001271674281 /* libRecastD.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -131,17 +131,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Recast" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
-			mainGroup = 1A863B7415AB001271562119 /* Recast */;
+			mainGroup = 3F11766A57E7001271674281 /* Recast */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				07A556BF5316001271562119 /* libRecastD.a */,
+				376D76B86AA7001271674281 /* libRecastD.a */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		24BF59E32A70001271562119 /* Resources */ = {
+		795A31B835A6001271674281 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -151,20 +151,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		104006B21F9E001271562119 /* Sources */ = {
+		4EC530D45159001271674281 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				08CC491F7754001271562119 /* Recast.cpp in Sources */,
-				18710FF33466001271562119 /* RecastArea.cpp in Sources */,
-				73BB719E235E001271562119 /* RecastContour.cpp in Sources */,
-				31C77A85605A001271562119 /* RecastFilter.cpp in Sources */,
-				58E9596F18A7001271562119 /* RecastLog.cpp in Sources */,
-				3C885B6F7613001271562119 /* RecastMesh.cpp in Sources */,
-				2CCF752D7B74001271562119 /* RecastMeshDetail.cpp in Sources */,
-				43D817054429001271562119 /* RecastRasterization.cpp in Sources */,
-				02BF400329B6001271562119 /* RecastRegion.cpp in Sources */,
-				690F19551FA3001271562119 /* RecastTimer.cpp in Sources */,
+				6E537A857E36001271674281 /* Recast.cpp in Sources */,
+				1B2512A40F37001271674281 /* RecastArea.cpp in Sources */,
+				23C06EF0117B001271674281 /* RecastContour.cpp in Sources */,
+				5B293AA63DC4001271674281 /* RecastFilter.cpp in Sources */,
+				01EF3C0621DE001271674281 /* RecastLog.cpp in Sources */,
+				6818347001D8001271674281 /* RecastMesh.cpp in Sources */,
+				7F1C1BB2680F001271674281 /* RecastMeshDetail.cpp in Sources */,
+				1FE332800C86001271674281 /* RecastRasterization.cpp in Sources */,
+				28D637503CA3001271674281 /* RecastRegion.cpp in Sources */,
+				4E5067A83A8D001271674281 /* RecastTimer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,7 +174,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		6D171EBB3C40001271562119 /* Debug */ = {
+		103826310FF2001271674281 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -186,7 +186,7 @@
 			};
 			name = "Debug";
 		};
-		34D30AF27880001271562119 /* Release */ = {
+		151011C65DC9001271674281 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -199,7 +199,7 @@
 			};
 			name = "Release";
 		};
-		019975240F99001271562119 /* Debug */ = {
+		2B4B72B6643E001271674281 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -228,7 +228,7 @@
 			};
 			name = "Debug";
 		};
-		2C4D019D1725001271562119 /* Release */ = {
+		590D1A974F08001271674281 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -258,11 +258,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2EAB26054DB5001271562119 /* Build configuration list for PBXNativeTarget "libRecastD.a" */ = {
+		77824B6A3519001271674281 /* Build configuration list for PBXNativeTarget "libRecastD.a" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6D171EBB3C40001271562119 /* Debug */,
-				34D30AF27880001271562119 /* Release */,
+				103826310FF2001271674281 /* Debug */,
+				151011C65DC9001271674281 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";
@@ -270,8 +270,8 @@
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Recast" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				019975240F99001271562119 /* Debug */,
-				2C4D019D1725001271562119 /* Release */,
+				2B4B72B6643E001271674281 /* Debug */,
+				590D1A974F08001271674281 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";

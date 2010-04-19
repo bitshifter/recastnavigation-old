@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="DebugUtils"
-	ProjectGUID="{344EE1F9-B9BA-18A5-E2C8-156AB45516C7}"
+	ProjectGUID="{4AC6B9F4-549D-6E97-D6AC-618ED1E798A4}"
 	RootNamespace="DebugUtils"
 	Keyword="Win32Proj"
 	>
