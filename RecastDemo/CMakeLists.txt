@@ -2,8 +2,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(recastdemo_SRCS 
 	Source/ChunkyTriMesh.cpp 
-    Source/ConvexVolumeTool.cpp
-    Source/Filelist.cpp
+	Source/ConvexVolumeTool.cpp
+	Source/Filelist.cpp
 	Source/imgui.cpp 
 	Source/imguiRenderGL.cpp 
 	Source/InputGeom.cpp 
@@ -16,13 +16,13 @@ SET(recastdemo_SRCS
 	Source/Sample_SoloMeshSimple.cpp 
 	Source/Sample_SoloMeshTiled.cpp 
 	Source/Sample_TileMesh.cpp
-    Source/SlideShow.cpp
+	Source/SlideShow.cpp
 	Source/TestCase.cpp)
 
 SET(recastdemo_HDRS
 	Include/ChunkyTriMesh.h
 	Include/ConvexVolumeTool.h
-    Include/Filelist.h
+	Include/Filelist.h
 	Include/imgui.h
 	Include/imguiRenderGL.h
 	Include/InputGeom.h
@@ -35,7 +35,7 @@ SET(recastdemo_HDRS
 	Include/Sample_SoloMeshTiled.h
 	Include/Sample_TileMesh.h
 	Include/SDLMain.h
-    Include/SlideShow.h
+	Include/SlideShow.h
 	Include/TestCase.h
 )
 
@@ -50,7 +50,12 @@ ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(Include Contrib ../DebugUtils/Include ../Detour/Include ../Recast/Include ${SDL_INCLUDE_DIR})
 
-ADD_EXECUTABLE(RecastDemo WIN32 ${recastdemo_SRCS} ${recastdemo_HDRS})
+IF(XCODE)
+	ADD_EXECUTABLE(RecastDemo MACOSX_BUNDLE Source/SDLMain.m Include/SDLMain.h ${recastdemo_SRCS} ${recastdemo_HDRS})
+ELSE(XCODE)
+	ADD_EXECUTABLE(RecastDemo WIN32 ${recastdemo_SRCS} ${recastdemo_HDRS})
+ENDIF(XCODE)
+
 TARGET_LINK_LIBRARIES(RecastDemo DebugUtils Detour Recast ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_LIBRARIES})
 
 IF(MSVC)

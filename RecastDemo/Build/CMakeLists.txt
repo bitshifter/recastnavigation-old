@@ -143,7 +143,12 @@ ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(../Include ../Contrib ../../DebugUtils/Include ../../Detour/Include ../../Recast/Include ${SDL_INCLUDE_DIR})
 
-ADD_EXECUTABLE(RecastDemo WIN32 ${debugutils_SRCS} ${detour_SRCS} ${recast_SRCS} ${recastdemo_SRCS})
+IF(XCODE)
+	ADD_EXECUTABLE(RecastDemo MACOSX_BUNDLE ../Source/SDLMain.m ../Include/SDLMain.h ${debugutils_SRCS} ${detour_SRCS} ${recast_SRCS} ${recastdemo_SRCS})
+ELSE(XCODE)
+	ADD_EXECUTABLE(RecastDemo WIN32 ${debugutils_SRCS} ${detour_SRCS} ${recast_SRCS} ${recastdemo_SRCS})
+ENDIF(XCODE)
+
 TARGET_LINK_LIBRARIES(RecastDemo ${SDL_LIBRARY} ${SDLMAIN_LIBRARY} ${OPENGL_LIBRARIES})
 
 IF(MSVC)
