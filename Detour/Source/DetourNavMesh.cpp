@@ -220,7 +220,7 @@ const dtNavMeshParams* dtNavMesh::getParams() const
 //////////////////////////////////////////////////////////////////////////////////////////
 int dtNavMesh::findConnectingPolys(const float* va, const float* vb,
 								   dtMeshTile* tile, int side,
-								   dtPolyRef* con, float* conarea, int maxcon)
+                                   dtPolyRef* con, float* conarea, int maxcon) const
 {
 	if (!tile) return 0;
 	
@@ -642,7 +642,7 @@ dtTileRef dtNavMesh::addTile(unsigned char* data, int dataSize, int flags, dtTil
 	return getTileRef(tile);
 }
 
-dtMeshTile* dtNavMesh::getTileAt(int x, int y)
+dtMeshTile* dtNavMesh::getTileAt(int x, int y) const
 {
 	// Find tile based on hash.
 	int h = computeTileHash(x,y,m_tileLutMask);
@@ -696,7 +696,7 @@ const dtMeshTile* dtNavMesh::getTileByPolyRef(dtPolyRef ref, int* polyIndex) con
 	return &m_tiles[it];
 }
 
-dtMeshTile* dtNavMesh::getNeighbourTileAt(int x, int y, int side)
+dtMeshTile* dtNavMesh::getNeighbourTileAt(int x, int y, int side) const
 {
 	switch (side)
 	{
@@ -1090,7 +1090,7 @@ float dtNavMesh::getAreaCost(const int area) const
 	return -1;
 }
 
-dtPolyRef dtNavMesh::findNearestPoly(const float* center, const float* extents, dtQueryFilter* filter, float* nearestPt)
+dtPolyRef dtNavMesh::findNearestPoly(const float* center, const float* extents, dtQueryFilter* filter, float* nearestPt) const
 {
 	// Get nearby polygons from proximity grid.
 	dtPolyRef polys[128];
@@ -1119,7 +1119,7 @@ dtPolyRef dtNavMesh::findNearestPoly(const float* center, const float* extents, 
 }
 
 dtPolyRef dtNavMesh::findNearestPolyInTile(dtMeshTile* tile, const float* center, const float* extents,
-										   dtQueryFilter* filter, float* nearestPt)
+                                           dtQueryFilter* filter, float* nearestPt) const
 {
 	float bmin[3], bmax[3];
 	dtVsub(bmin, center, extents);
@@ -1153,7 +1153,7 @@ dtPolyRef dtNavMesh::findNearestPolyInTile(dtMeshTile* tile, const float* center
 
 int dtNavMesh::queryPolygonsInTile(dtMeshTile* tile, const float* qmin, const float* qmax,
 								   dtQueryFilter* filter,
-								   dtPolyRef* polys, const int maxPolys)
+                                   dtPolyRef* polys, const int maxPolys) const
 {
 	if (tile->bvTree)
 	{
@@ -1240,7 +1240,7 @@ int dtNavMesh::queryPolygonsInTile(dtMeshTile* tile, const float* qmin, const fl
 }
 
 int dtNavMesh::queryPolygons(const float* center, const float* extents, dtQueryFilter* filter,
-							 dtPolyRef* polys, const int maxPolys)
+                             dtPolyRef* polys, const int maxPolys) const
 {
 	float bmin[3], bmax[3];
 	dtVsub(bmin, center, extents);
@@ -1468,7 +1468,7 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 int dtNavMesh::findStraightPath(const float* startPos, const float* endPos,
 								const dtPolyRef* path, const int pathSize,
 								float* straightPath, unsigned char* straightPathFlags, dtPolyRef* straightPathRefs,
-								const int maxStraightPathSize)
+                                const int maxStraightPathSize) const
 {
 	if (!maxStraightPathSize)
 		return 0;
@@ -1688,7 +1688,7 @@ int dtNavMesh::findStraightPath(const float* startPos, const float* endPos,
 // Moves towards end position a long the path corridor.
 // Returns: Index to the result path polygon.
 int dtNavMesh::moveAlongPathCorridor(const float* startPos, const float* endPos, float* resultPos,
-									 const dtPolyRef* path, const int pathSize)
+                                     const dtPolyRef* path, const int pathSize) const
 {
 	if (!pathSize)
 		return 0;
@@ -1967,7 +1967,7 @@ unsigned char dtNavMesh::getPolyArea(dtPolyRef ref) const
 }
 
 int dtNavMesh::raycast(dtPolyRef centerRef, const float* startPos, const float* endPos, dtQueryFilter* filter,
-					   float& t, float* hitNormal, dtPolyRef* path, const int pathSize)
+                       float& t, float* hitNormal, dtPolyRef* path, const int pathSize) const
 {
 	t = 0;
 	
@@ -2123,7 +2123,7 @@ int dtNavMesh::raycast(dtPolyRef centerRef, const float* startPos, const float* 
 
 int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, dtQueryFilter* filter,
 									dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
-									const int maxResult)
+                                    const int maxResult) const
 {
 	if (!centerRef) return 0;
 	if (!getPolyByRef(centerRef)) return 0;
