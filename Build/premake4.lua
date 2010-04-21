@@ -96,6 +96,7 @@ project "RecastDemo"
    -- mac includes and libs
    configuration { "macosx" }
      includedirs { "/Library/Frameworks/SDL.framework/Headers" }
+     buildoptions { "-Wreorder -Wsign-compare" }
      linkoptions { "-framework OpenGL", "-framework SDL", "-framework Cocoa" }
      files { "../RecastDemo/Include/SDLMain.h", "../RecastDemo/Source/SDLMain.m" }
 
