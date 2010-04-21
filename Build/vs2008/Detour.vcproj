@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="Detour"
-	ProjectGUID="{C54154DF-015B-A719-B347-002F09DA5616}"
+	ProjectGUID="{1B6BEA90-E74C-8CE7-91FF-20001E28380A}"
 	RootNamespace="Detour"
 	Keyword="Win32Proj"
 	>

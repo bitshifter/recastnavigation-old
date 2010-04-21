@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="Recast"
-	ProjectGUID="{0BDF8BB8-B33C-4029-719F-8EBDFB3D1518}"
+	ProjectGUID="{E8B610F0-C68F-4DDD-28DC-D585DB845455}"
 	RootNamespace="Recast"
 	Keyword="Win32Proj"
 	>

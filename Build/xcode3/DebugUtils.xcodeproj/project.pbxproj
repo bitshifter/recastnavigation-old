@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		520A4D7313F1001271674281 /* DebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6B4664793C4B001271674281 /* DebugDraw.cpp */; };
-		6472742E4EE7001271674281 /* DetourDebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 73D91863592C001271674281 /* DetourDebugDraw.cpp */; };
-		1AF045C156D3001271674281 /* RecastDebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 35472D803726001271674281 /* RecastDebugDraw.cpp */; };
-		202A5EF73EB8001271674281 /* RecastDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 775048A91BA7001271674281 /* RecastDump.cpp */; };
+		3EFA11BA6C51001271834725 /* DebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5D475BDE0D46001271834725 /* DebugDraw.cpp */; };
+		0AE655BF582F001271834725 /* DetourDebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0472280F4A3C001271834725 /* DetourDebugDraw.cpp */; };
+		447144DC5601001271834725 /* RecastDebugDraw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BDB3EA44CB6001271834725 /* RecastDebugDraw.cpp */; };
+		2B95713D5F28001271834725 /* RecastDump.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 30095A511BDC001271834725 /* RecastDump.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		18401FAC5C60001271674281 /* DebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DebugDraw.h"; path = "DebugDraw.h"; sourceTree = "<group>"; };
-		02E844D328D9001271674281 /* DetourDebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourDebugDraw.h"; path = "DetourDebugDraw.h"; sourceTree = "<group>"; };
-		164D23102516001271674281 /* RecastDebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastDebugDraw.h"; path = "RecastDebugDraw.h"; sourceTree = "<group>"; };
-		00460C571AF1001271674281 /* RecastDump.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastDump.h"; path = "RecastDump.h"; sourceTree = "<group>"; };
-		6B4664793C4B001271674281 /* DebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DebugDraw.cpp"; path = "DebugDraw.cpp"; sourceTree = "<group>"; };
-		73D91863592C001271674281 /* DetourDebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourDebugDraw.cpp"; path = "DetourDebugDraw.cpp"; sourceTree = "<group>"; };
-		35472D803726001271674281 /* RecastDebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastDebugDraw.cpp"; path = "RecastDebugDraw.cpp"; sourceTree = "<group>"; };
-		775048A91BA7001271674281 /* RecastDump.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastDump.cpp"; path = "RecastDump.cpp"; sourceTree = "<group>"; };
-		0095482D276F001271674281 /* libDebugUtilsD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDebugUtilsD.a"; path = "libDebugUtilsD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0637094B6B98001271834725 /* DebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DebugDraw.h"; path = "DebugDraw.h"; sourceTree = "<group>"; };
+		157545DA7B8C001271834725 /* DetourDebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourDebugDraw.h"; path = "DetourDebugDraw.h"; sourceTree = "<group>"; };
+		16EC434C0A80001271834725 /* RecastDebugDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastDebugDraw.h"; path = "RecastDebugDraw.h"; sourceTree = "<group>"; };
+		13C233B03A86001271834725 /* RecastDump.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "RecastDump.h"; path = "RecastDump.h"; sourceTree = "<group>"; };
+		5D475BDE0D46001271834725 /* DebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DebugDraw.cpp"; path = "DebugDraw.cpp"; sourceTree = "<group>"; };
+		0472280F4A3C001271834725 /* DetourDebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourDebugDraw.cpp"; path = "DetourDebugDraw.cpp"; sourceTree = "<group>"; };
+		1BDB3EA44CB6001271834725 /* RecastDebugDraw.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastDebugDraw.cpp"; path = "RecastDebugDraw.cpp"; sourceTree = "<group>"; };
+		30095A511BDC001271834725 /* RecastDump.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "RecastDump.cpp"; path = "RecastDump.cpp"; sourceTree = "<group>"; };
+		70444A876CB5001271834725 /* libDebugUtilsD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDebugUtilsD.a"; path = "libDebugUtilsD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		5BC25D19384D001271674281 /* Frameworks */ = {
+		15F96BCF3B39001271834725 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -36,53 +36,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		4AEF453B7099001271674281 /* DebugUtils */ = {
+		16545DEA0673001271834725 /* DebugUtils */ = {
 			isa = PBXGroup;
 			children = (
-				5BCB75BB50D4001271674281 /* DebugUtils */,
-				45405F3D4B0F001271674281 /* Products */,
+				2DB00DF310F4001271834725 /* DebugUtils */,
+				361604FF12D9001271834725 /* Products */,
 			);
 			name = DebugUtils;
 			sourceTree = "<group>";
 		};
-		5BCB75BB50D4001271674281 /* DebugUtils */ = {
+		2DB00DF310F4001271834725 /* DebugUtils */ = {
 			isa = PBXGroup;
 			children = (
-				3951683E65A8001271674281 /* Include */,
-				4CB122ED2B53001271674281 /* Source */,
+				68E474872896001271834725 /* Include */,
+				461B12B72BC4001271834725 /* Source */,
 			);
 			name = DebugUtils;
 			path = ../../DebugUtils;
 			sourceTree = "<group>";
 		};
-		3951683E65A8001271674281 /* Include */ = {
+		68E474872896001271834725 /* Include */ = {
 			isa = PBXGroup;
 			children = (
-				18401FAC5C60001271674281 /* DebugDraw.h */,
-				02E844D328D9001271674281 /* DetourDebugDraw.h */,
-				164D23102516001271674281 /* RecastDebugDraw.h */,
-				00460C571AF1001271674281 /* RecastDump.h */,
+				0637094B6B98001271834725 /* DebugDraw.h */,
+				157545DA7B8C001271834725 /* DetourDebugDraw.h */,
+				16EC434C0A80001271834725 /* RecastDebugDraw.h */,
+				13C233B03A86001271834725 /* RecastDump.h */,
 			);
 			name = Include;
 			path = Include;
 			sourceTree = "<group>";
 		};
-		4CB122ED2B53001271674281 /* Source */ = {
+		461B12B72BC4001271834725 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				6B4664793C4B001271674281 /* DebugDraw.cpp */,
-				73D91863592C001271674281 /* DetourDebugDraw.cpp */,
-				35472D803726001271674281 /* RecastDebugDraw.cpp */,
-				775048A91BA7001271674281 /* RecastDump.cpp */,
+				5D475BDE0D46001271834725 /* DebugDraw.cpp */,
+				0472280F4A3C001271834725 /* DetourDebugDraw.cpp */,
+				1BDB3EA44CB6001271834725 /* RecastDebugDraw.cpp */,
+				30095A511BDC001271834725 /* RecastDump.cpp */,
 			);
 			name = Source;
 			path = Source;
 			sourceTree = "<group>";
 		};
-		45405F3D4B0F001271674281 /* Products */ = {
+		361604FF12D9001271834725 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0095482D276F001271674281 /* libDebugUtilsD.a */,
+				70444A876CB5001271834725 /* libDebugUtilsD.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,13 +90,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		46AE3B0B61F4001271674281 /* DebugUtils */ = {
+		7D8863C46077001271834725 /* DebugUtils */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 60312BEF6DFD001271674281 /* Build configuration list for PBXNativeTarget "DebugUtils" */;
+			buildConfigurationList = 709C4B1B2591001271834725 /* Build configuration list for PBXNativeTarget "DebugUtils" */;
 			buildPhases = (
-				0B8517355276001271674281 /* Resources */,
-				47D069401FEA001271674281 /* Sources */,
-				5BC25D19384D001271674281 /* Frameworks */,
+				1C612862016F001271834725 /* Resources */,
+				29A7675C1329001271834725 /* Sources */,
+				15F96BCF3B39001271834725 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -104,7 +104,7 @@
 			);
 			name = DebugUtils;
 			productName = DebugUtils;
-			productReference = 0095482D276F001271674281 /* libDebugUtilsD.a */;
+			productReference = 70444A876CB5001271834725 /* libDebugUtilsD.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -115,17 +115,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DebugUtils" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
-			mainGroup = 4AEF453B7099001271674281 /* DebugUtils */;
+			mainGroup = 16545DEA0673001271834725 /* DebugUtils */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				46AE3B0B61F4001271674281 /* libDebugUtilsD.a */,
+				7D8863C46077001271834725 /* libDebugUtilsD.a */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		0B8517355276001271674281 /* Resources */ = {
+		1C612862016F001271834725 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,14 +135,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		47D069401FEA001271674281 /* Sources */ = {
+		29A7675C1329001271834725 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				520A4D7313F1001271674281 /* DebugDraw.cpp in Sources */,
-				6472742E4EE7001271674281 /* DetourDebugDraw.cpp in Sources */,
-				1AF045C156D3001271674281 /* RecastDebugDraw.cpp in Sources */,
-				202A5EF73EB8001271674281 /* RecastDump.cpp in Sources */,
+				3EFA11BA6C51001271834725 /* DebugDraw.cpp in Sources */,
+				0AE655BF582F001271834725 /* DetourDebugDraw.cpp in Sources */,
+				447144DC5601001271834725 /* RecastDebugDraw.cpp in Sources */,
+				2B95713D5F28001271834725 /* RecastDump.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +152,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		694675DB4C6A001271674281 /* Debug */ = {
+		706330063259001271834725 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,7 +164,7 @@
 			};
 			name = "Debug";
 		};
-		418B10F766C3001271674281 /* Release */ = {
+		4926618261B3001271834725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -177,7 +177,7 @@
 			};
 			name = "Release";
 		};
-		169610621E95001271674281 /* Debug */ = {
+		5F07713D172B001271834725 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -208,7 +208,7 @@
 			};
 			name = "Debug";
 		};
-		68FA57A521CF001271674281 /* Release */ = {
+		35DC5F0A4578001271834725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -240,11 +240,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		60312BEF6DFD001271674281 /* Build configuration list for PBXNativeTarget "libDebugUtilsD.a" */ = {
+		709C4B1B2591001271834725 /* Build configuration list for PBXNativeTarget "libDebugUtilsD.a" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				694675DB4C6A001271674281 /* Debug */,
-				418B10F766C3001271674281 /* Release */,
+				706330063259001271834725 /* Debug */,
+				4926618261B3001271834725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";
@@ -252,8 +252,8 @@
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DebugUtils" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				169610621E95001271674281 /* Debug */,
-				68FA57A521CF001271674281 /* Release */,
+				5F07713D172B001271834725 /* Debug */,
+				35DC5F0A4578001271834725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";

@@ -7,26 +7,26 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		762303610354001271674281 /* DetourCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5665718F7A3F001271674281 /* DetourCommon.cpp */; };
-		25E91D0B1B13001271674281 /* DetourNavMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5E8A30DA2C93001271674281 /* DetourNavMesh.cpp */; };
-		1F10798A43FC001271674281 /* DetourNavMeshBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4C85544C69C5001271674281 /* DetourNavMeshBuilder.cpp */; };
-		5BD208DE63CF001271674281 /* DetourNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 08D1713F6604001271674281 /* DetourNode.cpp */; };
+		53702E2C1309001271834725 /* DetourCommon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3EF6530D0BFD001271834725 /* DetourCommon.cpp */; };
+		22457B492E64001271834725 /* DetourNavMesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 423C252645AB001271834725 /* DetourNavMesh.cpp */; };
+		377372D37D6E001271834725 /* DetourNavMeshBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 074E644507B8001271834725 /* DetourNavMeshBuilder.cpp */; };
+		4FDE25F65224001271834725 /* DetourNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FFA02D01CCC001271834725 /* DetourNode.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		253E5A3769C0001271674281 /* DetourCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourCommon.h"; path = "DetourCommon.h"; sourceTree = "<group>"; };
-		77B422085301001271674281 /* DetourNavMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNavMesh.h"; path = "DetourNavMesh.h"; sourceTree = "<group>"; };
-		179F7DCA301A001271674281 /* DetourNavMeshBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNavMeshBuilder.h"; path = "DetourNavMeshBuilder.h"; sourceTree = "<group>"; };
-		4FEC32BA71A7001271674281 /* DetourNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNode.h"; path = "DetourNode.h"; sourceTree = "<group>"; };
-		5665718F7A3F001271674281 /* DetourCommon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourCommon.cpp"; path = "DetourCommon.cpp"; sourceTree = "<group>"; };
-		5E8A30DA2C93001271674281 /* DetourNavMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNavMesh.cpp"; path = "DetourNavMesh.cpp"; sourceTree = "<group>"; };
-		4C85544C69C5001271674281 /* DetourNavMeshBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNavMeshBuilder.cpp"; path = "DetourNavMeshBuilder.cpp"; sourceTree = "<group>"; };
-		08D1713F6604001271674281 /* DetourNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNode.cpp"; path = "DetourNode.cpp"; sourceTree = "<group>"; };
-		6D954ECA10DB001271674281 /* libDetourD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDetourD.a"; path = "libDetourD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0E8D75B65886001271834725 /* DetourCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourCommon.h"; path = "DetourCommon.h"; sourceTree = "<group>"; };
+		0FFC1F5D3FE3001271834725 /* DetourNavMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNavMesh.h"; path = "DetourNavMesh.h"; sourceTree = "<group>"; };
+		232635572BB3001271834725 /* DetourNavMeshBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNavMeshBuilder.h"; path = "DetourNavMeshBuilder.h"; sourceTree = "<group>"; };
+		5E5F158C2269001271834725 /* DetourNode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourNode.h"; path = "DetourNode.h"; sourceTree = "<group>"; };
+		3EF6530D0BFD001271834725 /* DetourCommon.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourCommon.cpp"; path = "DetourCommon.cpp"; sourceTree = "<group>"; };
+		423C252645AB001271834725 /* DetourNavMesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNavMesh.cpp"; path = "DetourNavMesh.cpp"; sourceTree = "<group>"; };
+		074E644507B8001271834725 /* DetourNavMeshBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNavMeshBuilder.cpp"; path = "DetourNavMeshBuilder.cpp"; sourceTree = "<group>"; };
+		0FFA02D01CCC001271834725 /* DetourNode.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourNode.cpp"; path = "DetourNode.cpp"; sourceTree = "<group>"; };
+		7EE040FB175C001271834725 /* libDetourD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDetourD.a"; path = "libDetourD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		63A4004872E6001271674281 /* Frameworks */ = {
+		71FD48535C02001271834725 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -36,53 +36,53 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2D78293F475E001271674281 /* Detour */ = {
+		76FA32A26009001271834725 /* Detour */ = {
 			isa = PBXGroup;
 			children = (
-				6C316E7F269C001271674281 /* Detour */,
-				0BED58CB1689001271674281 /* Products */,
+				562368B86509001271834725 /* Detour */,
+				7B91045667B0001271834725 /* Products */,
 			);
 			name = Detour;
 			sourceTree = "<group>";
 		};
-		6C316E7F269C001271674281 /* Detour */ = {
+		562368B86509001271834725 /* Detour */ = {
 			isa = PBXGroup;
 			children = (
-				37404EB1528B001271674281 /* Include */,
-				7C683691687B001271674281 /* Source */,
+				68FC59543024001271834725 /* Include */,
+				6F584DF134FA001271834725 /* Source */,
 			);
 			name = Detour;
 			path = ../../Detour;
 			sourceTree = "<group>";
 		};
-		37404EB1528B001271674281 /* Include */ = {
+		68FC59543024001271834725 /* Include */ = {
 			isa = PBXGroup;
 			children = (
-				253E5A3769C0001271674281 /* DetourCommon.h */,
-				77B422085301001271674281 /* DetourNavMesh.h */,
-				179F7DCA301A001271674281 /* DetourNavMeshBuilder.h */,
-				4FEC32BA71A7001271674281 /* DetourNode.h */,
+				0E8D75B65886001271834725 /* DetourCommon.h */,
+				0FFC1F5D3FE3001271834725 /* DetourNavMesh.h */,
+				232635572BB3001271834725 /* DetourNavMeshBuilder.h */,
+				5E5F158C2269001271834725 /* DetourNode.h */,
 			);
 			name = Include;
 			path = Include;
 			sourceTree = "<group>";
 		};
-		7C683691687B001271674281 /* Source */ = {
+		6F584DF134FA001271834725 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				5665718F7A3F001271674281 /* DetourCommon.cpp */,
-				5E8A30DA2C93001271674281 /* DetourNavMesh.cpp */,
-				4C85544C69C5001271674281 /* DetourNavMeshBuilder.cpp */,
-				08D1713F6604001271674281 /* DetourNode.cpp */,
+				3EF6530D0BFD001271834725 /* DetourCommon.cpp */,
+				423C252645AB001271834725 /* DetourNavMesh.cpp */,
+				074E644507B8001271834725 /* DetourNavMeshBuilder.cpp */,
+				0FFA02D01CCC001271834725 /* DetourNode.cpp */,
 			);
 			name = Source;
 			path = Source;
 			sourceTree = "<group>";
 		};
-		0BED58CB1689001271674281 /* Products */ = {
+		7B91045667B0001271834725 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6D954ECA10DB001271674281 /* libDetourD.a */,
+				7EE040FB175C001271834725 /* libDetourD.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,13 +90,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		307F603B5D86001271674281 /* Detour */ = {
+		30090A803B34001271834725 /* Detour */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7D9455344D1A001271674281 /* Build configuration list for PBXNativeTarget "Detour" */;
+			buildConfigurationList = 1DFB73AF35A2001271834725 /* Build configuration list for PBXNativeTarget "Detour" */;
 			buildPhases = (
-				66102B9A3EAA001271674281 /* Resources */,
-				604F21BD420C001271674281 /* Sources */,
-				63A4004872E6001271674281 /* Frameworks */,
+				52F632A608B0001271834725 /* Resources */,
+				5EF3061736DC001271834725 /* Sources */,
+				71FD48535C02001271834725 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -104,7 +104,7 @@
 			);
 			name = Detour;
 			productName = Detour;
-			productReference = 6D954ECA10DB001271674281 /* libDetourD.a */;
+			productReference = 7EE040FB175C001271834725 /* libDetourD.a */;
 			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
@@ -115,17 +115,17 @@
 			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Detour" */;
 			compatibilityVersion = "Xcode 3.1";
 			hasScannedForEncodings = 1;
-			mainGroup = 2D78293F475E001271674281 /* Detour */;
+			mainGroup = 76FA32A26009001271834725 /* Detour */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				307F603B5D86001271674281 /* libDetourD.a */,
+				30090A803B34001271834725 /* libDetourD.a */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		66102B9A3EAA001271674281 /* Resources */ = {
+		52F632A608B0001271834725 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,14 +135,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		604F21BD420C001271674281 /* Sources */ = {
+		5EF3061736DC001271834725 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				762303610354001271674281 /* DetourCommon.cpp in Sources */,
-				25E91D0B1B13001271674281 /* DetourNavMesh.cpp in Sources */,
-				1F10798A43FC001271674281 /* DetourNavMeshBuilder.cpp in Sources */,
-				5BD208DE63CF001271674281 /* DetourNode.cpp in Sources */,
+				53702E2C1309001271834725 /* DetourCommon.cpp in Sources */,
+				22457B492E64001271834725 /* DetourNavMesh.cpp in Sources */,
+				377372D37D6E001271834725 /* DetourNavMeshBuilder.cpp in Sources */,
+				4FDE25F65224001271834725 /* DetourNode.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,7 +152,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		34EF418C2C7C001271674281 /* Debug */ = {
+		603576B610F9001271834725 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -164,7 +164,7 @@
 			};
 			name = "Debug";
 		};
-		3AFE11C41FBD001271674281 /* Release */ = {
+		051C57021479001271834725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -177,7 +177,7 @@
 			};
 			name = "Release";
 		};
-		03D776D359FC001271674281 /* Debug */ = {
+		386512914F9D001271834725 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -206,7 +206,7 @@
 			};
 			name = "Debug";
 		};
-		11D109146867001271674281 /* Release */ = {
+		5B1E070C6ECB001271834725 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
@@ -236,11 +236,11 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7D9455344D1A001271674281 /* Build configuration list for PBXNativeTarget "libDetourD.a" */ = {
+		1DFB73AF35A2001271834725 /* Build configuration list for PBXNativeTarget "libDetourD.a" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				34EF418C2C7C001271674281 /* Debug */,
-				3AFE11C41FBD001271674281 /* Release */,
+				603576B610F9001271834725 /* Debug */,
+				051C57021479001271834725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";
@@ -248,8 +248,8 @@
 		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "Detour" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				03D776D359FC001271674281 /* Debug */,
-				11D109146867001271674281 /* Release */,
+				386512914F9D001271834725 /* Debug */,
+				5B1E070C6ECB001271834725 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug";
