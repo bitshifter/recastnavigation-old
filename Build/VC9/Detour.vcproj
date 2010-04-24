@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="DebugUtils"
-	ProjectGUID="{293844C1-4F21-F760-B241-E43F928C2767}"
-	RootNamespace="DebugUtils"
+	Name="Detour"
+	ProjectGUID="{A2682ADA-EB32-8901-35BF-702487FE0E7C}"
+	RootNamespace="Detour"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Debug\DebugUtils"
+			IntermediateDirectory="obj\Debug\Detour"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\Detour\Include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -50,7 +50,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\DebugUtilsD.pdb"
+				ProgramDataBaseFileName="$(OutDir)\DetourD.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -59,14 +59,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\Detour\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\DebugUtilsD.lib"
+				OutputFile="$(OutDir)\DetourD.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -96,7 +96,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Release\DebugUtils"
+			IntermediateDirectory="obj\Release\Detour"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\Detour\Include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				StringPooling="true"
@@ -127,7 +127,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\DebugUtils.pdb"
+				ProgramDataBaseFileName="$(OutDir)\Detour.pdb"
 				DebugInformationFormat="0"
 			/>
 			<Tool
@@ -136,14 +136,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\Detour\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\DebugUtils.lib"
+				OutputFile="$(OutDir)\Detour.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,7 +175,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="DebugUtils"
+			Name="Detour"
 			Filter=""
 			>
 			<Filter
@@ -183,19 +183,19 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\DebugUtils\Include\RecastDump.h"
+					RelativePath="..\..\Detour\Include\DetourCommon.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Include\DetourDebugDraw.h"
+					RelativePath="..\..\Detour\Include\DetourNode.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Include\DebugDraw.h"
+					RelativePath="..\..\Detour\Include\DetourNavMeshBuilder.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Include\RecastDebugDraw.h"
+					RelativePath="..\..\Detour\Include\DetourNavMesh.h"
 					>
 				</File>
 			</Filter>
@@ -204,19 +204,19 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\DebugUtils\Source\DetourDebugDraw.cpp"
+					RelativePath="..\..\Detour\Source\DetourCommon.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Source\RecastDump.cpp"
+					RelativePath="..\..\Detour\Source\DetourNavMeshBuilder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Source\DebugDraw.cpp"
+					RelativePath="..\..\Detour\Source\DetourNavMesh.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Source\RecastDebugDraw.cpp"
+					RelativePath="..\..\Detour\Source\DetourNode.cpp"
 					>
 				</File>
 			</Filter>
