@@ -81,7 +81,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		03ED7F646343001272088373 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Icon.icns"; path = "../Icon.icns"; sourceTree = "<group>"; };
+		03ED7F646343001272088373 /* Icon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "Icon.icns"; path = "../Icon.icns"; sourceTree = "<group>"; };
 		7AC8779C569A001272088373 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info.plist"; path = "../Info.plist"; sourceTree = "<group>"; };
 		647B7B3D23B5001272088373 /* ChunkyTriMesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ChunkyTriMesh.h"; path = "ChunkyTriMesh.h"; sourceTree = "<group>"; };
 		351971BE7E46001272088373 /* ConvexVolumeTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "ConvexVolumeTool.h"; path = "ConvexVolumeTool.h"; sourceTree = "<group>"; };
