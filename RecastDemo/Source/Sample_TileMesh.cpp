@@ -146,8 +146,19 @@ public:
 		}
 	}
 	
-	virtual void handleRenderOverlay(double* /*proj*/, double* /*model*/, int* /*view*/)
+	virtual void handleRenderOverlay(double* proj, double* model, int* view)
 	{
+		GLdouble x, y, z;
+		if (m_hitPosSet && gluProject((GLdouble)m_hitPos[0], (GLdouble)m_hitPos[1], (GLdouble)m_hitPos[2],
+									  model, proj, view, &x, &y, &z))
+		{
+			int tx=0, ty=0;
+			m_sample->getTilePos(m_hitPos, tx, ty);
+			char text[32];
+			snprintf(text,32,"(%d,%d)", tx,ty);
+			imguiDrawText((int)x, (int)y-25, IMGUI_ALIGN_CENTER, text, imguiRGBA(0,0,0,220));
+		}
+		
 	}
 };
 
@@ -158,6 +169,7 @@ Sample_TileMesh::Sample_TileMesh() :
 	m_keepInterResults(false),
 	m_buildAll(true),
 	m_totalBuildTimeMs(0),
+	m_drawPortals(false),
 	m_triflags(0),
 	m_solid(0),
 	m_chf(0),
@@ -404,6 +416,11 @@ void Sample_TileMesh::handleDebugMode()
 {
 	if (m_navMesh)
 	{
+		if (imguiCheck("Draw Portals", m_drawPortals))
+			m_drawPortals = !m_drawPortals;
+
+		imguiSeparator();
+	
 		imguiValue("Navmesh ready.");
 		imguiValue("Use 'Create Tiles' tool to experiment.");
 		imguiValue("LMB: (Re)Create tiles.");
@@ -422,7 +439,7 @@ void Sample_TileMesh::handleRender()
 		return;
 	
 	DebugDrawGL dd;
-	
+
 	// Draw mesh
 	duDebugDrawTriMesh(&dd, m_geom->getMesh()->getVerts(), m_geom->getMesh()->getVertCount(),
 					   m_geom->getMesh()->getTris(), m_geom->getMesh()->getNormals(), m_geom->getMesh()->getTriCount(), 0);
@@ -447,7 +464,11 @@ void Sample_TileMesh::handleRender()
 	duDebugDrawBoxWire(&dd, m_tileBmin[0],m_tileBmin[1],m_tileBmin[2], m_tileBmax[0],m_tileBmax[1],m_tileBmax[2], m_tileCol, 2.0f);
 	
 	if (m_navMesh)
+	{
 		duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
+		if (m_drawPortals)
+			duDebugDrawNavMeshPortals(&dd, *m_navMesh);
+	}
 	
 	if (m_tool)
 		m_tool->handleRender();
@@ -567,6 +588,17 @@ void Sample_TileMesh::buildTile(const float* pos)
 	}
 }
 
+void Sample_TileMesh::getTilePos(const float* pos, int& tx, int& ty)
+{
+	if (!m_geom) return;
+	
+	const float* bmin = m_geom->getMeshBoundsMin();
+	
+	const float ts = m_tileSize*m_cellSize;
+	tx = (int)((pos[0] - bmin[0]) / ts);
+	ty = (int)((pos[2] - bmin[2]) / ts);
+}
+
 void Sample_TileMesh::removeTile(const float* pos)
 {
 	if (!m_geom) return;
@@ -614,6 +646,8 @@ void Sample_TileMesh::buildAllTiles()
 	{
 		for (int x = 0; x < tw; ++x)
 		{
+			printf("processing: %d,%d\n", x,y);
+			
 			m_tileBmin[0] = bmin[0] + x*tcs;
 			m_tileBmin[1] = bmin[1];
 			m_tileBmin[2] = bmin[2] + y*tcs;
