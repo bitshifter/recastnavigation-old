@@ -32,6 +32,7 @@ protected:
 	bool m_buildAll;
 	rcBuildTimes m_buildTimes; 
 	float m_totalBuildTimeMs;
+	bool m_drawPortals;
 	
 	unsigned char* m_triflags;
 	rcHeightfield* m_solid;
@@ -70,6 +71,8 @@ public:
 	virtual void handleRenderOverlay(double* proj, double* model, int* view);
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
+	
+	void getTilePos(const float* pos, int& tx, int& ty);
 	
 	void buildTile(const float* pos);
 	void removeTile(const float* pos);
