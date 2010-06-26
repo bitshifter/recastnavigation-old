@@ -19,6 +19,8 @@
 #ifndef DETOURNODE_H
 #define DETOURNODE_H
 
+#include "DetourAlloc.h"
+
 enum dtNodeFlags
 {
 	DT_NODE_OPEN = 0x01,

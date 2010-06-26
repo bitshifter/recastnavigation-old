@@ -21,6 +21,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "DetourNavMesh.h"
+#include "DetourAlloc.h"
 #include "DetourCommon.h"
 #include "DetourNavMeshBuilder.h"
 
@@ -172,7 +173,7 @@ static int createBVTree(const unsigned short* verts, const int /*nverts*/,
 						const int /*nnodes*/, dtBVNode* nodes)
 {
 	// Build tree
-	BVItem* items = new BVItem[npolys];
+	BVItem* items = reinterpret_cast<BVItem*>(dtAlloc(sizeof(BVItem)*npolys));
 	for (int i = 0; i < npolys; i++)
 	{
 		BVItem& it = items[i];
@@ -206,7 +207,7 @@ static int createBVTree(const unsigned short* verts, const int /*nverts*/,
 	int curNode = 0;
 	subdivide(items, npolys, 0, npolys, curNode, nodes);
 	
-	delete [] items;
+	dtFree(items);
 	
 	return curNode;
 }

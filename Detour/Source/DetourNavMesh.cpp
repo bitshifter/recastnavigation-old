@@ -20,9 +20,11 @@
 #include <float.h>
 #include <string.h>
 #include <stdio.h>
+#include <new>
 #include "DetourNavMesh.h"
 #include "DetourNode.h"
 #include "DetourCommon.h"
+#include "DetourAlloc.h"
 
 
 inline int opposite(int side) { return (side+4) & 0x7; }
@@ -179,15 +181,17 @@ dtNavMesh::~dtNavMesh()
 	{
 		if (m_tiles[i].flags & DT_TILE_FREE_DATA)
 		{
-			delete [] m_tiles[i].data;
+			dtFree(m_tiles[i].data);
 			m_tiles[i].data = 0;
 			m_tiles[i].dataSize = 0;
 		}
 	}
-	delete m_nodePool;
-	delete m_openList;
-	delete [] m_posLookup;
-	delete [] m_tiles;
+	m_nodePool->~dtNodePool();
+	m_openList->~dtNodeQueue();
+	dtFree(m_nodePool);
+	dtFree(m_openList);
+	dtFree(m_posLookup);
+	dtFree(m_tiles);
 }
 		
 bool dtNavMesh::init(const dtNavMeshParams* params)
@@ -203,10 +207,10 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 	if (!m_tileLutSize) m_tileLutSize = 1;
 	m_tileLutMask = m_tileLutSize-1;
 	
-	m_tiles = new dtMeshTile[m_maxTiles];
+	m_tiles = reinterpret_cast<dtMeshTile*>(dtAlloc(sizeof(dtMeshTile)*m_maxTiles));
 	if (!m_tiles)
 		return false;
-	m_posLookup = new dtMeshTile*[m_tileLutSize];
+	m_posLookup = reinterpret_cast<dtMeshTile**>(dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize));
 	if (!m_posLookup)
 		return false;
 	memset(m_tiles, 0, sizeof(dtMeshTile)*m_maxTiles);
@@ -220,14 +224,14 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 
 	if (!m_nodePool)
 	{
-		m_nodePool = new dtNodePool(params->maxNodes, dtNextPow2(params->maxNodes/4));
+		m_nodePool = new(dtAlloc(sizeof(dtNodePool))) dtNodePool(params->maxNodes, dtNextPow2(params->maxNodes/4));
 		if (!m_nodePool)
 			return false;
 	}
 	
 	if (!m_openList)
 	{
-		m_openList = new dtNodeQueue(params->maxNodes);
+		m_openList = new(dtAlloc(sizeof(dtNodePool))) dtNodeQueue(params->maxNodes);
 		if (!m_openList)
 			return false;
 	}
