@@ -207,10 +207,10 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 	if (!m_tileLutSize) m_tileLutSize = 1;
 	m_tileLutMask = m_tileLutSize-1;
 	
-	m_tiles = reinterpret_cast<dtMeshTile*>(dtAlloc(sizeof(dtMeshTile)*m_maxTiles));
+	m_tiles = static_cast<dtMeshTile*>(dtAlloc(sizeof(dtMeshTile)*m_maxTiles));
 	if (!m_tiles)
 		return false;
-	m_posLookup = reinterpret_cast<dtMeshTile**>(dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize));
+	m_posLookup = static_cast<dtMeshTile**>(dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize));
 	if (!m_posLookup)
 		return false;
 	memset(m_tiles, 0, sizeof(dtMeshTile)*m_maxTiles);

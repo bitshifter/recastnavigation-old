@@ -173,7 +173,7 @@ static int createBVTree(const unsigned short* verts, const int /*nverts*/,
 						const int /*nnodes*/, dtBVNode* nodes)
 {
 	// Build tree
-	BVItem* items = reinterpret_cast<BVItem*>(dtAlloc(sizeof(BVItem)*npolys));
+	BVItem* items = static_cast<BVItem*>(dtAlloc(sizeof(BVItem)*npolys));
 	for (int i = 0; i < npolys; i++)
 	{
 		BVItem& it = items[i];
@@ -258,7 +258,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	
 	// Classify off-mesh connection points. We store only the connections
 	// whose start point is inside the tile.
-	unsigned char* offMeshConClass = new unsigned char [params->offMeshConCount*2];
+	unsigned char* offMeshConClass = static_cast<unsigned char*>(dtAlloc(sizeof(unsigned char) * params->offMeshConCount*2));
 	if (!offMeshConClass)
 		return false;
 
@@ -347,10 +347,10 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 						 detailMeshesSize + detailVertsSize + detailTrisSize +
 						 bvTreeSize + offMeshConsSize;
 						 
-	unsigned char* data = new unsigned char[dataSize];
+	unsigned char* data = static_cast<unsigned char*>(dtAlloc(dataSize));
 	if (!data)
 	{
-		delete [] offMeshConClass;
+		dtFree(offMeshConClass);
 		return false;
 	}
 	memset(data, 0, dataSize);
@@ -529,7 +529,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 		}
 	}
 		
-	delete [] offMeshConClass;
+	dtFree(offMeshConClass);
 	
 	*outData = data;
 	*outDataSize = dataSize;
