@@ -31,6 +31,7 @@
 #include "RecastDebugDraw.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshBuilder.h"
+#include "DetourAlloc.h"
 #include "DetourDebugDraw.h"
 #include "NavMeshTesterTool.h"
 #include "OffMeshConnectionTool.h"
@@ -305,7 +306,7 @@ dtNavMesh* Sample_TileMesh::loadAll(const char* path)
 		if (!tileHeader.tileRef || !tileHeader.dataSize)
 			break;
 
-		unsigned char* data = new unsigned char[tileHeader.dataSize];
+		unsigned char* data = reinterpret_cast<unsigned char*>(dtAlloc(sizeof(unsigned char)*tileHeader.dataSize));
 		if (!data) break;
 		memset(data, 0, tileHeader.dataSize);
 		fread(data, tileHeader.dataSize, 1, fp);
