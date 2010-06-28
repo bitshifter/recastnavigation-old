@@ -207,10 +207,10 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 	if (!m_tileLutSize) m_tileLutSize = 1;
 	m_tileLutMask = m_tileLutSize-1;
 	
-	m_tiles = static_cast<dtMeshTile*>(dtAlloc(sizeof(dtMeshTile)*m_maxTiles));
+	m_tiles = static_cast<dtMeshTile*>(dtAlloc(sizeof(dtMeshTile)*m_maxTiles, DT_ALLOC_PERM));
 	if (!m_tiles)
 		return false;
-	m_posLookup = static_cast<dtMeshTile**>(dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize));
+	m_posLookup = static_cast<dtMeshTile**>(dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize, DT_ALLOC_PERM));
 	if (!m_posLookup)
 		return false;
 	memset(m_tiles, 0, sizeof(dtMeshTile)*m_maxTiles);
@@ -224,14 +224,14 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 
 	if (!m_nodePool)
 	{
-		m_nodePool = new(dtAlloc(sizeof(dtNodePool))) dtNodePool(params->maxNodes, dtNextPow2(params->maxNodes/4));
+		m_nodePool = new(dtAlloc(sizeof(dtNodePool), DT_ALLOC_PERM)) dtNodePool(params->maxNodes, dtNextPow2(params->maxNodes/4));
 		if (!m_nodePool)
 			return false;
 	}
 	
 	if (!m_openList)
 	{
-		m_openList = new(dtAlloc(sizeof(dtNodePool))) dtNodeQueue(params->maxNodes);
+		m_openList = new(dtAlloc(sizeof(dtNodePool), DT_ALLOC_PERM)) dtNodeQueue(params->maxNodes);
 		if (!m_openList)
 			return false;
 	}

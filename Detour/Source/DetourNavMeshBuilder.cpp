@@ -173,7 +173,7 @@ static int createBVTree(const unsigned short* verts, const int /*nverts*/,
 						const int /*nnodes*/, dtBVNode* nodes)
 {
 	// Build tree
-	BVItem* items = static_cast<BVItem*>(dtAlloc(sizeof(BVItem)*npolys));
+	BVItem* items = static_cast<BVItem*>(dtAlloc(sizeof(BVItem)*npolys, DT_ALLOC_TEMP));
 	for (int i = 0; i < npolys; i++)
 	{
 		BVItem& it = items[i];
@@ -258,7 +258,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 	
 	// Classify off-mesh connection points. We store only the connections
 	// whose start point is inside the tile.
-	unsigned char* offMeshConClass = static_cast<unsigned char*>(dtAlloc(sizeof(unsigned char) * params->offMeshConCount*2));
+	unsigned char* offMeshConClass = static_cast<unsigned char*>(dtAlloc(sizeof(unsigned char) * params->offMeshConCount*2, DT_ALLOC_TEMP));
 	if (!offMeshConClass)
 		return false;
 
@@ -347,7 +347,7 @@ bool dtCreateNavMeshData(dtNavMeshCreateParams* params, unsigned char** outData,
 						 detailMeshesSize + detailVertsSize + detailTrisSize +
 						 bvTreeSize + offMeshConsSize;
 						 
-	unsigned char* data = static_cast<unsigned char*>(dtAlloc(dataSize));
+	unsigned char* data = static_cast<unsigned char*>(dtAlloc(dataSize, DT_ALLOC_PERM));
 	if (!data)
 	{
 		dtFree(offMeshConClass);

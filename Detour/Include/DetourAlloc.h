@@ -5,10 +5,12 @@
 
 // Memory allocator overrides, taken from Bullet's implementation but without alignement
 
-void* dtAlloc(size_t size);
+enum dtAllocHint { DT_ALLOC_PERM, DT_ALLOC_TEMP };
+
+void* dtAlloc(size_t size, dtAllocHint hint);
 void  dtFree(void* ptr);
 
-typedef void* (dtAllocFunc)(size_t size);
+typedef void* (dtAllocFunc)(size_t size, dtAllocHint hint);
 typedef void  (dtFreeFunc)(void *memblock);
 
 // The developer can let all Detour memory allocations go through a custom memory allocator, using dtAllocSetCustom

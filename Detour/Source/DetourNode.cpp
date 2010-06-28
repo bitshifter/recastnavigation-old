@@ -33,9 +33,9 @@ dtNodePool::dtNodePool(int maxNodes, int hashSize) :
 	m_hashSize(hashSize),
 	m_nodeCount(0)
 {
-	m_nodes = static_cast<dtNode*>(dtAlloc(sizeof(dtNode)*m_maxNodes));
-	m_next = static_cast<unsigned short*>(dtAlloc(sizeof(unsigned short)*m_maxNodes));
-	m_first = static_cast<unsigned short*>(dtAlloc(sizeof(unsigned short)*hashSize));
+	m_nodes = static_cast<dtNode*>(dtAlloc(sizeof(dtNode)*m_maxNodes, DT_ALLOC_PERM));
+	m_next = static_cast<unsigned short*>(dtAlloc(sizeof(unsigned short)*m_maxNodes, DT_ALLOC_PERM));
+	m_first = static_cast<unsigned short*>(dtAlloc(sizeof(unsigned short)*hashSize, DT_ALLOC_PERM));
 	memset(m_first, 0xff, sizeof(unsigned short)*m_hashSize);
 	memset(m_next, 0xff, sizeof(unsigned short)*m_maxNodes);
 }
@@ -105,7 +105,7 @@ dtNodeQueue::dtNodeQueue(int n) :
 	m_capacity(n),
 	m_size(0)
 {
-	m_heap = static_cast<dtNode**>(dtAlloc(sizeof(dtNode*)*m_capacity+1));
+	m_heap = static_cast<dtNode**>(dtAlloc(sizeof(dtNode*)*m_capacity+1, DT_ALLOC_PERM));
 }
 
 dtNodeQueue::~dtNodeQueue()
