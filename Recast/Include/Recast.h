@@ -102,13 +102,12 @@ struct rcCompactHeightfield
 {
 	inline rcCompactHeightfield() :
 		maxDistance(0), maxRegions(0), cells(0),
-		spans(0), dist(0), /*regs(0),*/ areas(0) {}
+		spans(0), dist(0), areas(0) {}
 	inline ~rcCompactHeightfield()
 	{
 		delete [] cells;
 		delete [] spans;
 		delete [] dist;
-//		delete [] regs;
 		delete [] areas;
 	}
 	int width, height;					// Width and height of the heighfield.
@@ -121,7 +120,6 @@ struct rcCompactHeightfield
 	rcCompactCell* cells;				// Pointer to width*height cells.
 	rcCompactSpan* spans;				// Pointer to spans.
 	unsigned short* dist;				// Pointer to per span distance to border.
-//	unsigned short* regs;				// Pointer to per span region ID.
 	unsigned char* areas;				// Pointer to per span area ID.
 };
 
@@ -305,13 +303,14 @@ template<class T> inline T rcMax(T a, T b) { return a > b ? a : b; }
 template<class T> inline T rcAbs(T a) { return a < 0 ? -a : a; }
 template<class T> inline T rcSqr(T a) { return a*a; }
 template<class T> inline T rcClamp(T v, T mn, T mx) { return v < mn ? mn : (v > mx ? mx : v); }
+float rcSqrt(float x);
 
 // Common vector helper functions.
 inline void rcVcross(float* dest, const float* v1, const float* v2)
 {
 	dest[0] = v1[1]*v2[2] - v1[2]*v2[1];
 	dest[1] = v1[2]*v2[0] - v1[0]*v2[2];
-	dest[2] = v1[0]*v2[1] - v1[1]*v2[0]; 
+	dest[2] = v1[0]*v2[1] - v1[1]*v2[0];
 }
 
 inline float rcVdot(const float* v1, const float* v2)
@@ -366,7 +365,7 @@ inline float rcVdist(const float* v1, const float* v2)
 	float dx = v2[0] - v1[0];
 	float dy = v2[1] - v1[1];
 	float dz = v2[2] - v1[2];
-	return sqrtf(dx*dx + dy*dy + dz*dz);
+	return rcSqrt(dx*dx + dy*dy + dz*dz);
 }
 
 inline float rcVdistSqr(const float* v1, const float* v2)
@@ -379,7 +378,7 @@ inline float rcVdistSqr(const float* v1, const float* v2)
 
 inline void rcVnormalize(float* v)
 {
-	float d = 1.0f / sqrtf(rcSqr(v[0]) + rcSqr(v[1]) + rcSqr(v[2]));
+	float d = 1.0f / rcSqrt(rcSqr(v[0]) + rcSqr(v[1]) + rcSqr(v[2]));
 	v[0] *= d;
 	v[1] *= d;
 	v[2] *= d;
@@ -521,10 +520,18 @@ void rcFilterLedgeSpans(const int walkableHeight,
 void rcFilterWalkableLowHeightSpans(int walkableHeight,
 									rcHeightfield& solid);
 
+// Returns number of spans contained in a heightfield.
+// Params:
+//  flags - (in) require flags for a cell to be included.
+//	hf - (in) heightfield to be compacted
+// Returns number of spans.
+int rcGetHeightFieldSpanCount(const unsigned char flags, rcHeightfield& hf);
+
 // Builds compact representation of the heightfield.
 // Params:
 //	walkableHeight - (in) minimum height where the agent can still walk
 //	walkableClimb - (in) maximum height between grid cells the agent can climb
+//  flags - (in) require flags for a cell to be included in the compact heightfield.
 //	hf - (in) heightfield to be compacted
 //	chf - (out) compact heightfield representing the open space.
 // Returns false if operation ran out of memory.
