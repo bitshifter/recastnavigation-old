@@ -11,6 +11,7 @@ SET(recastdemo_SRCS
 	Source/MeshLoaderObj.cpp 
 	Source/NavMeshTesterTool.cpp 
 	Source/OffMeshConnectionTool.cpp
+	Source/ParallelNavMeshTesterTool.cpp
 	Source/Sample.cpp 
 	Source/Sample_Debug.cpp
 	Source/Sample_SoloMeshSimple.cpp 
@@ -29,6 +30,7 @@ SET(recastdemo_HDRS
 	Include/MeshLoaderObj.h
 	Include/NavMeshTesterTool.h
 	Include/OffMeshConnectionTool.h
+	Include/ParallelNavMeshTesterTool.h
 	Include/Sample.h
 	Include/Sample_Debug.h
 	Include/Sample_SoloMeshSimple.h

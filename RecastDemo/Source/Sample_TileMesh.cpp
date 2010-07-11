@@ -33,6 +33,7 @@
 #include "DetourNavMeshBuilder.h"
 #include "DetourDebugDraw.h"
 #include "NavMeshTesterTool.h"
+#include "ParallelNavMeshTesterTool.h"
 #include "OffMeshConnectionTool.h"
 #include "ConvexVolumeTool.h"
 
@@ -390,6 +391,10 @@ void Sample_TileMesh::handleTools()
 {
 	int type = !m_tool ? TOOL_NONE : m_tool->type();
 
+	if (imguiCheck("Test Parallel Navmesh", type == TOOL_PARALLEL_TESTER))
+	{
+		setTool(new ParallelNavMeshTesterTool);
+	}
 	if (imguiCheck("Test Navmesh", type == TOOL_NAVMESH_TESTER))
 	{
 		setTool(new NavMeshTesterTool);

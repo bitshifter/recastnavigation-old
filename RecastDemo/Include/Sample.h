@@ -19,6 +19,7 @@
 #ifndef RECASTSAMPLE_H
 #define RECASTSAMPLE_H
 
+#include <cstdio>
 #include "DebugDraw.h"
 #include "RecastDump.h"
 #include "DetourNavMesh.h"
@@ -81,6 +82,7 @@ enum SampleToolType
 	TOOL_NAVMESH_TESTER,
 	TOOL_OFFMESH_CONNECTION,
 	TOOL_CONVEX_VOLUME,
+	TOOL_PARALLEL_TESTER
 };
 
 struct SampleTool
