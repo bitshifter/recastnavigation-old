@@ -58,6 +58,13 @@ class ParallelNavMeshTesterTool : public SampleTool
 		float m_steerPoints[MAX_STEER_POINTS*3];
 		int m_steerPointCount;
 
+		// these could be per worker thread instead of per agent
+		class dtNodePool* m_nodePool;
+		class dtNodeQueue* m_openList;
+
+		Agent();
+		~Agent();
+
 		void reset();
 		void render(const ToolMode toolMode, DebugDrawGL& dd, const dtNavMesh& navMesh, const float agentRadius, const float agentHeight, const float agentClimb) const;
 		void renderOverlay(double* proj, double* model, int* view, int agentId) const;
@@ -67,6 +74,8 @@ class ParallelNavMeshTesterTool : public SampleTool
 
 	Agent m_agents[MAX_AGENTS];
 	int m_nagents;
+
+	int m_nthreads;
 
 	void recalc();
 

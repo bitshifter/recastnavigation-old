@@ -1349,6 +1349,15 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 						const dtQueryFilter* filter,
 						dtPolyRef* path, const int maxPathSize) const
 {
+	return findPath(startRef, endRef, startPos, endPos, filter, path, maxPathSize, m_nodePool, m_openList);
+}
+
+int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
+			 const float* startPos, const float* endPos,
+			 const dtQueryFilter* filter,
+			 dtPolyRef* path, const int maxPathSize,
+			 dtNodePool* nodePool, dtNodeQueue* openList) const
+{
 	if (!startRef || !endRef)
 		return 0;
 	
@@ -1364,30 +1373,30 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 		return 1;
 	}
 	
-	if (!m_nodePool || !m_openList)
+	if (!nodePool || !openList)
 		return 0;
 		
-	m_nodePool->clear();
-	m_openList->clear();
+	nodePool->clear();
+	openList->clear();
 	
 	static const float H_SCALE = 0.999f;	// Heuristic scale.
 	
-	dtNode* startNode = m_nodePool->getNode(startRef);
+	dtNode* startNode = nodePool->getNode(startRef);
 	startNode->pidx = 0;
 	startNode->cost = 0;
 	startNode->total = dtVdist(startPos, endPos) * H_SCALE;
 	startNode->id = startRef;
 	startNode->flags = DT_NODE_OPEN;
-	m_openList->push(startNode);
+	openList->push(startNode);
 	
 	dtNode* lastBestNode = startNode;
 	float lastBestNodeCost = startNode->total;
 
 	unsigned int it, ip;
 	
-	while (!m_openList->empty())
+	while (!openList->empty())
 	{
-		dtNode* bestNode = m_openList->pop();
+		dtNode* bestNode = openList->pop();
 		// Remove node from open list and put it in closed list.
 		bestNode->flags &= ~DT_NODE_OPEN;
 		bestNode->flags |= DT_NODE_CLOSED;
@@ -1414,7 +1423,7 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 		const dtMeshTile* parentTile = 0;
 		const dtPoly* parentPoly = 0;
 		if (bestNode->pidx)
-			parentRef = m_nodePool->getNodeAtIdx(bestNode->pidx)->id;
+			parentRef = nodePool->getNodeAtIdx(bestNode->pidx)->id;
 		if (parentRef)
 		{
 			it = decodePolyIdTile(parentRef);
@@ -1449,7 +1458,7 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 				continue;
 
 			dtNode newNode;
-			newNode.pidx = m_nodePool->getNodeIdx(bestNode);
+			newNode.pidx = nodePool->getNodeIdx(bestNode);
 			newNode.id = neighbourRef;
 
 			// Calculate cost.
@@ -1479,7 +1488,7 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 			}
 			newNode.total = newNode.cost + h;
 			
-			dtNode* actualNode = m_nodePool->getNode(newNode.id);
+			dtNode* actualNode = nodePool->getNode(newNode.id);
 			if (!actualNode)
 				continue;
 
@@ -1506,13 +1515,13 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 			if (actualNode->flags & DT_NODE_OPEN)
 			{
 				// Already in open, update node location.
-				m_openList->modify(actualNode);
+				openList->modify(actualNode);
 			}
 			else
 			{
 				// Put the node in open list.
 				actualNode->flags |= DT_NODE_OPEN;
-				m_openList->push(actualNode);
+				openList->push(actualNode);
 			}
 		}
 	}
@@ -1522,8 +1531,8 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 	dtNode* node = lastBestNode;
 	do
 	{
-		dtNode* next = m_nodePool->getNodeAtIdx(node->pidx);
-		node->pidx = m_nodePool->getNodeIdx(prev);
+		dtNode* next = nodePool->getNodeAtIdx(node->pidx);
+		node->pidx = nodePool->getNodeIdx(prev);
 		prev = node;
 		node = next;
 	}
@@ -1535,7 +1544,7 @@ int dtNavMesh::findPath(dtPolyRef startRef, dtPolyRef endRef,
 	do
 	{
 		path[n++] = node->id;
-		node = m_nodePool->getNodeAtIdx(node->pidx);
+		node = nodePool->getNodeAtIdx(node->pidx);
 	}
 	while (node && n < maxPathSize);
 	
@@ -2202,20 +2211,27 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 									dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
 									const int maxResult) const
 {
+	return findPolysAround(centerRef, centerPos, radius, filter, resultRef, resultParent, resultCost, maxResult, m_nodePool, m_openList);
+}
+
+int	dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, const dtQueryFilter* filter,
+					dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+					const int maxResult, class dtNodePool* nodePool, class dtNodeQueue* openList) const
+{
 	if (!centerRef) return 0;
 	if (!getPolyByRef(centerRef)) return 0;
-	if (!m_nodePool || !m_openList) return 0;
+	if (!nodePool || !openList) return 0;
 	
-	m_nodePool->clear();
-	m_openList->clear();
+	nodePool->clear();
+	openList->clear();
 	
-	dtNode* startNode = m_nodePool->getNode(centerRef);
+	dtNode* startNode = nodePool->getNode(centerRef);
 	startNode->pidx = 0;
 	startNode->cost = 0;
 	startNode->total = 0;
 	startNode->id = centerRef;
 	startNode->flags = DT_NODE_OPEN;
-	m_openList->push(startNode);
+	openList->push(startNode);
 	
 	int n = 0;
 	if (n < maxResult)
@@ -2233,9 +2249,9 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 
 	unsigned int it, ip;
 	
-	while (!m_openList->empty())
+	while (!openList->empty())
 	{
-		dtNode* bestNode = m_openList->pop();
+		dtNode* bestNode = openList->pop();
 
 		float previousEdgeMidPoint[3];
 
@@ -2252,7 +2268,7 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 		const dtMeshTile* parentTile = 0;
 		const dtPoly* parentPoly = 0;
 		if (bestNode->pidx)
-			parentRef = m_nodePool->getNodeAtIdx(bestNode->pidx)->id;
+			parentRef = nodePool->getNodeAtIdx(bestNode->pidx)->id;
 		if (parentRef)
 		{
 			it = decodePolyIdTile(parentRef);
@@ -2297,7 +2313,7 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 				continue;
 			
 			dtNode newNode;
-			newNode.pidx = m_nodePool->getNodeIdx(bestNode);
+			newNode.pidx = nodePool->getNodeIdx(bestNode);
 			newNode.id = neighbourRef;
 
 			// Cost
@@ -2306,7 +2322,7 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 			
 			newNode.total = bestNode->total + dtVdist(previousEdgeMidPoint, edgeMidPoint);
 			
-			dtNode* actualNode = m_nodePool->getNode(newNode.id);
+			dtNode* actualNode = nodePool->getNode(newNode.id);
 			if (!actualNode)
 				continue;
 			
@@ -2319,7 +2335,7 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 				
 				if (actualNode->flags & DT_NODE_OPEN)
 				{
-					m_openList->modify(actualNode);
+					openList->modify(actualNode);
 				}
 				else
 				{
@@ -2328,13 +2344,13 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 						if (resultRef)
 							resultRef[n] = actualNode->id;
 						if (resultParent)
-							resultParent[n] = m_nodePool->getNodeAtIdx(actualNode->pidx)->id;
+							resultParent[n] = nodePool->getNodeAtIdx(actualNode->pidx)->id;
 						if (resultCost)
 							resultCost[n] = actualNode->total;
 						++n;
 					}
 					actualNode->flags = DT_NODE_OPEN;
-					m_openList->push(actualNode);
+					openList->push(actualNode);
 				}
 			}
 		}
@@ -2346,28 +2362,35 @@ int dtNavMesh::findPolysAround(dtPolyRef centerRef, const float* centerPos, floa
 float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius, const dtQueryFilter* filter,
 									float* hitPos, float* hitNormal) const
 {
+	return findDistanceToWall(centerRef, centerPos, maxRadius, filter, hitPos, hitNormal, m_nodePool, m_openList);
+}
+
+float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius,
+						 const dtQueryFilter* filter, float* hitPos, float* hitNormal,
+						 class dtNodePool* nodePool, class dtNodeQueue* openList) const
+{
 	if (!centerRef) return 0;
 	if (!getPolyByRef(centerRef)) return 0;
-	if (!m_nodePool || !m_openList) return 0;
+	if (!nodePool || !openList) return 0;
 	
-	m_nodePool->clear();
-	m_openList->clear();
+	nodePool->clear();
+	openList->clear();
 	
-	dtNode* startNode = m_nodePool->getNode(centerRef);
+	dtNode* startNode = nodePool->getNode(centerRef);
 	startNode->pidx = 0;
 	startNode->cost = 0;
 	startNode->total = 0;
 	startNode->id = centerRef;
 	startNode->flags = DT_NODE_OPEN;
-	m_openList->push(startNode);
+	openList->push(startNode);
 	
 	float radiusSqr = dtSqr(maxRadius);
 	
 	unsigned int it, ip;
 	
-	while (!m_openList->empty())
+	while (!openList->empty())
 	{
-		dtNode* bestNode = m_openList->pop();
+		dtNode* bestNode = openList->pop();
 		
 		float previousEdgeMidPoint[3];
 		
@@ -2384,7 +2407,7 @@ float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos,
 		const dtMeshTile* parentTile = 0;
 		const dtPoly* parentPoly = 0;
 		if (bestNode->pidx)
-			parentRef = m_nodePool->getNodeAtIdx(bestNode->pidx)->id;
+			parentRef = nodePool->getNodeAtIdx(bestNode->pidx)->id;
 		if (parentRef)
 		{
 			it = decodePolyIdTile(parentRef);
@@ -2476,7 +2499,7 @@ float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos,
 				continue;
 			
 			dtNode newNode;
-			newNode.pidx = m_nodePool->getNodeIdx(bestNode);
+			newNode.pidx = nodePool->getNodeIdx(bestNode);
 			newNode.id = neighbourRef;
 			
 			// Cost
@@ -2486,7 +2509,7 @@ float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos,
 
 			newNode.total = bestNode->total + dtVdist(previousEdgeMidPoint, edgeMidPoint);
 			
-			dtNode* actualNode = m_nodePool->getNode(newNode.id);
+			dtNode* actualNode = nodePool->getNode(newNode.id);
 			if (!actualNode)
 				continue;
 			
@@ -2499,12 +2522,12 @@ float dtNavMesh::findDistanceToWall(dtPolyRef centerRef, const float* centerPos,
 				
 				if (actualNode->flags & DT_NODE_OPEN)
 				{
-					m_openList->modify(actualNode);
+					openList->modify(actualNode);
 				}
 				else
 				{
 					actualNode->flags = DT_NODE_OPEN;
-					m_openList->push(actualNode);
+					openList->push(actualNode);
 				}
 			}
 		}
@@ -2549,8 +2572,13 @@ const dtLink* dtNavMesh::getPolyLinksByRef(dtPolyRef ref) const
 
 bool dtNavMesh::isInClosedList(dtPolyRef ref) const
 {
-	if (!m_nodePool) return false;
-	const dtNode* node = m_nodePool->findNode(ref);
+	return isInClosedList(ref, m_nodePool);
+}
+
+bool dtNavMesh::isInClosedList(dtPolyRef ref, const class dtNodePool* nodePool) const
+{
+	if (!nodePool) return false;
+	const dtNode* node = nodePool->findNode(ref);
 	return node && node->flags & DT_NODE_CLOSED;
 }
 

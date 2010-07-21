@@ -304,6 +304,14 @@ public:
 				 const dtQueryFilter* filter,
 				 dtPolyRef* path, const int maxPathSize) const;
 
+	// threadsafe version
+	int findPath(dtPolyRef startRef, dtPolyRef endRef,
+				 const float* startPos, const float* endPos,
+				 const dtQueryFilter* filter,
+				 dtPolyRef* path, const int maxPathSize,
+				 class dtNodePool* nodePool, class dtNodeQueue* openList) const;
+
+
 	// Finds a straight path from start to end locations within the corridor
 	// described by the path polygons.
 	// Start and end locations will be clamped on the corridor.
@@ -364,6 +372,12 @@ public:
 	float findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius,
 							 const dtQueryFilter* filter, float* hitPos, float* hitNormal) const;
 
+	// threadsafe version
+	float findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius,
+							 const dtQueryFilter* filter, float* hitPos, float* hitNormal,
+							 class dtNodePool* nodePool, class dtNodeQueue* openList) const;
+
+
 	// Finds polygons found along the navigation graph which touch the specified circle.
 	// Params:
 	//	centerRef - (in) ref to the polygon where the center lies.
@@ -378,7 +392,12 @@ public:
 	int	findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, const dtQueryFilter* filter,
 						dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
 						const int maxResult) const;
-	
+
+	// threadsafe version
+	int	findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, const dtQueryFilter* filter,
+						dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+						const int maxResult, class dtNodePool* nodePool, class dtNodeQueue* openList) const;
+
 	// Returns closest point on navigation polygon.
 	// Uses detail polygons to find the closest point to the navigation polygon surface. 
 	// Params:
@@ -450,6 +469,9 @@ public:
 
 	// Returns true if poly reference ins in closed list.
 	bool isInClosedList(dtPolyRef ref) const;
+
+	bool isInClosedList(dtPolyRef ref, const class dtNodePool* nodePool) const;
+
 
 	// Encodes a tile id.
 	inline dtPolyRef encodePolyId(unsigned int salt, unsigned int it, unsigned int ip) const

@@ -1,9 +1,15 @@
 #include <cstring>
 #include <cmath>
+#include <new>
+#include <omp.h>
 #include "SDL.h"
 #include "SDL_opengl.h"
 #include "Recast.h"
+#include "RecastLog.h"
+#include "RecastTimer.h"
 #include "DetourDebugDraw.h"
+#include "DetourCommon.h"
+#include "DetourNode.h"
 #include "imgui.h"
 #include "ParallelNavMeshTesterTool.h"
 
@@ -106,6 +112,26 @@ static void getPolyCenter(const dtNavMesh& navMesh, dtPolyRef ref, float* center
 	center[2] *= s;
 }
 
+ParallelNavMeshTesterTool::Agent::Agent()
+{
+	m_nodePool = new (dtAlloc(sizeof(dtNodePool), DT_ALLOC_PERM)) dtNodePool(2048, dtNextPow2(2048/4));
+	m_openList = new (dtAlloc(sizeof(dtNodeQueue), DT_ALLOC_PERM)) dtNodeQueue(2048);
+}
+
+ParallelNavMeshTesterTool::Agent::~Agent()
+{
+	if (m_nodePool)
+	{
+		m_nodePool->~dtNodePool();
+		dtFree(m_nodePool);
+	}
+	if (m_openList)
+	{
+		m_openList->~dtNodeQueue();
+		dtFree(m_openList);
+	}
+}
+
 void ParallelNavMeshTesterTool::Agent::reset()
 {
 	m_startRef = 0;
@@ -134,7 +160,7 @@ void ParallelNavMeshTesterTool::Agent::recalc(const ToolMode toolMode, const dtN
 				   filter.includeFlags, filter.excludeFlags);
 #endif
 
-			m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS);
+			m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS, m_nodePool, m_openList);
 
 			m_nsmoothPath = 0;
 
@@ -273,7 +299,7 @@ void ParallelNavMeshTesterTool::Agent::recalc(const ToolMode toolMode, const dtN
 				   m_spos[0],m_spos[1],m_spos[2], m_epos[0],m_epos[1],m_epos[2],
 				   filter.includeFlags, filter.excludeFlags);
 #endif
-			m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS);
+			m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS, m_nodePool, m_openList);
 			m_nstraightPath = 0;
 			if (m_npolys)
 			{
@@ -344,7 +370,7 @@ void ParallelNavMeshTesterTool::Agent::recalc(const ToolMode toolMode, const dtN
 				   m_spos[0],m_spos[1],m_spos[2], 100.0f,
 				   filter.includeFlags, filter.excludeFlags);
 #endif
-			m_distanceToWall = navMesh.findDistanceToWall(m_startRef, m_spos, 100.0f, &filter, m_hitPos, m_hitNormal);
+			m_distanceToWall = navMesh.findDistanceToWall(m_startRef, m_spos, 100.0f, &filter, m_hitPos, m_hitNormal, m_nodePool, m_openList);
 		}
 	}
 	else if (toolMode == TOOLMODE_FIND_POLYS_AROUND)
@@ -359,7 +385,7 @@ void ParallelNavMeshTesterTool::Agent::recalc(const ToolMode toolMode, const dtN
 				   m_spos[0],m_spos[1],m_spos[2], dist,
 				   filter.includeFlags, filter.excludeFlags);
 #endif
-			m_npolys = navMesh.findPolysAround(m_startRef, m_spos, dist, &filter, m_polys, m_parent, 0, MAX_POLYS);
+			m_npolys = navMesh.findPolysAround(m_startRef, m_spos, dist, &filter, m_polys, m_parent, 0, MAX_POLYS, m_nodePool, m_openList);
 		}
 	}
 
@@ -375,7 +401,7 @@ void ParallelNavMeshTesterTool::Agent::step(const dtNavMesh &navMesh, const dtQu
 
 	if (m_pathIterNum == 0)
 	{
-		m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS);
+		m_npolys = navMesh.findPath(m_startRef, m_endRef, m_spos, m_epos, &filter, m_polys, MAX_POLYS, m_nodePool, m_openList);
 		m_nsmoothPath = 0;
 
 		m_pathIterPolys = m_polys;
@@ -720,7 +746,8 @@ ParallelNavMeshTesterTool::ParallelNavMeshTesterTool() :
 		m_navMesh(0),
 		m_toolMode(TOOLMODE_PATHFIND_ITER),
 		m_tposSet(false),
-		m_nagents(0)
+		m_nagents(0),
+		m_nthreads(omp_get_max_threads())
 {
 	m_filter.includeFlags = SAMPLE_POLYFLAGS_ALL;
 	m_filter.excludeFlags = 0;
@@ -788,6 +815,19 @@ void ParallelNavMeshTesterTool::handleMenu()
 	if (imguiCheck("Find Polys Around", m_toolMode == TOOLMODE_FIND_POLYS_AROUND))
 	{
 		m_toolMode = TOOLMODE_FIND_POLYS_AROUND;
+		recalc();
+	}
+
+	imguiSeparator();
+
+	float nthreads = (float) m_nthreads;
+	if (imguiSlider("Num Threads", &nthreads, 0.0f, (float)omp_get_max_threads(), 1.0f))
+	{
+		m_nthreads = (int)nthreads;
+	}
+
+	if (imguiButton("Recalc"))
+	{
 		recalc();
 	}
 
@@ -892,8 +932,32 @@ void ParallelNavMeshTesterTool::recalc()
 	if (!m_navMesh)
 		return;
 
+	rcTimeVal agentStart[MAX_AGENTS];
+	rcTimeVal agentEnd[MAX_AGENTS];
+
+	rcTimeVal totalStart = rcGetPerformanceTimer();
+
+	#pragma omp parallel for if(m_nthreads) num_threads(m_nthreads) schedule(guided)
 	for (int i=0; i<m_nagents; ++i)
 	{
+		agentStart[i] = rcGetPerformanceTimer();
 		m_agents[i].recalc(m_toolMode, *m_navMesh, m_filter, m_polyPickExt);
+		agentEnd[i] = rcGetPerformanceTimer();
 	}
+
+	rcTimeVal totalEnd = rcGetPerformanceTimer();
+
+	rcGetLog()->clear();
+
+	if (m_nthreads)
+		rcGetLog()->log(RC_LOG_PROGRESS, "recalc: %d/%d threads\n", m_nthreads, omp_get_max_threads());
+	else
+		rcGetLog()->log(RC_LOG_PROGRESS, "recalc: single threaded\n");
+
+	for (int i=0; i<m_nagents; ++i)
+	{
+		int time = rcGetDeltaTimeUsec(agentStart[i], agentEnd[i]);
+		rcGetLog()->log(RC_LOG_PROGRESS, "Agent %d: %d\n", i, time);
+	}
+	rcGetLog()->log(RC_LOG_PROGRESS, "Total: %d\n\n", rcGetDeltaTimeUsec(totalStart, totalEnd));
 }
