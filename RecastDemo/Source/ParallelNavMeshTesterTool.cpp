@@ -385,7 +385,7 @@ void ParallelNavMeshTesterTool::Agent::recalc(const ToolMode toolMode, const dtN
 				   m_spos[0],m_spos[1],m_spos[2], dist,
 				   filter.includeFlags, filter.excludeFlags);
 #endif
-			m_npolys = navMesh.findPolysAround(m_startRef, m_spos, dist, &filter, m_polys, m_parent, 0, MAX_POLYS, m_nodePool, m_openList);
+			m_npolys = navMesh.findPolysAroundCircle(m_startRef, m_spos, dist, &filter, m_polys, m_parent, 0, MAX_POLYS, m_nodePool, m_openList);
 		}
 	}
 

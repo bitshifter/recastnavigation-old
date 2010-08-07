@@ -274,7 +274,7 @@ public:
 	dtPolyRef findNearestPoly(const float* center, const float* extents,
 							  const dtQueryFilter* filter, float* nearestPt) const;
 	
-	// Returns polygons which touch the query box.
+	// Returns polygons which overlap the query box.
 	// Params:
 	//	center[3] - (in) the center of the search box.
 	//	extents[3] - (in) the extents of the search box.
@@ -304,7 +304,6 @@ public:
 				 const dtQueryFilter* filter,
 				 dtPolyRef* path, const int maxPathSize) const;
 
-	// threadsafe version
 	int findPath(dtPolyRef startRef, dtPolyRef endRef,
 				 const float* startPos, const float* endPos,
 				 const dtQueryFilter* filter,
@@ -346,7 +345,7 @@ public:
 	int moveAlongPathCorridor(const float* startPos, const float* endPos, float* resultPos,
 							  const dtPolyRef* path, const int pathSize) const;
 	
-	// Castst 'walkability' ray along the navmesh surface from startPos towards the endPos.
+	// Casts 'walkability' ray along the navmesh surface from startPos towards the endPos.
 	// Params:
 	//	startRef - (in) ref to the polygon where the start lies.
 	//	startPos[3] - (in) start position of the query.
@@ -372,7 +371,6 @@ public:
 	float findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius,
 							 const dtQueryFilter* filter, float* hitPos, float* hitNormal) const;
 
-	// threadsafe version
 	float findDistanceToWall(dtPolyRef centerRef, const float* centerPos, float maxRadius,
 							 const dtQueryFilter* filter, float* hitPos, float* hitNormal,
 							 class dtNodePool* nodePool, class dtNodeQueue* openList) const;
@@ -380,23 +378,47 @@ public:
 
 	// Finds polygons found along the navigation graph which touch the specified circle.
 	// Params:
-	//	centerRef - (in) ref to the polygon where the center lies.
-	//	centerPos[3] - (in) center if the query circle
-	//	radius - (in) radius of the query circle
+	//	startRef - (in) ref to the polygon where the search starts.
+	//	centerPos[3] - (in) center if the query circle.
+	//	radius - (in) radius of the query circle.
 	//  filter - (in) path polygon filter.
 	//	resultRef - (out, opt) refs to the polygons touched by the circle.
 	//	resultParent - (out, opt) parent of each result polygon.
 	//	resultCost - (out, opt) search cost at each result polygon.
 	//	maxResult - (int) maximum capacity of search results.
 	// Returns: Number of results.
-	int	findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, const dtQueryFilter* filter,
-						dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
-						const int maxResult) const;
+	int	findPolysAroundCircle(dtPolyRef startRef, const float* centerPos, float radius,
+							  const dtQueryFilter* filter,
+							  dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+							  const int maxResult) const;
 
-	// threadsafe version
-	int	findPolysAround(dtPolyRef centerRef, const float* centerPos, float radius, const dtQueryFilter* filter,
-						dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
-						const int maxResult, class dtNodePool* nodePool, class dtNodeQueue* openList) const;
+	int	findPolysAroundCircle(dtPolyRef startRef, const float* centerPos, float radius,
+							  const dtQueryFilter* filter,
+							  dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+							  const int maxResult,
+							  class dtNodePool* nodePool, class dtNodeQueue* openList) const;
+
+	// Finds polygons found along the navigation graph which touch the convex polygon shape.
+	// Params:
+	//	startRef - (in) ref to the polygon where the search starts.
+	//	verts[3*n] - (in) vertices describing convex polygon shape (CCW).
+	//	nverts - (in) number of vertices in the polygon.
+	//  filter - (in) path polygon filter.
+	//	resultRef - (out, opt) refs to the polygons touched by the circle.
+	//	resultParent - (out, opt) parent of each result polygon.
+	//	resultCost - (out, opt) search cost at each result polygon.
+	//	maxResult - (int) maximum capacity of search results.
+	// Returns: Number of results.
+	int	findPolysAroundShape(dtPolyRef startRef, const float* verts, const int nverts,
+							 const dtQueryFilter* filter,
+							 dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+							 const int maxResult) const;
+
+	int	findPolysAroundShape(dtPolyRef startRef, const float* verts, const int nverts,
+							 const dtQueryFilter* filter,
+							 dtPolyRef* resultRef, dtPolyRef* resultParent, float* resultCost,
+							 const int maxResult,
+							 class dtNodePool* nodePool, class dtNodeQueue* openList) const;
 
 	// Returns closest point on navigation polygon.
 	// Uses detail polygons to find the closest point to the navigation polygon surface. 
