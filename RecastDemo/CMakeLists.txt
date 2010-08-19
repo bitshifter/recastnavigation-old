@@ -3,6 +3,7 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 SET(recastdemo_SRCS 
 	Source/ChunkyTriMesh.cpp 
 	Source/ConvexVolumeTool.cpp
+	Source/CrowdTool.cpp
 	Source/Filelist.cpp
 	Source/imgui.cpp 
 	Source/imguiRenderGL.cpp 
@@ -22,6 +23,7 @@ SET(recastdemo_SRCS
 SET(recastdemo_HDRS
 	Include/ChunkyTriMesh.h
 	Include/ConvexVolumeTool.h
+	Include/CrowdTool.h
 	Include/Filelist.h
 	Include/imgui.h
 	Include/imguiRenderGL.h

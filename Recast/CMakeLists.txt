@@ -6,18 +6,16 @@ SET(recast_SRCS
 	Source/RecastAlloc.cpp
 	Source/RecastContour.cpp
 	Source/RecastFilter.cpp
-	Source/RecastLog.cpp
 	Source/RecastMesh.cpp
 	Source/RecastMeshDetail.cpp
 	Source/RecastRasterization.cpp
 	Source/RecastRegion.cpp
-	Source/RecastTimer.cpp)
+)
 
 SET(recast_HDRS
 	Include/Recast.h
 	Include/RecastAlloc.h
-	Include/RecastLog.h
-	Include/RecastTimer.h
+	Include/RecastAssert.h
 )
 
 INCLUDE_DIRECTORIES(Include)
