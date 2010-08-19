@@ -17,6 +17,7 @@ SET(recastdemo_SRCS
 	Source/Sample_SoloMeshSimple.cpp 
 	Source/Sample_SoloMeshTiled.cpp 
 	Source/Sample_TileMesh.cpp
+	Source/SampleInterfaces.cpp
 	Source/SlideShow.cpp
 	Source/TestCase.cpp)
 
@@ -36,6 +37,7 @@ SET(recastdemo_HDRS
 	Include/Sample_SoloMeshSimple.h
 	Include/Sample_SoloMeshTiled.h
 	Include/Sample_TileMesh.h
+	Include/SampleInterfaces.h
 	Include/SDLMain.h
 	Include/SlideShow.h
 	Include/TestCase.h
