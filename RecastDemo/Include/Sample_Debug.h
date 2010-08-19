@@ -30,6 +30,7 @@ class Sample_Debug : public Sample
 protected:
 	rcCompactHeightfield* m_chf;
 	rcContourSet* m_cset;
+	rcPolyMesh* m_pmesh;
 
 	float m_ext[3];
 	float m_center[3];
@@ -43,7 +44,7 @@ public:
 	virtual void handleSettings();
 	virtual void handleTools();
 	virtual void handleDebugMode();
-	virtual void handleClick(const float* p, bool shift);
+	virtual void handleClick(const float* s, const float* p, bool shift);
 	virtual void handleStep();
 	virtual void handleRender();
 	virtual void handleRenderOverlay(double* proj, double* model, int* view);

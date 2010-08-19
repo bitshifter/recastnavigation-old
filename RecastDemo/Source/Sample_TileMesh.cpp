@@ -35,6 +35,7 @@
 #include "NavMeshTesterTool.h"
 #include "OffMeshConnectionTool.h"
 #include "ConvexVolumeTool.h"
+#include "CrowdTool.h"
 
 #ifdef WIN32
 #	define snprintf _snprintf
@@ -112,7 +113,7 @@ public:
 		imguiValue("Shift+LMB to remove a tile.");
 	}
 
-	virtual void handleClick(const float* p, bool shift)
+	virtual void handleClick(const float* /*s*/, const float* p, bool shift)
 	{
 		m_hitPosSet = true;
 		rcVcopy(m_hitPos,p);
@@ -126,6 +127,8 @@ public:
 	}
 
 	virtual void handleStep() {}
+
+	virtual void handleUpdate(const float /*dt*/) {}
 	
 	virtual void handleRender()
 	{
@@ -189,9 +192,6 @@ Sample_TileMesh::Sample_TileMesh() :
 	memset(m_tileBmax, 0, sizeof(m_tileBmax));
 	
 	setTool(new NavMeshTileTool);
-	
-	m_smin = 0x0fffffff;
-	m_smax = -0xfffffff;
 }
 
 Sample_TileMesh::~Sample_TileMesh()
@@ -377,6 +377,7 @@ void Sample_TileMesh::handleSettings()
 	{
 		dtFreeNavMesh(m_navMesh);
 		m_navMesh = loadAll("all_tiles_navmesh.bin");
+		m_navQuery->init(m_navMesh, 2048);
 	}
 	
 	char msg[64];
@@ -409,11 +410,19 @@ void Sample_TileMesh::handleTools()
 	{
 		setTool(new ConvexVolumeTool);
 	}
+	if (imguiCheck("Create Crowds", type == TOOL_CROWD))
+	{
+		setTool(new CrowdTool);
+	}
 	
-	imguiSeparator();
-	
+	imguiSeparatorLine();
+
+	imguiIndent();
+
 	if (m_tool)
 		m_tool->handleMenu();
+
+	imguiUnindent();
 }
 
 void Sample_TileMesh::handleDebugMode()
@@ -469,7 +478,7 @@ void Sample_TileMesh::handleRender()
 	
 	if (m_navMesh)
 	{
-		duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
+		duDebugDrawNavMeshWithClosedList(&dd, *m_navMesh, *m_navQuery, m_navMeshDrawFlags);
 		if (m_drawPortals)
 			duDebugDrawNavMeshPortals(&dd, *m_navMesh);
 	}
@@ -540,11 +549,17 @@ bool Sample_TileMesh::handleBuild()
 	params.tileHeight = m_tileSize*m_cellSize;
 	params.maxTiles = m_maxTiles;
 	params.maxPolys = m_maxPolysPerTile;
-	params.maxNodes = 2048;
 	if (!m_navMesh->init(&params))
 	{
 		if (rcGetLog())
 			rcGetLog()->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init navmesh.");
+		return false;
+	}
+	
+	if (!m_navQuery->init(m_navMesh, 2048))
+	{
+		if (rcGetLog())
+			rcGetLog()->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init Detour navmesh query");
 		return false;
 	}
 	
@@ -812,26 +827,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		m_triareas = 0;
 	}
 	
-	{
-		const int w = m_solid->width;
-		const int h = m_solid->height;
-		int spanCount = 0;
-		for (int y = 0; y < h; ++y)
-		{
-			for (int x = 0; x < w; ++x)
-			{
-				for (rcSpan* s = m_solid->spans[x + y*w]; s; s = s->next)
-				{
-					m_smin = rcMin(m_smin, (int)s->smin);
-					m_smax = rcMax(m_smax, (int)s->smax);
-				}
-			}
-		}
-		printf("smin=%d smax=%d\n", m_smin, m_smax);
-	}
-	
-	
-	// Once all geoemtry is rasterized, we do initial pass of filtering to
+	// Once all geometry is rasterized, we do initial pass of filtering to
 	// remove unwanted overhangs caused by the conservative rasterization
 	// as well as filter spans where the character cannot possibly stand.
 	rcFilterLowHangingWalkableObstacles(m_cfg.walkableClimb, *m_solid);

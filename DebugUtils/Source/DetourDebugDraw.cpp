@@ -115,9 +115,10 @@ static void drawPolyBoundaries(duDebugDraw* dd, const dtMeshTile* tile,
 	dd->end();
 }
 
-static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtMeshTile* tile, unsigned char flags)
+static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtNavMeshQuery* query,
+						 const dtMeshTile* tile, unsigned char flags)
 {
-	dtPolyRef base = mesh.getTilePolyRefBase(tile);
+	dtPolyRef base = mesh.getPolyRefBase(tile);
 
 	dd->depthMask(false);
 
@@ -131,7 +132,7 @@ static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtMeshTil
 		const dtPolyDetail* pd = &tile->detailMeshes[i];
 
 		unsigned int col;
-		if ((flags & DU_DRAWNAVMESH_CLOSEDLIST) && mesh.isInClosedList(base | (dtPolyRef)i))
+		if (query && query->isInClosedList(base | (dtPolyRef)i))
 			col = duRGBA(255,196,0,64);
 		else
 		{
@@ -171,10 +172,10 @@ static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtMeshTil
 				continue;
 			
 			unsigned int col;
-			if ((flags & DU_DRAWNAVMESH_CLOSEDLIST) && mesh.isInClosedList(base | (dtPolyRef)i))
+			if (query && query->isInClosedList(base | (dtPolyRef)i))
 				col = duRGBA(255,196,0,220);
 			else
-				col = duDarkenColor(duIntToCol(p->area, 220));
+				col = duDarkenCol(duIntToCol(p->area, 220));
 			
 			const dtOffMeshConnection* con = &tile->offMeshCons[i - tile->header->offMeshBase];
 			const float* va = &tile->verts[p->verts[0]*3];
@@ -229,89 +230,7 @@ static void drawMeshTile(duDebugDraw* dd, const dtNavMesh& mesh, const dtMeshTil
 	}
 	dd->end();
 	
-	// Draw portals
-	/*	glBegin(GL_LINES);
-	 
-	 for (int i = 0; i < header->nportals[0]; ++i)
-	 {
-	 const dtTilePortal* p = &header->portals[0][i];		
-	 if (p->ncon)
-	 glColor4ub(255,255,255,192);
-	 else
-	 glColor4ub(255,0,0,64);
-	 glVertex3f(header->bmax[0]-0.1f, p->bmin[1], p->bmin[0]);
-	 glVertex3f(header->bmax[0]-0.1f, p->bmax[1], p->bmin[0]);
-	 
-	 glVertex3f(header->bmax[0]-0.1f, p->bmax[1], p->bmin[0]);
-	 glVertex3f(header->bmax[0]-0.1f, p->bmax[1], p->bmax[0]);
-	 
-	 glVertex3f(header->bmax[0]-0.1f, p->bmax[1], p->bmax[0]);
-	 glVertex3f(header->bmax[0]-0.1f, p->bmin[1], p->bmax[0]);
-	 
-	 glVertex3f(header->bmax[0]-0.1f, p->bmin[1], p->bmax[0]);
-	 glVertex3f(header->bmax[0]-0.1f, p->bmin[1], p->bmin[0]);
-	 }
-	 for (int i = 0; i < header->nportals[1]; ++i)
-	 {
-	 const dtTilePortal* p = &header->portals[1][i];
-	 if (p->ncon)
-	 glColor4ub(255,255,255,192);
-	 else
-	 glColor4ub(255,0,0,64);
-	 glVertex3f(p->bmin[0], p->bmin[1], header->bmax[2]-0.1f);
-	 glVertex3f(p->bmin[0], p->bmax[1], header->bmax[2]-0.1f);
-	 
-	 glVertex3f(p->bmin[0], p->bmax[1], header->bmax[2]-0.1f);
-	 glVertex3f(p->bmax[0], p->bmax[1], header->bmax[2]-0.1f);
-	 
-	 glVertex3f(p->bmax[0], p->bmax[1], header->bmax[2]-0.1f);
-	 glVertex3f(p->bmax[0], p->bmin[1], header->bmax[2]-0.1f);
-	 
-	 glVertex3f(p->bmax[0], p->bmin[1], header->bmax[2]-0.1f);
-	 glVertex3f(p->bmin[0], p->bmin[1], header->bmax[2]-0.1f);
-	 }
-	 for (int i = 0; i < header->nportals[2]; ++i)
-	 {
-	 const dtTilePortal* p = &header->portals[2][i];
-	 if (p->ncon)
-	 glColor4ub(255,255,255,192);
-	 else
-	 glColor4ub(255,0,0,64);
-	 glVertex3f(header->bmin[0]+0.1f, p->bmin[1], p->bmin[0]);
-	 glVertex3f(header->bmin[0]+0.1f, p->bmax[1], p->bmin[0]);
-	 
-	 glVertex3f(header->bmin[0]+0.1f, p->bmax[1], p->bmin[0]);
-	 glVertex3f(header->bmin[0]+0.1f, p->bmax[1], p->bmax[0]);
-	 
-	 glVertex3f(header->bmin[0]+0.1f, p->bmax[1], p->bmax[0]);
-	 glVertex3f(header->bmin[0]+0.1f, p->bmin[1], p->bmax[0]);
-	 
-	 glVertex3f(header->bmin[0]+0.1f, p->bmin[1], p->bmax[0]);
-	 glVertex3f(header->bmin[0]+0.1f, p->bmin[1], p->bmin[0]);
-	 }
-	 for (int i = 0; i < header->nportals[3]; ++i)
-	 {
-	 const dtTilePortal* p = &header->portals[3][i];
-	 if (p->ncon)
-	 glColor4ub(255,255,255,192);
-	 else
-	 glColor4ub(255,0,0,64);
-	 glVertex3f(p->bmin[0], p->bmin[1], header->bmin[2]+0.1f);
-	 glVertex3f(p->bmin[0], p->bmax[1], header->bmin[2]+0.1f);
-	 
-	 glVertex3f(p->bmin[0], p->bmax[1], header->bmin[2]+0.1f);
-	 glVertex3f(p->bmax[0], p->bmax[1], header->bmin[2]+0.1f);
-	 
-	 glVertex3f(p->bmax[0], p->bmax[1], header->bmin[2]+0.1f);
-	 glVertex3f(p->bmax[0], p->bmin[1], header->bmin[2]+0.1f);
-	 
-	 glVertex3f(p->bmax[0], p->bmin[1], header->bmin[2]+0.1f);
-	 glVertex3f(p->bmin[0], p->bmin[1], header->bmin[2]+0.1f);
-	 }
-	 glEnd();*/
-	 
 	dd->depthMask(true);
-
 }
 
 void duDebugDrawNavMesh(duDebugDraw* dd, const dtNavMesh& mesh, unsigned char flags)
@@ -322,7 +241,19 @@ void duDebugDrawNavMesh(duDebugDraw* dd, const dtNavMesh& mesh, unsigned char fl
 	{
 		const dtMeshTile* tile = mesh.getTile(i);
 		if (!tile->header) continue;
-		drawMeshTile(dd, mesh, tile, flags);
+		drawMeshTile(dd, mesh, 0, tile, flags);
+	}
+}
+
+void duDebugDrawNavMeshWithClosedList(struct duDebugDraw* dd, const dtNavMesh& mesh, const dtNavMeshQuery& query, unsigned char flags)
+{
+	if (!dd) return;
+	
+	for (int i = 0; i < mesh.getMaxTiles(); ++i)
+	{
+		const dtMeshTile* tile = mesh.getTile(i);
+		if (!tile->header) continue;
+		drawMeshTile(dd, mesh, &query, tile, flags);
 	}
 }
 
@@ -385,7 +316,7 @@ static void calcRect(const float* va, const float* vb,
 static void drawMeshTilePortal(duDebugDraw* dd, const dtMeshTile* tile)
 {
 	// Draw portals
-	const float padx = 0.01f;
+	const float padx = 0.02f;
 	const float pady = tile->header->walkableClimb;
 
 	dd->begin(DU_DRAW_LINES, 2.0f);
@@ -414,7 +345,7 @@ static void drawMeshTilePortal(duDebugDraw* dd, const dtMeshTile* tile)
 				{
 					unsigned int col = side == 0 ? duRGBA(128,0,0,128) : duRGBA(128,0,128,128);
 
-					const float x = va[0] + ((side == 0) ? -0.02f : 0.02f);
+					const float x = va[0] + ((side == 0) ? -padx : padx);
 					
 					dd->vertex(x,va[1]-pady,va[2], col);
 					dd->vertex(x,va[1]+pady,va[2], col);
@@ -450,7 +381,7 @@ static void drawMeshTilePortal(duDebugDraw* dd, const dtMeshTile* tile)
 				{
 					unsigned int col = side == 2 ? duRGBA(0,128,0,128) : duRGBA(0,128,128,128);
 
-					const float z = va[2] + ((side == 2) ? -0.02f : 0.02f);
+					const float z = va[2] + ((side == 2) ? -padx : padx);
 					
 					dd->vertex(va[0],va[1]-pady,z, col);
 					dd->vertex(va[0],va[1]+pady,z, col);
@@ -507,17 +438,17 @@ void duDebugDrawNavMeshPoly(duDebugDraw* dd, const dtNavMesh& mesh, dtPolyRef re
 {
 	if (!dd) return;
 	
-	int ip = 0;
-	const dtMeshTile* tile = mesh.getTileByPolyRef(ref, &ip);
-	if (!tile)
+	const dtMeshTile* tile = 0;
+	const dtPoly* poly = 0;
+	if (!mesh.getTileAndPolyByRef(ref, &tile, &poly))
 		return;
-	const dtPoly* p = &tile->polys[ip];
 	
 	dd->depthMask(false);
 	
 	const unsigned int c = (col & 0x00ffffff) | (64 << 24);
-	
-	if (p->type == DT_POLYTYPE_OFFMESH_CONNECTION)
+	const unsigned int ip = (unsigned int)(poly - tile->polys);
+
+	if (poly->type == DT_POLYTYPE_OFFMESH_CONNECTION)
 	{
 		dtOffMeshConnection* con = &tile->offMeshCons[ip - tile->header->offMeshBase];
 
@@ -528,7 +459,6 @@ void duDebugDrawNavMeshPoly(duDebugDraw* dd, const dtNavMesh& mesh, dtPolyRef re
 					(con->flags & 1) ? 0.6f : 0, 0.6f, c);
 		
 		dd->end();
-
 	}
 	else
 	{
@@ -540,10 +470,10 @@ void duDebugDrawNavMeshPoly(duDebugDraw* dd, const dtNavMesh& mesh, dtPolyRef re
 			const unsigned char* t = &tile->detailTris[(pd->triBase+i)*4];
 			for (int j = 0; j < 3; ++j)
 			{
-				if (t[j] < p->vertCount)
-					dd->vertex(&tile->verts[p->verts[t[j]]*3], c);
+				if (t[j] < poly->vertCount)
+					dd->vertex(&tile->verts[poly->verts[t[j]]*3], c);
 				else
-					dd->vertex(&tile->detailVerts[(pd->vertBase+t[j]-p->vertCount)*3], c);
+					dd->vertex(&tile->detailVerts[(pd->vertBase+t[j]-poly->vertCount)*3], c);
 			}
 		}
 		dd->end();

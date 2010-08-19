@@ -79,7 +79,7 @@ int main(int /*argc*/, char** /*argv*/)
 	
 	const SDL_VideoInfo* vi = SDL_GetVideoInfo();
 
-	const bool presentationMode = false;
+	bool presentationMode = false;
 
 	int width, height;
 	SDL_Surface* screen = 0;
@@ -113,6 +113,7 @@ int main(int /*argc*/, char** /*argv*/)
 	}
 	
 	float t = 0.0f;
+	float timeAcc = 0.0f;
 	Uint32 lastTime = SDL_GetTicks();
 	int mx = 0, my = 0;
 	float rx = 45;
@@ -363,6 +364,7 @@ int main(int /*argc*/, char** /*argv*/)
 		
 		t += dt;
 
+
 		// Hit test mesh.
 		if (processHitTest && geom && sample)
 		{
@@ -383,7 +385,7 @@ int main(int /*argc*/, char** /*argv*/)
 					pos[0] = rays[0] + (raye[0] - rays[0])*t;
 					pos[1] = rays[1] + (raye[1] - rays[1])*t;
 					pos[2] = rays[2] + (raye[2] - rays[2])*t;
-					sample->handleClick(pos, processHitTestShift);
+					sample->handleClick(rays, pos, processHitTestShift);
 				}
 			}
 			else
@@ -396,7 +398,22 @@ int main(int /*argc*/, char** /*argv*/)
 			}
 		}
 		
-		
+		// Update sample simulation.
+		const float SIM_RATE = 20;
+		const float DELTA_TIME = 1.0f/SIM_RATE;
+		timeAcc = rcClamp(timeAcc+dt, -1.0f, 1.0f);
+		int simIter = 0;
+		while (timeAcc > DELTA_TIME)
+		{
+			timeAcc -= DELTA_TIME;
+			if (simIter < 5)
+			{
+				if (sample)
+					sample->handleUpdate(DELTA_TIME);
+			}
+			simIter++;
+		}
+ 		
 		// Update and render
 		glViewport(0, 0, width, height);
 		glClearColor(0.3f, 0.3f, 0.32f, 1.0f);
@@ -844,7 +861,7 @@ int main(int /*argc*/, char** /*argv*/)
 					
 					// Do the tests.
 					if (sample)
-						test->doTests(sample->getNavMesh());
+						test->doTests(sample->getNavMesh(), sample->getNavMeshQuery());
 				}
 			}				
 				
@@ -865,7 +882,7 @@ int main(int /*argc*/, char** /*argv*/)
 		// Tools
 		if (!showTestCases && showTools && showMenu && geom && sample)
 		{
-			if (imguiBeginScrollArea("Tools", 10, height - 10 - 350, 200, 350, &toolsScroll))
+			if (imguiBeginScrollArea("Tools", 10, height - 10 - 350, 250, 350, &toolsScroll))
 				mouseOverMenu = true;
 
 			sample->handleTools();

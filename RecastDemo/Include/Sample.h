@@ -21,7 +21,6 @@
 
 #include "DebugDraw.h"
 #include "RecastDump.h"
-#include "DetourNavMesh.h"
 
 
 // These are just sample areas to use consistent values across the samples.
@@ -81,6 +80,7 @@ enum SampleToolType
 	TOOL_NAVMESH_TESTER,
 	TOOL_OFFMESH_CONNECTION,
 	TOOL_CONVEX_VOLUME,
+	TOOL_CROWD,
 };
 
 struct SampleTool
@@ -90,10 +90,11 @@ struct SampleTool
 	virtual void init(class Sample* sample) = 0;
 	virtual void reset() = 0;
 	virtual void handleMenu() = 0;
-	virtual void handleClick(const float* p, bool shift) = 0;
+	virtual void handleClick(const float* s, const float* p, bool shift) = 0;
 	virtual void handleRender() = 0;
 	virtual void handleRenderOverlay(double* proj, double* model, int* view) = 0;
 	virtual void handleStep() = 0;
+	virtual void handleUpdate(const float dt) = 0;
 };
 
 
@@ -101,7 +102,8 @@ class Sample
 {
 protected:
 	class InputGeom* m_geom;
-	dtNavMesh* m_navMesh;
+	class dtNavMesh* m_navMesh;
+	class dtNavMeshQuery* m_navQuery;
 	unsigned char m_navMeshDrawFlags;
 
 	float m_cellSize;
@@ -129,15 +131,17 @@ public:
 	virtual void handleSettings();
 	virtual void handleTools();
 	virtual void handleDebugMode();
-	virtual void handleClick(const float* p, bool shift);
+	virtual void handleClick(const float* s, const float* p, bool shift);
 	virtual void handleStep();
 	virtual void handleRender();
 	virtual void handleRenderOverlay(double* proj, double* model, int* view);
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
+	virtual void handleUpdate(const float dt);
 
 	virtual class InputGeom* getInputGeom() { return m_geom; }
 	virtual class dtNavMesh* getNavMesh() { return m_navMesh; }
+	virtual class dtNavMeshQuery* getNavMeshQuery() { return m_navQuery; }
 	virtual float getAgentRadius() { return m_agentRadius; }
 	virtual float getAgentHeight() { return m_agentHeight; }
 	virtual float getAgentClimb() { return m_agentMaxClimb; }

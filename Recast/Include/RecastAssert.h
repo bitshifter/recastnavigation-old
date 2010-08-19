@@ -15,17 +15,15 @@
 //    misrepresented as being the original software.
 // 3. This notice may not be removed or altered from any source distribution.
 //
-#ifndef RECAST_TIMER_H
-#define RECAST_TIMER_H
 
-#ifdef __GNUC__
-#include <stdint.h>
-typedef int64_t rcTimeVal;
+#ifndef RECASTASSERT_H
+#define RECASTASSERT_H
+
+#ifdef NDEBUG
+#	define rcAssert(x)
 #else
-typedef __int64 rcTimeVal;
+#	include <assert.h> 
+#	define rcAssert assert
 #endif
 
-rcTimeVal rcGetPerformanceTimer();
-int rcGetDeltaTimeUsec(rcTimeVal start, rcTimeVal end);
-
-#endif // RECAST_TIMER_H
+#endif // RECASTASSERT_H

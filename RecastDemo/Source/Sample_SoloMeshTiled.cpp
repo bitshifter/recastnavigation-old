@@ -35,6 +35,7 @@
 #include "NavMeshTesterTool.h"
 #include "OffMeshConnectionTool.h"
 #include "ConvexVolumeTool.h"
+#include "CrowdTool.h"
 
 #ifdef WIN32
 #	define snprintf _snprintf
@@ -78,7 +79,7 @@ public:
 		imguiValue("Click LMB to highlight a tile.");
 	}
 	
-	virtual void handleClick(const float* p, bool /*shift*/)
+	virtual void handleClick(const float* /*s*/, const float* p, bool /*shift*/)
 	{
 		m_hitPosSet = true;
 		rcVcopy(m_hitPos,p);
@@ -88,6 +89,8 @@ public:
 	
 	virtual void handleStep() {}
 	
+	virtual void handleUpdate(const float /*dt*/) {}
+
 	virtual void handleRender()
 	{
 		if (m_hitPosSet)
@@ -215,15 +218,23 @@ void Sample_SoloMeshTiled::handleTools()
 	{
 		setTool(new ConvexVolumeTool);
 	}
+	if (imguiCheck("Create Crowds", type == TOOL_CROWD))
+	{
+		setTool(new CrowdTool);
+	}
 	if (imguiCheck("Highlight Tile", type == TOOL_TILE_HIGHLIGHT))
 	{
 		setTool(new TileHighlightTool);
 	}
 	
-	imguiSeparator();
-	
+	imguiSeparatorLine();
+
+	imguiIndent();
+
 	if (m_tool)
 		m_tool->handleMenu();
+
+	imguiUnindent();
 }
 
 void Sample_SoloMeshTiled::handleDebugMode()
@@ -369,7 +380,7 @@ void Sample_SoloMeshTiled::handleRender()
 		 m_drawMode == DRAWMODE_NAVMESH_INVIS))
 	{
 		if (m_drawMode != DRAWMODE_NAVMESH_INVIS)
-			duDebugDrawNavMesh(&dd, *m_navMesh, m_navMeshDrawFlags);
+			duDebugDrawNavMeshWithClosedList(&dd, *m_navMesh, *m_navQuery, m_navMeshDrawFlags);
 		if (m_drawMode == DRAWMODE_NAVMESH_BVTREE)
 			duDebugDrawNavMeshBVTree(&dd, *m_navMesh);
 	}
@@ -709,7 +720,7 @@ bool Sample_SoloMeshTiled::handleBuild()
 	m_cfg.mergeRegionSize = (int)rcSqr(m_regionMergeSize);
 	m_cfg.maxVertsPerPoly = (int)m_vertsPerPoly;
 	m_cfg.tileSize = (int)m_tileSize;
-	m_cfg.borderSize = m_cfg.walkableRadius + 4; // Reserve enough padding.
+	m_cfg.borderSize = m_cfg.walkableRadius + 3; // Reserve enough padding.
 	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	m_cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
 		
@@ -1095,11 +1106,18 @@ bool Sample_SoloMeshTiled::handleBuild()
 			return false;
 		}
 		
-		if (!m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA, 2048))
+		if (!m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA))
 		{
 			dtFree(navData);
 			if (rcGetLog())
 				rcGetLog()->log(RC_LOG_ERROR, "Could not init Detour navmesh");
+			return false;
+		}
+
+		if (!m_navQuery->init(m_navMesh, 2048))
+		{
+			if (rcGetLog())
+				rcGetLog()->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
 			return false;
 		}
 	}

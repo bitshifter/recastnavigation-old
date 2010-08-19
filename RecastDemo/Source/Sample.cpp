@@ -24,6 +24,8 @@
 #include "Recast.h"
 #include "RecastDebugDraw.h"
 #include "DetourDebugDraw.h"
+#include "DetourNavMesh.h"
+#include "DetourNavMeshQuery.h"
 #include "imgui.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -137,15 +139,18 @@ bool FileIO::read(void* ptr, const size_t size)
 Sample::Sample() :
 	m_geom(0),
 	m_navMesh(0),
-	m_navMeshDrawFlags(DU_DRAWNAVMESH_CLOSEDLIST|DU_DRAWNAVMESH_OFFMESHCONS),
+	m_navQuery(0),
+	m_navMeshDrawFlags(DU_DRAWNAVMESH_OFFMESHCONS),
 	m_tool(0)
 {
 	resetCommonSettings();
+	m_navQuery = dtAllocNavMeshQuery();
 }
 
 Sample::~Sample()
 {
-	delete m_navMesh;
+	dtFreeNavMeshQuery(m_navQuery);
+	dtFreeNavMesh(m_navMesh);
 	delete m_tool;
 }
 
@@ -266,10 +271,10 @@ void Sample::handleCommonSettings()
 	imguiSeparator();
 }
 
-void Sample::handleClick(const float* p, bool shift)
+void Sample::handleClick(const float* s, const float* p, bool shift)
 {
 	if (m_tool)
-		m_tool->handleClick(p, shift);
+		m_tool->handleClick(s, p, shift);
 }
 
 void Sample::handleStep()
@@ -282,3 +287,10 @@ bool Sample::handleBuild()
 {
 	return true;
 }
+
+void Sample::handleUpdate(const float dt)
+{
+	if (m_tool)
+		m_tool->handleUpdate(dt);
+}
+
