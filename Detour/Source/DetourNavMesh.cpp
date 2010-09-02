@@ -28,27 +28,6 @@
 #include <new>
 
 
-inline int opposite(int side) { return (side+4) & 0x7; }
-
-inline bool overlapBoxes(const float* amin, const float* amax,
-						 const float* bmin, const float* bmax)
-{
-	bool overlap = true;
-	overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-	overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
-	overlap = (amin[2] > bmax[2] || amax[2] < bmin[2]) ? false : overlap;
-	return overlap;
-}
-
-inline bool overlapRects(const float* amin, const float* amax,
-						 const float* bmin, const float* bmax)
-{
-	bool overlap = true;
-	overlap = (amin[0] > bmax[0] || amax[0] < bmin[0]) ? false : overlap;
-	overlap = (amin[1] > bmax[1] || amax[1] < bmin[1]) ? false : overlap;
-	return overlap;
-}
-
 inline bool overlapSlabs(const float* amin, const float* amax,
 						 const float* bmin, const float* bmax,
 						 const float px, const float py)
@@ -149,7 +128,9 @@ inline void freeLink(dtMeshTile* tile, unsigned int link)
 
 dtNavMesh* dtAllocNavMesh()
 {
-	return new(dtAlloc(sizeof(dtNavMesh), DT_ALLOC_PERM)) dtNavMesh;
+	void* mem = dtAlloc(sizeof(dtNavMesh), DT_ALLOC_PERM);
+	if (!mem) return 0;
+	return new(mem) dtNavMesh;
 }
 
 void dtFreeNavMesh(dtNavMesh* navmesh)
@@ -223,8 +204,8 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 	}
 	
 	// Init ID generator values.
-	m_tileBits = dtMax((unsigned int)1, dtIlog2(dtNextPow2((unsigned int)params->maxTiles)));
-	m_polyBits = dtMax((unsigned int)1, dtIlog2(dtNextPow2((unsigned int)params->maxPolys)));
+	m_tileBits = dtIlog2(dtNextPow2((unsigned int)params->maxTiles));
+	m_polyBits = dtIlog2(dtNextPow2((unsigned int)params->maxPolys));
 	m_saltBits = 32 - m_tileBits - m_polyBits;
 	if (m_saltBits < 10)
 		return false;
@@ -358,7 +339,7 @@ void dtNavMesh::connectExtLinks(dtMeshTile* tile, dtMeshTile* target, int side)
 			const float* vb = &tile->verts[poly->verts[(j+1) % nv]*3];
 			dtPolyRef nei[4];
 			float neia[4*2];
-			int nnei = findConnectingPolys(va,vb, target, opposite(side), nei,neia,4);
+			int nnei = findConnectingPolys(va,vb, target, dtOppositeTile(side), nei,neia,4);
 			for (int k = 0; k < nnei; ++k)
 			{
 				unsigned int idx = allocLink(tile);
@@ -403,7 +384,7 @@ void dtNavMesh::connectExtOffMeshLinks(dtMeshTile* tile, dtMeshTile* target, int
 	
 	// Connect off-mesh links.
 	// We are interested on links which land from target tile to this tile.
-	const unsigned char oppositeSide = (unsigned char)opposite(side);
+	const unsigned char oppositeSide = (unsigned char)dtOppositeTile(side);
 	
 	for (int i = 0; i < target->header->offMeshConCount; ++i)
 	{
@@ -671,7 +652,7 @@ int dtNavMesh::queryPolygonsInTile(const dtMeshTile* tile, const float* qmin, co
 		int n = 0;
 		while (node < end)
 		{
-			const bool overlap = dtCheckOverlapBox(bmin, bmax, node->bmin, node->bmax);
+			const bool overlap = dtOverlapQuantBounds(bmin, bmax, node->bmin, node->bmax);
 			const bool isLeafNode = node->i >= 0;
 			
 			if (isLeafNode && overlap)
@@ -709,7 +690,7 @@ int dtNavMesh::queryPolygonsInTile(const dtMeshTile* tile, const float* qmin, co
 				dtVmin(bmin, v);
 				dtVmax(bmax, v);
 			}
-			if (overlapBoxes(qmin,qmax, bmin,bmax))
+			if (dtOverlapBounds(qmin,qmax, bmin,bmax))
 			{
 				if (n < maxPolys)
 					polys[n++] = base | (dtPolyRef)i;
@@ -825,9 +806,9 @@ dtTileRef dtNavMesh::addTile(unsigned char* data, int dataSize, int flags, dtTil
 		if (nei)
 		{
 			connectExtLinks(tile, nei, i);
-			connectExtLinks(nei, tile, opposite(i));
+			connectExtLinks(nei, tile, dtOppositeTile(i));
 			connectExtOffMeshLinks(tile, nei, i);
-			connectExtOffMeshLinks(nei, tile, opposite(i));
+			connectExtOffMeshLinks(nei, tile, dtOppositeTile(i));
 		}
 	}
 	
@@ -903,7 +884,7 @@ const dtMeshTile* dtNavMesh::getTile(int i) const
 	return &m_tiles[i];
 }
 
-void dtNavMesh::calcTileLoc(const float* pos, int* tx, int* ty)
+void dtNavMesh::calcTileLoc(const float* pos, int* tx, int* ty) const
 {
 	*tx = (int)floorf((pos[0]-m_orig[0]) / m_tileWidth);
 	*ty = (int)floorf((pos[2]-m_orig[2]) / m_tileHeight);
@@ -984,7 +965,7 @@ bool dtNavMesh::removeTile(dtTileRef ref, unsigned char** data, int* dataSize)
 	{
 		dtMeshTile* nei = getNeighbourTileAt(tile->header->x,tile->header->y,i);
 		if (!nei) continue;
-		unconnectExtLinks(nei, opposite(i));
+		unconnectExtLinks(nei, dtOppositeTile(i));
 	}
 	
 	

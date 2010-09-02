@@ -21,42 +21,10 @@
 
 #include "Sample.h"
 #include "DetourNavMesh.h"
+#include "DetourObstacleAvoidance.h"
+#include "ValueHistory.h"
 
 // Tool to create crowds.
-
-
-enum BodyType
-{
-	BODY_CIRCLE = 0,
-	BODY_CAPSULE = 1,
-};
-
-struct Body
-{
-	float p[3], q[3];		// Position of the obstacle
-	float vel[3];			// Velocity of the obstacle
-	float dvel[3];			// Velocity of the obstacle
-	float rad;				// Radius of the obstacle
-	int type;				// Type of the obstacle (see ObstacleType)
-};
-
-
-static const int RVO_SAMPLE_RAD = 15;
-static const int MAX_RVO_SAMPLES = (RVO_SAMPLE_RAD*2+1)*(RVO_SAMPLE_RAD*2+1) + 100;
-
-struct RVO
-{
-	inline RVO() : ns(0) {}
-	float spos[MAX_RVO_SAMPLES*3];
-	float scs[MAX_RVO_SAMPLES];
-	float spen[MAX_RVO_SAMPLES];
-	float svpen[MAX_RVO_SAMPLES];
-	float svcpen[MAX_RVO_SAMPLES];
-	float sspen[MAX_RVO_SAMPLES];
-	float stpen[MAX_RVO_SAMPLES];
-	
-	int ns;
-};
 
 enum AgentTargetState
 {
@@ -71,6 +39,7 @@ static const int AGENT_MAX_PATH = 256;
 static const int AGENT_MAX_CORNERS = 4;
 static const int AGENT_MAX_TRAIL = 64;
 static const int AGENT_MAX_COLSEGS = 32;
+static const int AGENT_MAX_NEIS = 8;
 
 enum AgentApproach
 {
@@ -90,12 +59,12 @@ struct Agent
 	float npos[3];
 	float disp[3];
 
+	float opts[3], opte[3];
+
 	float maxspeed;
 	float t;
 	float var;
 
-	RVO rvo;
-	
 	float colradius;
 	float colcenter[3];
 	float colsegs[AGENT_MAX_COLSEGS*6];
@@ -116,6 +85,34 @@ struct Agent
 	unsigned char active;
 };
 
+
+
+struct Isect
+{
+	float u;
+	int inside;
+};
+
+static const int FORM_MAX_ISECT = 32;
+static const int FORM_MAX_SEGS = 16;
+static const int FORM_MAX_POLYS = 32;
+
+struct FormationSeg
+{
+	float p[3], q[3];
+	Isect ints[FORM_MAX_ISECT];
+	int nints;
+};
+
+struct Formation
+{
+	FormationSeg segs[FORM_MAX_SEGS];
+	int nsegs;
+	dtPolyRef polys[FORM_MAX_POLYS];
+	int npolys;
+};
+
+
 enum UpdateFlags
 {
 	CROWDMAN_ANTICIPATE_TURNS = 1,
@@ -127,7 +124,14 @@ class CrowdManager
 {
 	static const int MAX_AGENTS = 32;
 	Agent m_agents[MAX_AGENTS];
-	int m_shortcutIter;
+	dtObstacleAvoidanceDebugData* m_vodebug[MAX_AGENTS];
+
+	ValueHistory m_totalTime;
+	ValueHistory m_rvoTime;
+	ValueHistory m_sampleCount;
+	
+	dtObstacleAvoidanceQuery* m_obstacleQuery;
+
 public:
 	CrowdManager();
 	~CrowdManager();
@@ -140,6 +144,12 @@ public:
 	void setMoveTarget(const int idx, const float* pos);
 
 	void update(const float dt, unsigned int flags, dtNavMeshQuery* navquery);
+
+	const dtObstacleAvoidanceDebugData* getVODebugData(const int idx) const { return m_vodebug[idx]; }
+
+	const ValueHistory* getTotalTimeGraph() const { return &m_totalTime; }
+	const ValueHistory* getRVOTimeGraph() const { return &m_rvoTime; }
+	const ValueHistory* getSampleCountGraph() const { return &m_sampleCount; }
 };
 
 class CrowdTool : public SampleTool
@@ -148,6 +158,8 @@ class CrowdTool : public SampleTool
 	float m_targetPos[3];
 	bool m_targetPosSet;
 	
+	Formation m_form;
+	
 	bool m_expandDebugDraw;
 	bool m_showLabels;
 	bool m_showCorners;
@@ -155,6 +167,7 @@ class CrowdTool : public SampleTool
 	bool m_showCollisionSegments;
 	bool m_showPath;
 	bool m_showVO;
+	bool m_showOpt;
 	
 	bool m_expandOptions;
 	bool m_anticipateTurns;
@@ -164,7 +177,7 @@ class CrowdTool : public SampleTool
 	bool m_run;
 	
 	CrowdManager m_crowd;
-	
+		
 	enum ToolMode
 	{
 		TOOLMODE_CREATE,

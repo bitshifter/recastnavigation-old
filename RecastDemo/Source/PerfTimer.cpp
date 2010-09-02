@@ -16,22 +16,45 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef DETOURDEBUGDRAW_H
-#define DETOURDEBUGDRAW_H
+#include "PerfTimer.h"
 
-#include "DetourNavMesh.h"
-#include "DetourNavMeshQuery.h"
+#if defined(WIN32)
 
-enum DrawNavMeshFlags
+// Win32
+#include <windows.h>
+
+TimeVal getPerfTime()
 {
-	DU_DRAWNAVMESH_OFFMESHCONS = 0x01,
-};
+	__int64 count;
+	QueryPerformanceCounter((LARGE_INTEGER*)&count);
+	return count;
+}
 
-void duDebugDrawNavMesh(struct duDebugDraw* dd, const dtNavMesh& mesh, unsigned char flags);
-void duDebugDrawNavMeshWithClosedList(struct duDebugDraw* dd, const dtNavMesh& mesh, const dtNavMeshQuery& query, unsigned char flags);
-void duDebugDrawNavMeshNodes(struct duDebugDraw* dd, const dtNavMeshQuery& query);
-void duDebugDrawNavMeshBVTree(struct duDebugDraw* dd, const dtNavMesh& mesh);
-void duDebugDrawNavMeshPortals(struct duDebugDraw* dd, const dtNavMesh& mesh);
-void duDebugDrawNavMeshPoly(struct duDebugDraw* dd, const dtNavMesh& mesh, dtPolyRef ref, const unsigned int col);
+int getPerfDeltaTimeUsec(const TimeVal start, const TimeVal end)
+{
+	static __int64 freq = 0;
+	if (freq == 0)
+		QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
+	__int64 elapsed = end - start;
+	return (int)(elapsed*1000000 / freq);
+}
 
-#endif // DETOURDEBUGDRAW_H
+#else
+
+// Linux, BSD, OSX
+
+#include <sys/time.h>
+
+TimeVal getPerfTime()
+{
+	timeval now;
+	gettimeofday(&now, 0);
+	return (TimeVal)now.tv_sec*1000000L + (TimeVal)now.tv_usec;
+}
+
+int getPerfDeltaTimeUsec(const TimeVal start, const TimeVal end)
+{
+	return (int)(end - start);
+}
+
+#endif

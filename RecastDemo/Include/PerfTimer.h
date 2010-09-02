@@ -16,22 +16,17 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#ifndef DETOURDEBUGDRAW_H
-#define DETOURDEBUGDRAW_H
+#ifndef PERFTIMER_H
+#define PERFTIMER_H
 
-#include "DetourNavMesh.h"
-#include "DetourNavMeshQuery.h"
+#ifdef __GNUC__
+#include <stdint.h>
+typedef int64_t TimeVal;
+#else
+typedef __int64 TimeVal;
+#endif
 
-enum DrawNavMeshFlags
-{
-	DU_DRAWNAVMESH_OFFMESHCONS = 0x01,
-};
+TimeVal getPerfTime();
+int getPerfDeltaTimeUsec(const TimeVal start, const TimeVal end);
 
-void duDebugDrawNavMesh(struct duDebugDraw* dd, const dtNavMesh& mesh, unsigned char flags);
-void duDebugDrawNavMeshWithClosedList(struct duDebugDraw* dd, const dtNavMesh& mesh, const dtNavMeshQuery& query, unsigned char flags);
-void duDebugDrawNavMeshNodes(struct duDebugDraw* dd, const dtNavMeshQuery& query);
-void duDebugDrawNavMeshBVTree(struct duDebugDraw* dd, const dtNavMesh& mesh);
-void duDebugDrawNavMeshPortals(struct duDebugDraw* dd, const dtNavMesh& mesh);
-void duDebugDrawNavMeshPoly(struct duDebugDraw* dd, const dtNavMesh& mesh, dtPolyRef ref, const unsigned int col);
-
-#endif // DETOURDEBUGDRAW_H
+#endif // PERFTIMER_H

@@ -28,11 +28,17 @@
 #include "InputGeom.h"
 #include "Sample.h"
 #include "DetourDebugDraw.h"
+#include "DetourObstacleAvoidance.h"
 #include "DetourCommon.h"
+#include "SampleInterfaces.h"
 
 #ifdef WIN32
 #	define snprintf _snprintf
 #endif
+
+static const int VO_ADAPTIVE_GRID_SIZE = 4;
+static const int VO_ADAPTIVE_GRID_DEPTH = 5;
+static const int VO_GRID_SIZE = 33;
 
 
 static bool isectSegAABB(const float* sp, const float* sq,
@@ -180,353 +186,36 @@ static void getAgentBounds(const Agent* ag, float* bmin, float* bmax)
 }
 
 
-
-static void normalizeArray(float* arr, const int n)
-{
-	// Normalize penaly range.
-	float minPen = FLT_MAX;
-	float maxPen = -FLT_MAX;
-	for (int i = 0; i < n; ++i)
-	{
-		minPen = dtMin(minPen, arr[i]);
-		maxPen = dtMax(maxPen, arr[i]);
-	}
-	const float penRange = maxPen-minPen;
-	const float s = penRange > 0.001f ? (1.0f / penRange) : 1;
-	for (int i = 0; i < n; ++i)
-		arr[i] = dtClamp((arr[i]-minPen)*s, 0.0f, 1.0f);
-}
-
-void normalizeSamples(RVO* rvo)
-{
-	normalizeArray(rvo->spen, rvo->ns);
-	normalizeArray(rvo->svpen, rvo->ns);
-	normalizeArray(rvo->svcpen, rvo->ns);
-	normalizeArray(rvo->sspen, rvo->ns);
-	normalizeArray(rvo->stpen, rvo->ns);
-}
-
-
-void setDynCircleBody(Body* b, const float* pos, const float rad, const float* vel, const float* dvel)
-{
-	b->type = BODY_CIRCLE;
-	dtVcopy(b->p, pos);
-	dtVcopy(b->vel, vel);
-	dtVcopy(b->dvel, dvel);
-	b->rad = rad;
-}
-
-void setStatCircleBody(Body* b, const float* pos, const float rad)
-{
-	b->type = BODY_CIRCLE;
-	dtVcopy(b->p, pos);
-	dtVset(b->vel, 0,0,0);
-	dtVset(b->dvel, 0,0,0);
-	b->rad = rad;
-}
-
-void setStatCapsuleBody(Body* b, const float* p, const float* q, const float rad)
-{
-	b->type = BODY_CAPSULE;
-	dtVcopy(b->p, p);
-	dtVcopy(b->q, q);
-	dtVset(b->vel, 0,0,0);
-	dtVset(b->dvel, 0,0,0);
-	b->rad = rad;
-}
-
-static const float VEL_WEIGHT = 2.0f;
-static const float CUR_VEL_WEIGHT = 0.75f;
-static const float SIDE_WEIGHT = 0.75f;
-static const float TOI_WEIGHT = 2.5f;
-
-static int sweepCircleCircle(const float* c0, const float r0, const float* v,
-							 const float* c1, const float r1,
-							 float& tmin, float& tmax)
-{
-	static const float EPS = 0.0001f;
-	float s[3];
-	dtVsub(s,c1,c0);
-	float r = r0+r1;
-	float c = dtVdot2D(s,s) - r*r;
-	float a = dtVdot2D(v,v);
-	if (a < EPS) return 0;	// not moving
-	
-	// Overlap, calc time to exit.
-	float b = dtVdot2D(v,s);
-	float d = b*b - a*c;
-	if (d < 0.0f) return 0; // no intersection.
-	tmin = (b - dtSqrt(d)) / a;
-	tmax = (b + dtSqrt(d)) / a;
-	return 1;
-}
-
-static int sweepCircleSegment(const float* c0, const float r0, const float* v,
-							  const float* sa, const float* sb, const float sr,
-							  float& tmin, float &tmax)
-{
-	// equation parameters
-	float L[3], H[3];
-	dtVsub(L, sb, sa);
-	dtVsub(H, c0, sa);
-	const float radius = r0+sr;
-	const float l2 = dtVdot2D(L, L);
-	const float r2 = radius * radius;
-	const float dl = dtVperp2D(v, L);
-	const float hl = dtVperp2D(H, L);
-	const float a = dl * dl;
-	const float b = 2.0f * hl * dl;
-	const float c = hl * hl - (r2 * l2);
-	float d = (b*b) - (4.0f * a * c);
-	
-	// infinite line missed by infinite ray.
-	if (d < 0.0f)
-		return 0;
-	
-	const float i2a = 1.0f/(2*a);
-	d = dtSqrt(d);
-	tmin = (-b - d) * i2a;
-	tmax = (-b + d) * i2a;
-	
-	// line missed by ray range.
-	/*	if (tmax < 0.0f || tmin > 1.0f)
-	 return 0;*/
-	
-	// find what part of the ray was collided.
-	const float il2 = 1.0f / l2;
-	float Pedge[3];
-	dtVmad(Pedge, c0, v, tmin);
-	dtVsub(H, Pedge, sa);
-	const float e0 = dtVdot2D(H, L) * il2;
-	dtVmad(Pedge, c0, v, tmax);
-	dtVsub(H, Pedge, sa);
-	const float e1 = dtVdot2D(H, L) * il2;
-	
-	if (e0 < 0.0f || e1 < 0.0f)
-	{
-		float ctmin, ctmax;
-		if (sweepCircleCircle(c0, r0, v, sa, sr, ctmin, ctmax))
-		{
-			if (e0 < 0.0f && ctmin > tmin)
-				tmin = ctmin;
-			if (e1 < 0.0f && ctmax < tmax)
-				tmax = ctmax;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	
-	if (e0 > 1.0f || e1 > 1.0f)
-	{
-		float ctmin, ctmax;
-		if (sweepCircleCircle(c0, r0, v, sb, sr, ctmin, ctmax))
-		{
-			if (e0 > 1.0f && ctmin > tmin)
-				tmin = ctmin;
-			if (e1 > 1.0f && ctmax < tmax)
-				tmax = ctmax;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	
-	return 1;
-}
-
-static void processSamples(Body* agent, const float vmax,
-						   const Body* obs, const int nobs, RVO* rvo,
-						   const float* spos, const float cs, const int nspos,
-						   float* res)
-{
-	dtVset(res, 0,0,0);
-	
-	const float ivmax = 1.0f / vmax;
-	
-	// Max time of collision to be considered.
-	const float maxToi = 2.5f;
-	
-	float minPenalty = FLT_MAX;
-	
-	for (int n = 0; n < nspos; ++n)
-	{
-		float vcand[3];
-		dtVcopy(vcand, &spos[n*3]);		
-		dtVcopy(&rvo->spos[rvo->ns*3], &spos[n*3]);
-		rvo->scs[rvo->ns] = cs;
-		
-		// Find min time of impact and exit amongst all obstacles.
-		float tmin = maxToi;
-		float side = 0;
-		int nside = 0;
-		
-		for (int i = 0; i < nobs; ++i)
-		{
-			const Body* ob = &obs[i];
-			float htmin = 0, htmax = 0;
-			
-			if (ob->type == BODY_CIRCLE)
-			{
-				float vab[3];
-				
-				// Moving, use RVO
-				dtVscale(vab, vcand, 2);
-				dtVsub(vab, vab, agent->vel);
-				dtVsub(vab, vab, ob->vel);
-				
-				// Side
-				// NOTE: dp, and dv are constant over the whole calculation,
-				// they can be precomputed per object. 
-				const float* pa = agent->p;
-				const float* pb = ob->p;
-				
-				const float orig[3] = {0,0};
-				float dp[3],dv[3],np[3];
-				dtVsub(dp,pb,pa);
-				dtVnormalize(dp);
-				dtVsub(dv, ob->dvel, agent->dvel);
-				
-				const float a = dtTriArea2D(orig, dp,dv);
-				if (a < 0.01f)
-				{
-					np[0] = -dp[2];
-					np[2] = dp[0];
-				}
-				else
-				{
-					np[0] = dp[2];
-					np[2] = -dp[0];
-				}
-				
-				side += dtClamp(dtMin(dtVdot2D(dp,vab)*2,dtVdot2D(np,vab)*2), 0.0f, 1.0f);
-				nside++;
-				
-				if (!sweepCircleCircle(agent->p,agent->rad, vab, ob->p,ob->rad, htmin, htmax))
-					continue;
-				
-				// Handle overlapping obstacles.
-				if (htmin < 0.0f && htmax > 0.0f)
-				{
-					// Avoid more when overlapped.
-					htmin = -htmin * 0.5f;
-				}
-			}
-			else if (ob->type == BODY_CAPSULE)
-			{
-				// NOTE: the segments are assumed to come from a navmesh which is shrunken by
-				// the agent radius, hence the use of really small radius.
-				// This can be handle more efficiently by using seg-seg test instead.
-				// If the whole segment is to be treated as obstacle, use agent->rad instead of 0.01f!
-				const float r = 0.01f; // agent->rad
-
-				float t;
-				if (dtDistancePtSegSqr2D(agent->p, ob->p, ob->q, t) < dtSqr(r+ob->rad))
-				{
-					float sdir[3], snorm[3];
-					dtVsub(sdir, ob->q, ob->p);
-					snorm[0] = -sdir[2];
-					snorm[2] = sdir[0];
-					// If the velocity is pointing towards the segment, no collision.
-					if (dtVdot2D(snorm, vcand) < 0.0f)
-						continue;
-					// Else immediate collision.
-					htmin = 0.0f;
-					htmax = 10.0f;
-				}
-				else
-				{
-					if (!sweepCircleSegment(agent->p, r, vcand, ob->p, ob->q, ob->rad, htmin, htmax))
-						continue;
-				}
-				
-				// Avoid less when facing walls.
-				htmin *= 2.0f;
-			}
-			
-			if (htmin >= 0.0f)
-			{
-				// The closest obstacle is somewhere ahead of us, keep track of nearest obstacle.
-				if (htmin < tmin)
-					tmin = htmin;
-			}
-		}
-		
-		// Normalize side bias, to prevent it dominating too much.
-		if (nside)
-			side /= nside;
-		
-		const float vpen = VEL_WEIGHT * (dtVdist2D(vcand, agent->dvel) * ivmax);
-		const float vcpen = CUR_VEL_WEIGHT * (dtVdist2D(vcand, agent->vel) * ivmax);
-		const float spen = SIDE_WEIGHT * side;
-		const float tpen = TOI_WEIGHT * (1.0f/(0.1f+tmin/maxToi));
-		
-		const float penalty = vpen + vcpen + spen + tpen;
-		
-		if (penalty < minPenalty)
-		{
-			minPenalty = penalty;
-			dtVcopy(res, vcand);
-		}
-		
-		// Store different penalties for debug viewing
-		rvo->spen[rvo->ns] = penalty;
-		rvo->svpen[rvo->ns] = vpen;
-		rvo->svcpen[rvo->ns] = vcpen;
-		rvo->sspen[rvo->ns] = spen;
-		rvo->stpen[rvo->ns] = tpen;
-		
-		rvo->ns++;
-	}
-}
-
-
-void sampleRVO(Body* agent, const float vmax, const Body* obs, const int nobs, RVO* rvo, const float bias, float* nvel)
-{
-	dtVset(nvel, 0,0,0);
-	
-	float spos[MAX_RVO_SAMPLES*3];
-	int nspos = 0;
-	
-	const float cvx = agent->dvel[0]*bias;
-	const float cvz = agent->dvel[2]*bias;
-	const float vrange = vmax*(1-bias);
-	const float cs = 1.0f / (float)RVO_SAMPLE_RAD*vrange;
-	
-	for (int z = -RVO_SAMPLE_RAD; z <= RVO_SAMPLE_RAD; ++z)
-	{
-		for (int x = -RVO_SAMPLE_RAD; x <= RVO_SAMPLE_RAD; ++x)
-		{
-			if (nspos < MAX_RVO_SAMPLES)
-			{
-				const float vx = cvx + (float)(x+0.5f)*cs;
-				const float vz = cvz + (float)(z+0.5f)*cs;
-				if (dtSqr(vx)+dtSqr(vz) > dtSqr(vmax+cs/2)) continue;
-				spos[nspos*3+0] = vx;
-				spos[nspos*3+1] = 0;
-				spos[nspos*3+2] = vz;
-				nspos++;
-			}
-		}
-	}
-	
-	rvo->ns = 0;
-	
-	processSamples(agent, vmax, obs, nobs, rvo, spos, cs/2, nspos, nvel);
-}
-
-
-
 CrowdManager::CrowdManager() :
-	m_shortcutIter(0)
+	m_obstacleQuery(0)
 {
+
+	m_obstacleQuery = dtAllocObstacleAvoidanceQuery();
+	m_obstacleQuery->init(6, 10);
+
+	m_obstacleQuery->setDesiredVelocityWeight(2.0f);
+	m_obstacleQuery->setCurrentVelocityWeight(0.75f);
+	m_obstacleQuery->setPreferredSideWeight(0.75f);
+	m_obstacleQuery->setCollisionTimeWeight(2.5f);
+	m_obstacleQuery->setTimeHorizon(2.5f);
+	m_obstacleQuery->setVelocitySelectionBias(0.4f);
+	
+	memset(m_vodebug, 0, sizeof(m_vodebug));
+	const int sampleCount = dtMax(VO_GRID_SIZE*VO_GRID_SIZE, (VO_ADAPTIVE_GRID_SIZE*VO_ADAPTIVE_GRID_SIZE)*VO_ADAPTIVE_GRID_DEPTH);
+	for (int i = 0; i < MAX_AGENTS; ++i)
+	{
+		m_vodebug[i] = dtAllocObstacleAvoidanceDebugData();
+		m_vodebug[i]->init(sampleCount);
+	}
+	
 	reset();
 }
 
 CrowdManager::~CrowdManager()
 {
+	for (int i = 0; i < MAX_AGENTS; ++i)
+		dtFreeObstacleAvoidanceDebugData(m_vodebug[i]);
+	dtFreeObstacleAvoidanceQuery(m_obstacleQuery);
 }
 
 void CrowdManager::reset()
@@ -620,9 +309,11 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 	if (!navquery)
 		return;
 	
+	TimeVal startTime = getPerfTime();
+	
 	const float ext[3] = {2,4,2};
 	dtQueryFilter filter;
-	
+		
 	// Update target and agent navigation state.
 	for (int i = 0; i < MAX_AGENTS; ++i)
 	{
@@ -675,16 +366,16 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 		if (ag->npath && dtVdist2DSqr(ag->pos, ag->colcenter) > dtSqr(ag->colradius*0.25f))
 		{
 			dtVcopy(ag->colcenter, ag->pos);
-			
-			static const int MAX_COL_POLYS = 32;
-			dtPolyRef polys[MAX_COL_POLYS];
-			const int npolys = navquery->findLocalNeighbourhood(ag->path[0], ag->pos, ag->colradius, &filter, polys, 0, MAX_COL_POLYS);
+			static const int MAX_LOCALS = 32;
+			dtPolyRef locals[MAX_LOCALS];
+
+			const int nlocals = navquery->findLocalNeighbourhood(ag->path[0], ag->pos, ag->colradius, &filter, locals, 0, MAX_LOCALS);
 
 			ag->ncolsegs = 0;
-			for (int j = 0; j < npolys; ++j)
+			for (int j = 0; j < nlocals; ++j)
 			{
 				float segs[DT_VERTS_PER_POLYGON*3*2];
-				const int nsegs = navquery->getPolyWallSegments(polys[j], &filter, segs);
+				const int nsegs = navquery->getPolyWallSegments(locals[j], &filter, segs);
 				for (int k = 0; k < nsegs; ++k)
 				{
 					const float* s = &segs[k*6];
@@ -701,7 +392,6 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 				}
 			}
 		}
-		
 	}
 	
 	static const float MAX_ACC = 8.0f;
@@ -758,7 +448,7 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 
 		if (!ag->ncorners)
 		{
-			// No corner to steer to, 
+			// No corner to steer to, stop.
 			dtVset(ag->dvel, 0,0,0);
 		}
 		else
@@ -802,40 +492,38 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 	}
 	
 	// Velocity planning.
-	static const int MAX_BODIES = 32;
-	Body bodies[MAX_BODIES];
+	TimeVal rvoStartTime = getPerfTime();
+
 	for (int i = 0; i < MAX_AGENTS; ++i)
 	{
 		if (!m_agents[i].active) continue;
 		if (m_agents[i].targetState != AGENT_TARGET_PATH) continue;
 		Agent* ag = &m_agents[i];
-
+		
 		if (flags & CROWDMAN_USE_VO)
 		{
-			int nbodies = 0;
-
+			m_obstacleQuery->reset();
+			
 			// Add dynamic obstacles.
 			for (int j = 0; j < MAX_AGENTS; ++j)
 			{
 				if (i == j) continue;
-				if (!m_agents[j].active) continue;
-				Agent* nei = &m_agents[j];
-
+				const int idx = j;
+				
+				if (!m_agents[idx].active) continue;
+				Agent* nei = &m_agents[idx];
+				
 				float diff[3];
 				dtVsub(diff, ag->npos, nei->npos);
 				if (fabsf(diff[1]) >= (ag->height+nei->height)/2.0f)
 					continue;
 				diff[1] = 0;
 				
-				float dist = dtVlenSqr(diff);
-				if (dist > dtSqr(ag->colradius))
+				const float distSqr = dtVlenSqr(diff);
+				if (distSqr > dtSqr(ag->colradius))
 					continue;
 				
-				if (nbodies < MAX_BODIES)
-				{
-					setDynCircleBody(&bodies[nbodies], nei->pos, nei->radius, nei->vel, nei->dvel);
-					nbodies++;
-				}
+				m_obstacleQuery->addCircle(nei->pos, nei->radius, nei->vel, nei->dvel, distSqr);
 			}
 			
 			// Add static obstacles.
@@ -844,28 +532,36 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 				const float* s = &ag->colsegs[j*6];
 				if (dtTriArea2D(ag->pos, s, s+3) < 0.0f)
 					continue;
+					
+				float tseg;
+				const float distSqr = dtDistancePtSegSqr2D(ag->pos, s, s+3, tseg);
 
-				if (nbodies < MAX_BODIES)
-				{
-					setStatCapsuleBody(&bodies[nbodies], s,s+3,0);
-					nbodies++;
-				}
+				m_obstacleQuery->addSegment(s, s+3, distSqr);
 			}
-				
-			Body agent;
-			setDynCircleBody(&agent, ag->pos, ag->radius, ag->vel, ag->dvel);
 
-			sampleRVO(&agent, ag->maxspeed, bodies, nbodies, &ag->rvo, 0.4f, ag->nvel);
+			bool adaptive = true;
 			
-			// Normalize samples for debug draw
-			normalizeSamples(&ag->rvo);
+			if (adaptive)
+			{
+				m_obstacleQuery->setSamplingGridSize(VO_ADAPTIVE_GRID_SIZE);
+				m_obstacleQuery->setSamplingGridDepth(VO_ADAPTIVE_GRID_DEPTH);
+				m_obstacleQuery->sampleVelocityAdaptive(ag->pos, ag->radius, ag->maxspeed,
+														ag->vel, ag->dvel, ag->nvel, m_vodebug[i]);
+			}
+			else
+			{
+				m_obstacleQuery->setSamplingGridSize(VO_GRID_SIZE);
+				m_obstacleQuery->sampleVelocity(ag->pos, ag->radius, ag->maxspeed, ag->vel, ag->dvel,
+												ag->nvel, m_vodebug[i]);
+			}
 		}
 		else
 		{
 			dtVcopy(ag->nvel, ag->dvel);
 		}
 	}
-		
+	TimeVal rvoEndTime = getPerfTime();
+	
 	// Integrate and update perceived velocity.
 	for (int i = 0; i < MAX_AGENTS; ++i)
 	{
@@ -896,9 +592,10 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 			if (!m_agents[i].active) continue;
 			Agent* ag = &m_agents[i];
 
-			ag->disp[0] = ag->disp[1] = ag->disp[2] = 0;
+			dtVset(ag->disp, 0,0,0);
 
 			float w = 0;
+
 			for (int j = 0; j < MAX_AGENTS; ++j)
 			{
 				if (i == j) continue;
@@ -967,13 +664,30 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 	{
 		if (!m_agents[i].active) continue;
 		Agent* ag = &m_agents[i];
+		
+		dtVset(ag->opts, 0,0,0);
+		dtVset(ag->opte, 0,0,0);
+		
 		if (ag->npath && ag->ncorners > 1)
 		{
 			// The target is the corner after the next corner to steer to.
-			const float* tgt = &ag->corners[3];
+			float tgt[3];
+			dtVcopy(tgt, &ag->corners[3]);
 			const float distSqr = dtVdist2DSqr(ag->pos, tgt);
-			if (distSqr > dtSqr(0.01f)) // && distSqr < dtSqr(20.0f))
+			if (distSqr > dtSqr(0.01f))
 			{
+				// Clamp teh ray to max distance.
+				const float maxDist = ag->colradius*3;
+				if (distSqr > dtSqr(maxDist))
+				{
+					float delta[3];
+					dtVsub(delta, tgt, ag->pos);
+					dtVmad(tgt, ag->pos, delta, dtSqr(maxDist)/distSqr);
+				}
+			
+				dtVcopy(ag->opts, ag->pos);
+				dtVcopy(ag->opte, tgt);
+
 				static const int MAX_RES = 32;
 				dtPolyRef res[MAX_RES];
 				float t, norm[3];
@@ -985,10 +699,122 @@ void CrowdManager::update(const float dt, unsigned int flags, dtNavMeshQuery* na
 			}
 		}
 	}
+	
 
+
+	TimeVal endTime = getPerfTime();
+
+	int ns = 0;
+	for (int i = 0; i < MAX_AGENTS; ++i)
+	{
+		if (!m_agents[i].active) continue;
+		if (m_agents[i].targetState != AGENT_TARGET_PATH) continue;
+		if (flags & CROWDMAN_USE_VO)
+		{
+			// Normalize samples for debug draw
+			m_vodebug[i]->normalizeSamples();
+			ns += m_vodebug[i]->getSampleCount();
+		}
+	}
+
+	m_sampleCount.addSample(ns);
+	m_totalTime.addSample(getPerfDeltaTimeUsec(startTime, endTime) / 1000.0f);
+	m_rvoTime.addSample(getPerfDeltaTimeUsec(rvoStartTime, rvoEndTime) / 1000.0f);
 }
 
+static int insertIsect(float u, int inside, Isect* ints, int nints)
+{
+	int i;
+	if (nints >= FORM_MAX_ISECT) return nints;
+	if (!nints || u >= ints[nints-1].u)
+	{
+		ints[nints].u = u;
+		ints[nints].inside = inside;
+		return nints+1;
+	}
+	for (i = 0; i < nints; ++i)
+		if (u <= ints[i].u) break;
+	if (nints-i > 0) memmove(ints+i+1,ints+i,sizeof(Isect)*(nints-i));
+	ints[i].u = u;
+	ints[i].inside = inside;
+	return nints+1;
+}
 
+static int removeAdjacent(Isect* ints, int nints)
+{
+	const float eps = 0.0001f;
+	if (nints < 2)
+		return nints;
+	for (int i = 0; i < nints-1; ++i)
+	{
+		if (fabsf(ints[i].u - ints[i+1].u) < eps) // && ints[i].inside != ints[i+1].inside)
+		{
+			nints -= 2;
+			for (int j = i; j < nints; ++j)
+				ints[j] = ints[j+2];
+//			if (nints-i > 0) memmove(ints+i,ints+i+2,sizeof(Isect)*(nints-i));
+			i--;
+		}
+	}
+	return nints;
+}
+
+static int getPolyVerts(const dtNavMesh* navMesh, dtPolyRef ref, float* verts)
+{
+	const dtMeshTile* tile = 0;
+	const dtPoly* poly = 0;
+	if (!navMesh->getTileAndPolyByRef(ref, &tile, &poly))
+		return 0;
+	for (int i = 0; i < (int)poly->vertCount; ++i)
+		dtVcopy(&verts[i*3], &tile->verts[poly->verts[i]*3]);
+	return poly->vertCount;
+}
+
+static void createFormation(Formation* form, const dtNavMesh* navmesh)
+{
+	float verts[DT_VERTS_PER_POLYGON*3];
+	for (int i = 0; i < form->nsegs; i++)
+	{
+		FormationSeg* seg = &form->segs[i];
+		seg->nints = 0;
+		
+		int startInside = 0;
+
+		for (int j = 0; j < form->npolys; ++j)
+		{
+			const int nverts = getPolyVerts(navmesh, form->polys[j], verts);
+			if (!nverts) continue;
+			
+			float tmin, tmax;
+			int smin, smax;
+			bool res = dtIntersectSegmentPoly2D(seg->p, seg->q, verts, nverts, tmin, tmax, smin, smax);
+
+			if (!res)
+				continue;
+			
+			if (tmin >= 0.0f && tmin <= 1.0f)
+				seg->nints = insertIsect(tmin, 1, seg->ints, seg->nints);
+			if (tmax >= 0.0f && tmax <= 1.0f)
+				seg->nints = insertIsect(tmax, -1, seg->ints, seg->nints);
+			if (tmin < 0.0f && tmax > 0.0f)
+				startInside++;
+		}
+		
+		seg->nints = removeAdjacent(seg->ints, seg->nints);
+	}
+	
+	// Calc winding
+	for (int i = 0; i < form->nsegs; ++i)
+	{
+		FormationSeg* seg = &form->segs[i];
+		int inside = 0;
+		for (int j = 0; j < seg->nints; ++j)
+		{
+			inside += seg->ints[j].inside;
+			seg->ints[j].inside = inside;
+		}
+	}
+}
 
 CrowdTool::CrowdTool() :
 	m_sample(0),
@@ -1000,6 +826,7 @@ CrowdTool::CrowdTool() :
 	m_showCollisionSegments(false),
 	m_showPath(false),
 	m_showVO(false),
+	m_showOpt(false),
 	m_expandOptions(true),
 	m_anticipateTurns(true),
 	m_useVO(true),
@@ -1007,6 +834,7 @@ CrowdTool::CrowdTool() :
 	m_run(true),
 	m_mode(TOOLMODE_CREATE)
 {
+	memset(&m_form, 0, sizeof(Formation));
 }
 
 CrowdTool::~CrowdTool()
@@ -1046,7 +874,7 @@ void CrowdTool::handleMenu()
 	imguiSeparator();
 	imguiSeparator();
 	
-	if (imguiCollapse("Options", m_expandOptions))
+	if (imguiCollapse("Options", 0, m_expandOptions))
 		m_expandOptions = !m_expandOptions;
 	
 	if (m_expandOptions)
@@ -1061,7 +889,7 @@ void CrowdTool::handleMenu()
 		imguiUnindent();
 	}
 
-	if (imguiCollapse("Debug Draw", m_expandDebugDraw))
+	if (imguiCollapse("Debug Draw", 0, m_expandDebugDraw))
 		m_expandDebugDraw = !m_expandDebugDraw;
 		
 	if (m_expandDebugDraw)
@@ -1079,6 +907,8 @@ void CrowdTool::handleMenu()
 			m_showPath = !m_showPath;
 		if (imguiCheck("Show VO", m_showVO))
 			m_showVO = !m_showVO;
+		if (imguiCheck("Show Opt", m_showOpt))
+			m_showOpt = !m_showOpt;
 		imguiUnindent();
 	}
 }
@@ -1120,10 +950,85 @@ void CrowdTool::handleClick(const float* s, const float* p, bool shift)
 		}
 		else
 		{
-			// Add
-			int idx = m_crowd.addAgent(p, m_sample->getAgentRadius(), m_sample->getAgentHeight());
-			if (idx != -1 && m_targetPosSet)
-				m_crowd.setMoveTarget(idx, m_targetPos);
+			bool single = false;
+			
+			if (single)
+			{
+				// Add
+				int idx = m_crowd.addAgent(p, m_sample->getAgentRadius(), m_sample->getAgentHeight());
+				if (idx != -1 && m_targetPosSet)
+					m_crowd.setMoveTarget(idx, m_targetPos);
+			}
+			else
+			{
+				const dtNavMesh* navmesh = m_sample->getNavMesh();
+				const dtNavMeshQuery* navquery = m_sample->getNavMeshQuery();
+
+				memset(&m_form, 0, sizeof(Formation));
+
+				const float ext[3] = {2,4,2};
+				dtQueryFilter filter;
+
+				const float r = m_sample->getAgentRadius();
+
+				float nearest[3];
+				dtPolyRef centerRef = navquery->findNearestPoly(p, ext, &filter, nearest);
+				if (centerRef)
+				{
+					const int rows = 6;
+					for (int i = 0; i < rows; ++i)
+					{
+						const float x0 = -r*2.5f*rows/2 + (i&1)*r;
+						const float x1 = r*2.5f*rows/2 + (i&1)*r;
+						const float z = (i-rows*0.5f)*r*2.5f;
+						dtVset(m_form.segs[m_form.nsegs].p, p[0]+x0, p[1]+2.0f, p[2]+z);
+						dtVset(m_form.segs[m_form.nsegs].q, p[0]+x1, p[1]+2.0f, p[2]+z);
+						m_form.nsegs++;
+					}
+					
+					m_form.npolys = navquery->findLocalNeighbourhood(centerRef, p, r*rows*2.5f, &filter, m_form.polys, 0, FORM_MAX_POLYS);
+					
+					createFormation(&m_form, navmesh);
+					
+					const int createCount = 25;
+					int num = 0;
+					
+					const float r = m_sample->getAgentRadius();
+					for (int i = 0; i < m_form.nsegs; ++i)
+					{
+						const FormationSeg* seg = &m_form.segs[i];
+						for (int j = 0; j < seg->nints-1; ++j)
+						{
+							if (seg->ints[j].inside == 0) continue;
+							const float u0 = seg->ints[j].u;
+							const float u1 = seg->ints[j+1].u;
+							float ia[3], ib[3];
+							dtVlerp(ia, seg->p,seg->q, u0);
+							dtVlerp(ib, seg->p,seg->q, u1);
+							
+							const float spacing = r*2.5f;
+							float delta[3];
+							dtVsub(delta, ib,ia);
+							float d = dtVlen(delta);
+							int np = (int)floorf(d/spacing);
+							for (int k = 0; k < np; ++k)
+							{
+								float pos[3];
+								dtVmad(pos, ia, delta, (float)(k+0.5f)/(float)np);
+
+								if (num < createCount)
+								{
+									num++;
+									int idx = m_crowd.addAgent(pos, m_sample->getAgentRadius(), m_sample->getAgentHeight());
+									if (idx != -1 && m_targetPosSet)
+										m_crowd.setMoveTarget(idx, m_targetPos);
+								}
+							}
+						}
+					}
+				}
+			}
+			
 		}
 	}
 	else if (m_mode == TOOLMODE_MOVE)
@@ -1276,21 +1181,32 @@ void CrowdTool::handleRender()
 			dd.end();
 		}
 
+		if (m_showOpt)
+		{
+			dd.begin(DU_DRAW_LINES, 2.0f);
+			dd.vertex(ag->opts[0],ag->opts[1]+0.3f,ag->opts[2], duRGBA(0,128,0,192));
+			dd.vertex(ag->opte[0],ag->opte[1]+0.3f,ag->opte[2], duRGBA(0,128,0,192));
+			dd.end();
+		}
+
 		if (m_showVO)
 		{
 			// Draw detail about agent sela
-			const RVO* rvo = &ag->rvo;
+			const dtObstacleAvoidanceDebugData* debug = m_crowd.getVODebugData(i);
 
 			const float dx = ag->pos[0];
 			const float dy = ag->pos[1]+ag->height;
 			const float dz = ag->pos[2];
 			
 			dd.begin(DU_DRAW_QUADS);
-			for (int i = 0; i < rvo->ns; ++i)
+			for (int i = 0; i < debug->getSampleCount(); ++i)
 			{
-				const float* p = &rvo->spos[i*3];
-				const float sr = rvo->scs[i];
-				unsigned int col = duLerpCol(duRGBA(255,255,255,220), duRGBA(0,96,128,220), (int)(rvo->spen[i]*255));
+				const float* p = debug->getSampleVelocity(i);
+				const float sr = debug->getSampleSize(i);
+				const float pen = debug->getSamplePenalty(i);
+				const float pen2 = debug->getSamplePreferredSidePenalty(i);
+				unsigned int col = duLerpCol(duRGBA(255,255,255,220), duRGBA(0,96,128,220), (int)(pen*255));
+				col = duLerpCol(col, duRGBA(128,0,0,220), (int)(pen2*128));
 				dd.vertex(dx+p[0]-sr, dy, dz+p[2]-sr, col);
 				dd.vertex(dx+p[0]-sr, dy, dz+p[2]+sr, col);
 				dd.vertex(dx+p[0]+sr, dy, dz+p[2]+sr, col);
@@ -1314,6 +1230,91 @@ void CrowdTool::handleRender()
 		
 		dd.depthMask(true);
 	}
+	
+	
+/*
+	for (int i = 0; i < m_form.npolys; ++i)
+	{
+		duDebugDrawNavMeshPoly(&dd, *nmesh, m_form.polys[i], duRGBA(255,255,255,32));
+	}
+	
+	dd.depthMask(false);
+
+	dd.begin(DU_DRAW_POINTS, 4.0f);
+	for (int i = 0; i < m_form.nsegs; ++i)
+	{
+		const FormationSeg* seg = &m_form.segs[i];
+		for (int j = 0; j < seg->nints-1; ++j)
+		{
+			if (seg->ints[j].inside == 0) continue;
+			const float u0 = seg->ints[j].u;
+			const float u1 = seg->ints[j+1].u;
+			float ia[3], ib[3];
+			dtVlerp(ia, seg->p,seg->q, u0);
+			dtVlerp(ib, seg->p,seg->q, u1);
+			dd.vertex(ia,duRGBA(128,0,0,192));
+			dd.vertex(ib,duRGBA(128,0,0,192));
+		}
+	}
+	dd.end();
+	
+	dd.begin(DU_DRAW_LINES, 2.0f);
+	for (int i = 0; i < m_form.nsegs; ++i)
+	{
+		const FormationSeg* seg = &m_form.segs[i];
+		dd.vertex(seg->p,duRGBA(255,255,255,128));
+		dd.vertex(seg->q,duRGBA(255,255,255,128));
+		for (int j = 0; j < seg->nints-1; ++j)
+		{
+			if (seg->ints[j].inside == 0) continue;
+			const float u0 = seg->ints[j].u;
+			const float u1 = seg->ints[j+1].u;
+			float ia[3], ib[3];
+			dtVlerp(ia, seg->p,seg->q, u0);
+			dtVlerp(ib, seg->p,seg->q, u1);
+			dd.vertex(ia,duRGBA(128,0,0,192));
+			dd.vertex(ib,duRGBA(128,0,0,192));
+		}
+	}
+	dd.end();
+
+	{
+		const float r = m_sample->getAgentRadius();
+		dd.begin(DU_DRAW_LINES, 2.0f);
+		for (int i = 0; i < m_form.nsegs; ++i)
+		{
+			const FormationSeg* seg = &m_form.segs[i];
+			dd.vertex(seg->p,duRGBA(255,255,255,128));
+			dd.vertex(seg->q,duRGBA(255,255,255,128));
+			for (int j = 0; j < seg->nints-1; ++j)
+			{
+				if (seg->ints[j].inside == 0) continue;
+				const float u0 = seg->ints[j].u;
+				const float u1 = seg->ints[j+1].u;
+				float ia[3], ib[3];
+				dtVlerp(ia, seg->p,seg->q, u0);
+				dtVlerp(ib, seg->p,seg->q, u1);
+
+				const float spacing = r*2.5f;
+				float delta[3];
+				dtVsub(delta, ib,ia);
+				float d = dtVlen(delta);
+				int np = (int)floorf(d/spacing);
+				for (int k = 0; k < np; ++k)
+				{
+					float pos[3];
+					dtVmad(pos, ia, delta, (float)(k+0.5f)/(float)np);
+					dd.vertex(pos[0],pos[1]-1,pos[2],duRGBA(128,0,0,192));
+					dd.vertex(pos[0],pos[1]+2,pos[2],duRGBA(128,0,0,192));
+				}
+			}
+		}
+		dd.end();
+	}
+	
+	dd.depthMask(true);
+*/
+	
 }
 
 void CrowdTool::handleRenderOverlay(double* proj, double* model, int* view)
@@ -1344,4 +1345,16 @@ void CrowdTool::handleRenderOverlay(double* proj, double* model, int* view)
 			
 		}
 	}
+	
+	GraphParams gp;
+	gp.setRect(300, 10, 500, 200, 8);
+	gp.setValueRange(0.0f, 2.0f, 4, "ms");
+
+	drawGraphBackground(&gp);
+	drawGraph(&gp, m_crowd.getRVOTimeGraph(), 0, "RVO Sampling", duRGBA(255,0,128,255));
+	drawGraph(&gp, m_crowd.getTotalTimeGraph(), 1, "Total", duRGBA(128,255,0,255));
+	
+	gp.setRect(300, 10, 500, 50, 8);
+	gp.setValueRange(0.0f, 2000.0f, 1, "0");
+	drawGraph(&gp, m_crowd.getSampleCountGraph(), 0, "Sample Count", duRGBA(255,255,255,255));
 }
