@@ -6,6 +6,7 @@ SET(detour_SRCS
 	Source/DetourNavMesh.cpp
 	Source/DetourNavMeshBuilder.cpp
 	Source/DetourNavMeshQuery.cpp
+	Source/DetourObstacleAvoidance.cpp
 	Source/DetourNode.cpp)
 
 SET(detour_HDRS
@@ -15,6 +16,7 @@ SET(detour_HDRS
 	Include/DetourNavMesh.h
 	Include/DetourNavMeshBuilder.h
 	Include/DetourNavMeshQuery.h
+	Include/DetourObstacleAvoidance.h
 	Include/DetourNode.h
 )
 

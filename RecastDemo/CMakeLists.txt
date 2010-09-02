@@ -12,6 +12,7 @@ SET(recastdemo_SRCS
 	Source/MeshLoaderObj.cpp 
 	Source/NavMeshTesterTool.cpp 
 	Source/OffMeshConnectionTool.cpp
+	Source/PerfTimer.cpp
 	Source/Sample.cpp 
 	Source/Sample_Debug.cpp
 	Source/Sample_SoloMeshSimple.cpp 
@@ -19,7 +20,9 @@ SET(recastdemo_SRCS
 	Source/Sample_TileMesh.cpp
 	Source/SampleInterfaces.cpp
 	Source/SlideShow.cpp
-	Source/TestCase.cpp)
+	Source/TestCase.cpp
+	Source/ValueHistory.cpp
+)
 
 SET(recastdemo_HDRS
 	Include/ChunkyTriMesh.h
@@ -32,6 +35,7 @@ SET(recastdemo_HDRS
 	Include/MeshLoaderObj.h
 	Include/NavMeshTesterTool.h
 	Include/OffMeshConnectionTool.h
+	Include/PerfTimer.h
 	Include/Sample.h
 	Include/Sample_Debug.h
 	Include/Sample_SoloMeshSimple.h
@@ -41,6 +45,7 @@ SET(recastdemo_HDRS
 	Include/SDLMain.h
 	Include/SlideShow.h
 	Include/TestCase.h
+	Include/ValueHistory.h
 )
 
 FIND_PACKAGE(OpenGL REQUIRED)
