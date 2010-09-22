@@ -271,6 +271,10 @@
 					RelativePath="..\..\..\Detour\Include\DetourNode.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\Detour\Include\DetourObstacleAvoidance.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source"
@@ -299,6 +303,10 @@
 					RelativePath="..\..\..\Detour\Source\DetourNode.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\..\Detour\Source\DetourObstacleAvoidance.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -313,6 +321,10 @@
 				</File>
 				<File
 					RelativePath="..\..\Include\ConvexVolumeTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Include\CrowdManager.h"
 					>
 				</File>
 				<File
@@ -345,6 +357,10 @@
 				</File>
 				<File
 					RelativePath="..\..\Include\OffMeshConnectionTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Include\PerfTimer.h"
 					>
 				</File>
 				<File
@@ -387,6 +403,10 @@
 					RelativePath="..\..\Include\TestCase.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\Include\ValueHistory.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Source"
@@ -397,6 +417,10 @@
 				</File>
 				<File
 					RelativePath="..\..\Source\ConvexVolumeTool.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Source\CrowdManager.cpp"
 					>
 				</File>
 				<File
@@ -436,6 +460,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\Source\PerfTimer.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\..\Source\Sample.cpp"
 					>
 				</File>
@@ -465,6 +493,10 @@
 				</File>
 				<File
 					RelativePath="..\..\Source\TestCase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Source\ValueHistory.cpp"
 					>
 				</File>
 			</Filter>
