@@ -170,13 +170,6 @@ NavMeshTesterTool::NavMeshTesterTool() :
 
 NavMeshTesterTool::~NavMeshTesterTool()
 {
-	if (m_sample)
-	{
-		unsigned char flags = 0;
-		if (m_navMesh)
-			flags |= DU_DRAWNAVMESH_OFFMESHCONS;
-		m_sample->setNavMeshDrawFlags(flags);
-	}
 }
 
 void NavMeshTesterTool::init(Sample* sample)
@@ -195,23 +188,6 @@ void NavMeshTesterTool::init(Sample* sample)
 		m_filter.setAreaCost(SAMPLE_POLYAREA_DOOR, 1.0f);
 		m_filter.setAreaCost(SAMPLE_POLYAREA_GRASS, 2.0f);
 		m_filter.setAreaCost(SAMPLE_POLYAREA_JUMP, 1.5f);
-		
-/*		m_navQuery->setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f);
-		m_navQuery->setAreaCost(SAMPLE_POLYAREA_WATER, 10.0f);
-		m_navQuery->setAreaCost(SAMPLE_POLYAREA_ROAD, 1.0f);
-		m_navQuery->setAreaCost(SAMPLE_POLYAREA_DOOR, 1.0f);
-		m_navQuery->setAreaCost(SAMPLE_POLYAREA_GRASS, 2.0f);
-		m_navQuery->setAreaCost(SAMPLE_POLYAREA_JUMP, 1.5f);*/
-	}
-
-	if (m_toolMode == TOOLMODE_PATHFIND_FOLLOW ||
-		m_toolMode == TOOLMODE_PATHFIND_STRAIGHT ||
-		m_toolMode == TOOLMODE_PATHFIND_SLICED)
-	{
-		unsigned char flags = 0;
-		if (m_navMesh)
-			flags |= DU_DRAWNAVMESH_OFFMESHCONS;
-		m_sample->setNavMeshDrawFlags(flags);
 	}
 	
 	m_neighbourhoodRadius = sample->getAgentRadius() * 20.0f;
@@ -325,22 +301,7 @@ void NavMeshTesterTool::handleMenu()
 	}
 	imguiUnindent();
 
-	imguiSeparator();
-	
-	if (m_toolMode == TOOLMODE_PATHFIND_FOLLOW || m_toolMode == TOOLMODE_PATHFIND_STRAIGHT)
-	{
-		unsigned char flags = 0;
-		if (m_navMesh)
-			flags |= DU_DRAWNAVMESH_OFFMESHCONS;
-		m_sample->setNavMeshDrawFlags(flags);
-	}
-	else
-	{
-		unsigned char flags = 0;
-		if (m_navMesh)
-			flags |= DU_DRAWNAVMESH_OFFMESHCONS;
-		m_sample->setNavMeshDrawFlags(flags);
-	}
+	imguiSeparator();	
 }
 
 void NavMeshTesterTool::handleClick(const float* /*s*/, const float* p, bool shift)
@@ -1157,8 +1118,9 @@ void NavMeshTesterTool::handleRender()
 				dd.depthMask(true);
 			}
 
-			float segs[DT_VERTS_PER_POLYGON*3*2];
-			const int nsegs = m_navQuery->getPolyWallSegments(m_polys[i], &m_filter, segs);
+			static const int MAX_SEGS = DT_VERTS_PER_POLYGON*2;
+			float segs[MAX_SEGS*6];
+			const int nsegs = m_navQuery->getPolyWallSegments(m_polys[i], &m_filter, segs, MAX_SEGS);
 			dd.begin(DU_DRAW_LINES, 2.0f);
 			for (int j = 0; j < nsegs; ++j)
 			{

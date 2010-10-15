@@ -21,6 +21,9 @@
 
 #include "DetourAlloc.h"
 
+// Note: If you want to use 64-bit refs, change the types of both dtPolyRef & dtTileRef.
+// It is also recommended to change dtHashRef() to proper 64-bit hash too.
+
 // Reference to navigation polygon.
 typedef unsigned int dtPolyRef;
 
@@ -31,7 +34,7 @@ typedef unsigned int dtTileRef;
 static const int DT_VERTS_PER_POLYGON = 6;
 
 static const int DT_NAVMESH_MAGIC = 'D'<<24 | 'N'<<16 | 'A'<<8 | 'V'; //'DNAV';
-static const int DT_NAVMESH_VERSION = 4;
+static const int DT_NAVMESH_VERSION = 5;
 
 static const int DT_NAVMESH_STATE_MAGIC = 'D'<<24 | 'N'<<16 | 'M'<<8 | 'S'; //'DNMS';
 static const int DT_NAVMESH_STATE_VERSION = 1;
@@ -298,33 +301,33 @@ public:
 	// Encodes a tile id.
 	inline dtPolyRef encodePolyId(unsigned int salt, unsigned int it, unsigned int ip) const
 	{
-		return (salt << (m_polyBits+m_tileBits)) | (it << m_polyBits) | ip;
+		return ((dtPolyRef)salt << (m_polyBits+m_tileBits)) | ((dtPolyRef)it << m_polyBits) | (dtPolyRef)ip;
 	}
 	
 	// Decodes a tile id.
 	inline void decodePolyId(dtPolyRef ref, unsigned int& salt, unsigned int& it, unsigned int& ip) const
 	{
-		salt = (ref >> (m_polyBits+m_tileBits)) & ((1<<m_saltBits)-1);
-		it = (ref >> m_polyBits) & ((1<<m_tileBits)-1);
-		ip = ref & ((1<<m_polyBits)-1);
+		salt = (unsigned int)((ref >> (m_polyBits+m_tileBits)) & ((1<<m_saltBits)-1));
+		it = (unsigned int)((ref >> m_polyBits) & ((1<<m_tileBits)-1));
+		ip = (unsigned int)(ref & ((1<<m_polyBits)-1));
 	}
 
 	// Decodes a tile salt.
 	inline unsigned int decodePolyIdSalt(dtPolyRef ref) const
 	{
-		return (ref >> (m_polyBits+m_tileBits)) & ((1<<m_saltBits)-1);
+		return (unsigned int)((ref >> (m_polyBits+m_tileBits)) & ((1<<m_saltBits)-1));
 	}
 	
 	// Decodes a tile id.
 	inline unsigned int decodePolyIdTile(dtPolyRef ref) const
 	{
-		return (ref >> m_polyBits) & ((1<<m_tileBits)-1);
+		return (unsigned int)((ref >> m_polyBits) & ((1<<m_tileBits)-1));
 	}
 	
 	// Decodes a poly id.
 	inline unsigned int decodePolyIdPoly(dtPolyRef ref) const
 	{
-		return ref & ((1<<m_polyBits)-1);
+		return (unsigned int)(ref & ((1<<m_polyBits)-1));
 	}
 	
 private:

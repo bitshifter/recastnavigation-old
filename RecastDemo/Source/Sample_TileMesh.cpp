@@ -899,8 +899,8 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cs);
 	m_cfg.maxEdgeLen = (int)(m_edgeMaxLen / m_cellSize);
 	m_cfg.maxSimplificationError = m_edgeMaxError;
-	m_cfg.minRegionSize = (int)rcSqr(m_regionMinSize);
-	m_cfg.mergeRegionSize = (int)rcSqr(m_regionMergeSize);
+	m_cfg.minRegionArea = (int)rcSqr(m_regionMinSize);		// Note: area = size*size
+	m_cfg.mergeRegionArea = (int)rcSqr(m_regionMergeSize);	// Note: area = size*size
 	m_cfg.maxVertsPerPoly = (int)m_vertsPerPoly;
 	m_cfg.tileSize = (int)m_tileSize;
 	m_cfg.borderSize = m_cfg.walkableRadius + 3; // Reserve enough padding.
@@ -955,7 +955,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	tbmax[0] = m_cfg.bmax[0];
 	tbmax[1] = m_cfg.bmax[2];
 	int cid[512];// TODO: Make grow when returning too many items.
-	const int ncid = rcGetChunksInRect(chunkyMesh, tbmin, tbmax, cid, 512);
+	const int ncid = rcGetChunksOverlappingRect(chunkyMesh, tbmin, tbmax, cid, 512);
 	if (!ncid)
 		return 0;
 	
@@ -1030,7 +1030,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	}
 	
 	// Partition the walkable surface into simple regions without holes.
-	if (!rcBuildRegions(m_ctx, *m_chf, m_cfg.borderSize, m_cfg.minRegionSize, m_cfg.mergeRegionSize))
+	if (!rcBuildRegions(m_ctx, *m_chf, m_cfg.borderSize, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
 		return 0;

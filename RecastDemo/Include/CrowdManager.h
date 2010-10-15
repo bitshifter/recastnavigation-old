@@ -24,15 +24,49 @@
 #include "ValueHistory.h"
 
 
-/*enum AgentTargetState
+class ProximityGrid
 {
-	AGENT_TARGET_NONE = 0,
-	AGENT_TARGET_SET = 1,
-	AGENT_TARGET_ACQUIRED = 2,
-	AGENT_TARGET_WAITING_FOR_PATH = 3,
-	AGENT_TARGET_PATH = 4,
-	AGENT_TARGET_FAILED = 5,
-};*/
+	int m_maxItems;
+	float m_cellSize;
+	float m_invCellSize;
+
+	struct Item
+	{
+		unsigned short id;
+		short x,y;
+		unsigned short next;
+	};
+	Item* m_pool;
+	int m_poolHead;
+	int m_poolSize;
+	
+	unsigned short* m_buckets;
+	int m_bucketsSize;
+	
+	int m_bounds[4];
+	
+public:
+	ProximityGrid();
+	~ProximityGrid();
+	
+	bool init(const int maxItems, const float cellSize);
+	
+	void clear();
+	
+	void addItem(const unsigned short id,
+				 const float minx, const float miny,
+				 const float maxx, const float maxy);
+	
+	int queryItems(const float minx, const float miny,
+				   const float maxx, const float maxy,
+				   unsigned short* ids, const int maxIds) const;
+	
+	int getItemCountAt(const int x, const int y) const;
+	const int* getBounds() const { return m_bounds; }
+	const float getCellSize() const { return m_cellSize; }
+};
+
+
 
 static const int AGENT_MAX_PATH = 256;
 static const int AGENT_MAX_CORNERS = 4;
@@ -85,49 +119,16 @@ public:
 	int getPathResult(PathQueueRef ref, dtPolyRef* path, const int maxPath);
 };
 
-enum MoverState
-{
-	MOVER_INIT,
-	MOVER_OK,
-	MOVER_FAILED,
-};
 
-enum MoverTargetState
-{
-	MOVER_TARGET_NONE,
-	MOVER_TARGET_REQUESTING,
-	MOVER_TARGET_WAITING_FOR_PATH,
-	MOVER_TARGET_VALID,
-	MOVER_TARGET_FAILED,
-};
-
-struct Mover
+class PathCorridor
 {
 	float m_pos[3];
 	float m_target[3];
-	float m_radius, m_height;
-	
-	float m_dvel[3];
-	float m_nvel[3];
-	float m_vel[3];
-	float m_npos[3];
-	float m_disp[3];
-	
-	float m_pathOptimizationRange;
-	
-	float m_colradius;
 
 	float m_localCenter[3];
 	float m_localSegs[AGENT_MAX_LOCALSEGS*6];
 	int m_localSegCount;
-	
-	unsigned char m_state;
 
-	float m_reqTarget[3];
-	unsigned char m_reqTargetState;
-	dtPolyRef m_reqTargetRef;
-	
-	PathQueueRef m_pathReqRef;
 	dtPolyRef m_path[AGENT_MAX_PATH];
 	int m_npath;
 	
@@ -136,49 +137,66 @@ struct Mover
 	dtPolyRef m_cornerPolys[AGENT_MAX_CORNERS];
 	int m_ncorners;
 	
-	void init(const float* p, const float r, const float h, const float cr, const float por);
+public:
+	PathCorridor();
+	~PathCorridor();
 	
-	void requestMoveTarget(const float* pos);
+	void init(dtPolyRef ref, const float* pos);
 	
-	void updatePathState(dtNavMeshQuery* navquery, const dtQueryFilter* filter, const float* ext,
-						 PathQueue* pathq);
-
-	void updateLocalNeighbourhood(dtNavMeshQuery* navquery, const dtQueryFilter* filter);
-
-	void updateCorners(dtNavMeshQuery* navquery, const dtQueryFilter* filter, float* opts = 0, float* opte = 0);
-
-	void integrate(const float maxAcc, const float dt);
-	
-	void updateLocation(dtNavMeshQuery* navquery, const dtQueryFilter* filter);
-
+	void updateLocalNeighbourhood(const float collisionQueryRange, dtNavMeshQuery* navquery, const dtQueryFilter* filter);
+	void updateCorners(const float pathOptimizationRange, dtNavMeshQuery* navquery, const dtQueryFilter* filter, float* opts = 0, float* opte = 0);
+	void updatePosition(const float* npos, dtNavMeshQuery* navquery, const dtQueryFilter* filter);
 	float getDistanceToGoal(const float range) const;
+	void calcSmoothSteerDirection(float* dir);
+	void calcStraightSteerDirection(float* dir);
 
-	void calcSmoothSteerDirection(float* dvel);
-	void calcStraightSteerDirection(float* dvel);
+	void setCorridor(const float* target, const dtPolyRef* polys, const int npolys);
+
+	inline const float* getPos() const { return m_pos; }	
+	inline const float* getTarget() const { return m_target; }
 	
-	void appendLocalCollisionSegments(dtObstacleAvoidanceQuery* obstacleQuery);
+	inline const dtPolyRef* getPath() const { return m_path; }
+	inline int getPathCount() const { return m_npath; } 	
+	
+	inline int getCornerCount() const { return m_ncorners; }
+	inline const float* getCornerPos(int i) const { return &m_cornerVerts[i*3]; }
+	
+	inline const float* getLocalCenter() const { return m_localCenter; }
+	inline int getLocalSegmentCount() const { return m_localSegCount; }
+	inline const float* getLocalSegment(int i) const { return &m_localSegs[i*6]; }
+};
 
-	void getBounds(float* bmin, float* bmax) const
-	{
-	   bmin[0] = m_pos[0] - m_radius;
-	   bmin[1] = m_pos[1];
-	   bmin[2] = m_pos[2] - m_radius;
-	   bmax[0] = m_pos[0] + m_radius;
-	   bmax[1] = m_pos[1] + m_height;
-	   bmax[2] = m_pos[2] + m_radius;
-	}
-				   
+static const int MAX_NEIGHBOURS = 6;
+
+struct Neighbour
+{
+	int idx;
+	float dist;
 };
 
 struct Agent
 {
 	unsigned char active;
 	
-	Mover mover;
+	PathCorridor corridor;
 	
+	void integrate(const float maxAcc, const float dt);
+
 	float maxspeed;
 	float t;
 	float var;
+	
+	Neighbour neis[MAX_NEIGHBOURS];
+	int nneis;
+	
+	float radius, height;
+	float npos[3];
+	float disp[3];
+	float dvel[3];
+	float nvel[3];
+	float vel[3];
+	float collisionQueryRange;
+	float pathOptimizationRange;
 	
 	float opts[3], opte[3];
 	
@@ -197,18 +215,41 @@ enum UpdateFlags
 
 class CrowdManager
 {
-	static const int MAX_AGENTS = 32;
+	static const int MAX_AGENTS = 128;
 	Agent m_agents[MAX_AGENTS];
 	dtObstacleAvoidanceDebugData* m_vodebug[MAX_AGENTS];
 	dtObstacleAvoidanceQuery* m_obstacleQuery;
 	PathQueue m_pathq;
+	ProximityGrid m_grid;
 	
+	float m_ext[3];
+	dtQueryFilter m_filter;
+
 	int m_totalTime;
 	int m_rvoTime;
 	int m_sampleCount;
+
+	enum MoveRequestState
+	{
+		MR_TARGET_REQUESTING,
+		MR_TARGET_WAITING_FOR_PATH,
+		MR_TARGET_VALID,
+		MR_TARGET_FAILED,
+	};
+	
+	struct MoveRequest
+	{
+		int idx;
+		dtPolyRef ref;
+		float pos[3];
+		unsigned char state;
+		PathQueueRef pathqRef;
+	};
+	MoveRequest m_moveRequests[MAX_AGENTS];
+	int m_moveRequestCount;
 	
 	int getNeighbours(const float* pos, const float height, const float range,
-					  const Agent* skip, Agent** result, const int maxResult);
+					  const Agent* skip, Neighbour* result, const int maxResult);
 
 public:
 	CrowdManager();
@@ -217,18 +258,23 @@ public:
 	void reset();
 	const Agent* getAgent(const int idx);
 	const int getAgentCount() const;
-	int addAgent(const float* pos, const float radius, const float height);
+	int addAgent(const float* pos, const float radius, const float height, dtNavMeshQuery* navquery);
 	void removeAgent(const int idx);
-	void requestMoveTarget(const int idx, const float* pos);
+	bool requestMoveTarget(const int idx, dtPolyRef ref, const float* pos);
 	
 	int getActiveAgents(Agent** agents, const int maxAgents);
-	
+	void updateMoveRequest(const float dt, dtNavMeshQuery* navquery);
 	void update(const float dt, unsigned int flags, dtNavMeshQuery* navquery);
+	
+	const dtQueryFilter* getFilter() const { return &m_filter; }
+	const float* getQueryExtents() const { return m_ext; }
 	
 	const dtObstacleAvoidanceDebugData* getVODebugData(const int idx) const { return m_vodebug[idx]; }	
 	inline int getTotalTime() const { return m_totalTime; }
 	inline int getRVOTime() const { return m_rvoTime; }
 	inline int getSampleCount() const { return m_sampleCount; }
+	const ProximityGrid* getGrid() const { return &m_grid; }
+
 };
 
 

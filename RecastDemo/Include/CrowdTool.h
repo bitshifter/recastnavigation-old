@@ -27,38 +27,13 @@
 
 // Tool to create crowds.
 
-struct Isect
-{
-	float u;
-	int inside;
-};
-
-static const int FORM_MAX_ISECT = 32;
-static const int FORM_MAX_SEGS = 16;
-static const int FORM_MAX_POLYS = 32;
-
-struct FormationSeg
-{
-	float p[3], q[3];
-	Isect ints[FORM_MAX_ISECT];
-	int nints;
-};
-
-struct Formation
-{
-	FormationSeg segs[FORM_MAX_SEGS];
-	int nsegs;
-	dtPolyRef polys[FORM_MAX_POLYS];
-	int npolys;
-};
-
 class CrowdTool : public SampleTool
 {
 	Sample* m_sample;
-	float m_targetPos[3];
-	bool m_targetPosSet;
+	unsigned char m_oldFlags;
 	
-	Formation m_form;
+	float m_targetPos[3];
+	dtPolyRef m_targetRef;
 	
 	bool m_expandDebugDraw;
 	bool m_showLabels;
@@ -68,6 +43,7 @@ class CrowdTool : public SampleTool
 	bool m_showPath;
 	bool m_showVO;
 	bool m_showOpt;
+	bool m_showGrid;
 	
 	bool m_expandOptions;
 	bool m_anticipateTurns;
