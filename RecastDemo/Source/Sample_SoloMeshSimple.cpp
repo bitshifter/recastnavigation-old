@@ -616,6 +616,7 @@ bool Sample_SoloMeshSimple::handleBuild()
 		params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
 		params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
 		params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
+		params.offMeshConUserID = m_geom->getOffMeshConnectionId();
 		params.offMeshConCount = m_geom->getOffMeshConnectionCount();
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
@@ -639,14 +640,18 @@ bool Sample_SoloMeshSimple::handleBuild()
 			return false;
 		}
 		
-		if (!m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA))
+		dtStatus status;
+		
+		status = m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
+		if (dtStatusFailed(status))
 		{
 			dtFree(navData);
 			m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh");
 			return false;
 		}
 		
-		if (!m_navQuery->init(m_navMesh, 2048))
+		status = m_navQuery->init(m_navMesh, 2048);
+		if (dtStatusFailed(status))
 		{
 			m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
 			return false;

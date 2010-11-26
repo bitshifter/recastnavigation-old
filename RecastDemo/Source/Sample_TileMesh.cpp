@@ -125,6 +125,8 @@ public:
 		}
 	}
 
+	virtual void handleToggle() {}
+
 	virtual void handleStep() {}
 
 	virtual void handleUpdate(const float /*dt*/) {}
@@ -294,8 +296,13 @@ dtNavMesh* Sample_TileMesh::loadAll(const char* path)
 	}
 	
 	dtNavMesh* mesh = dtAllocNavMesh();
-
-	if (!mesh || !mesh->init(&header.params))
+	if (!mesh)
+	{
+		fclose(fp);
+		return 0;
+	}
+	dtStatus status = mesh->init(&header.params);
+	if (dtStatusFailed(status))
 	{
 		fclose(fp);
 		return 0;
@@ -314,7 +321,7 @@ dtNavMesh* Sample_TileMesh::loadAll(const char* path)
 		memset(data, 0, tileHeader.dataSize);
 		fread(data, tileHeader.dataSize, 1, fp);
 		
-		mesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef);
+		mesh->addTile(data, tileHeader.dataSize, DT_TILE_FREE_DATA, tileHeader.tileRef, 0);
 	}
 	
 	fclose(fp);
@@ -710,13 +717,18 @@ bool Sample_TileMesh::handleBuild()
 	params.tileHeight = m_tileSize*m_cellSize;
 	params.maxTiles = m_maxTiles;
 	params.maxPolys = m_maxPolysPerTile;
-	if (!m_navMesh->init(&params))
+	
+	dtStatus status;
+	
+	status = m_navMesh->init(&params);
+	if (dtStatusFailed(status))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init navmesh.");
 		return false;
 	}
 	
-	if (!m_navQuery->init(m_navMesh, 2048))
+	status = m_navQuery->init(m_navMesh, 2048);
+	if (dtStatusFailed(status))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: Could not init Detour navmesh query");
 		return false;
@@ -764,7 +776,8 @@ void Sample_TileMesh::buildTile(const float* pos)
 		m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty),0,0);
 		
 		// Let the navmesh own the data.
-		if (!m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA))
+		dtStatus status = m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA,0,0);
+		if (dtStatusFailed(status))
 			dtFree(data);
 	}
 	
@@ -844,7 +857,8 @@ void Sample_TileMesh::buildAllTiles()
 				// Remove any previous data (navmesh owns and deletes the data).
 				m_navMesh->removeTile(m_navMesh->getTileRefAt(x,y),0,0);
 				// Let the navmesh own the data.
-				if (!m_navMesh->addTile(data,dataSize,true))
+				dtStatus status = m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA,0,0);
+				if (dtStatusFailed(status))
 					dtFree(data);
 			}
 		}
@@ -1151,6 +1165,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.offMeshConDir = m_geom->getOffMeshConnectionDirs();
 		params.offMeshConAreas = m_geom->getOffMeshConnectionAreas();
 		params.offMeshConFlags = m_geom->getOffMeshConnectionFlags();
+		params.offMeshConUserID = m_geom->getOffMeshConnectionId();
 		params.offMeshConCount = m_geom->getOffMeshConnectionCount();
 		params.walkableHeight = m_agentHeight;
 		params.walkableRadius = m_agentRadius;
