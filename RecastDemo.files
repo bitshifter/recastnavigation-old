@@ -38,7 +38,7 @@ Recast/Source/RecastRegion.cpp
 RecastDemo/Bin/Tests/movement_test.txt
 RecastDemo/Bin/Tests/nav_mesh_test.txt
 RecastDemo/Build/Icon.png
-ecastDemo/Contrib/stb_image.h
+RecastDemo/Contrib/stb_image.h
 RecastDemo/Contrib/stb_truetype.h
 RecastDemo/Include/ChunkyTriMesh.h
 RecastDemo/Include/ConvexVolumeTool.h
