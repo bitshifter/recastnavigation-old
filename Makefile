@@ -12,7 +12,7 @@ RecastDemo: $(OBJ) DebugUtils Detour Recast
 $(OBJ):
 	mkdir -p $(OBJ)
 
-all: $(TARGETS)
+all: $(OBJ) $(TARGETS)
 $(TARGETS):
 	make BIN=$(BIN) BUILD=$(BUILD) OBJ=$(OBJ) -f $(BUILD)/$(@).mk
 
