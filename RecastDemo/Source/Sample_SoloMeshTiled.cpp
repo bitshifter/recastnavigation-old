@@ -75,7 +75,6 @@ public:
 	
 	virtual void handleMenu()
 	{
-		imguiValue("Click LMB to highlight a tile.");
 	}
 	
 	virtual void handleClick(const float* /*s*/, const float* p, bool /*shift*/)
@@ -127,6 +126,9 @@ public:
 			imguiDrawText((int)x, (int)y-25, IMGUI_ALIGN_CENTER, text, imguiRGBA(0,0,0,220));
 		}
 		
+		// Tool help
+		const int h = view[3];
+		imguiDrawText(280, h-40, IMGUI_ALIGN_LEFT, "LMB: Highlight hit.", imguiRGBA(255,255,255,192));	
 	}
 };
 
@@ -863,16 +865,27 @@ bool Sample_SoloMeshTiled::handleBuild()
 			for (int i  = 0; i < m_geom->getConvexVolumeCount(); ++i)
 				rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned char)vols[i].area, *tile.chf);
 			
-			if (!rcBuildDistanceField(m_ctx, *tile.chf))
+			if (m_monotonePartitioning)
 			{
-				m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: [%d,%d] Could not build distance fields.", x, y);
-				continue;
+				if (!rcBuildRegionsMonotone(m_ctx, *tile.chf, tileCfg.borderSize, tileCfg.minRegionArea, tileCfg.mergeRegionArea))
+				{
+					m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: [%d,%d] Could not build regions.", x, y);
+					continue;
+				}
 			}
-			
-			if (!rcBuildRegions(m_ctx, *tile.chf, tileCfg.borderSize, tileCfg.minRegionArea, tileCfg.mergeRegionArea))
+			else
 			{
-				m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: [%d,%d] Could not build regions.", x, y);
-				continue;
+				if (!rcBuildDistanceField(m_ctx, *tile.chf))
+				{
+					m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: [%d,%d] Could not build distance fields.", x, y);
+					continue;
+				}
+				
+				if (!rcBuildRegions(m_ctx, *tile.chf, tileCfg.borderSize, tileCfg.minRegionArea, tileCfg.mergeRegionArea))
+				{
+					m_ctx->log(RC_LOG_ERROR, "buildTiledNavigation: [%d,%d] Could not build regions.", x, y);
+					continue;
+				}
 			}
 			
 			tile.cset = rcAllocContourSet();

@@ -33,6 +33,7 @@
 #include "Sample_SoloMeshSimple.h"
 #include "Sample_SoloMeshTiled.h"
 #include "Sample_TileMesh.h"
+#include "Sample_TempObstacles.h"
 #include "Sample_Debug.h"
 
 #ifdef WIN32
@@ -49,13 +50,15 @@ Sample* createSoloSimple() { return new Sample_SoloMeshSimple(); }
 Sample* createSoloTiled() { return new Sample_SoloMeshTiled(); }
 Sample* createTile() { return new Sample_TileMesh(); }
 Sample* createDebug() { return new Sample_Debug(); }
+Sample* createTempObstacle() { return new Sample_TempObstacles(); }
 
 static SampleItem g_samples[] =
 {
 	{ createSoloSimple, "Solo Mesh Simple" },
 	{ createSoloTiled, "Solo Mesh Tiled" },
 	{ createTile, "Tile Mesh" },
-	{ createDebug, "Debug" },
+	{ createTempObstacle, "Temp Obstacles" },
+//	{ createDebug, "Debug" },
 };
 static const int g_nsamples = sizeof(g_samples)/sizeof(SampleItem); 
 
@@ -76,6 +79,8 @@ int main(int /*argc*/, char** /*argv*/)
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
 	
 	const SDL_VideoInfo* vi = SDL_GetVideoInfo();
 
@@ -129,7 +134,6 @@ int main(int /*argc*/, char** /*argv*/)
 	bool mouseOverMenu = false;
 	bool showMenu = !presentationMode;
 	bool showLog = false;
-	bool showDebugMode = true;
 	bool showTools = true;
 	bool showLevels = false;
 	bool showSample = false;
@@ -138,7 +142,6 @@ int main(int /*argc*/, char** /*argv*/)
 	int propScroll = 0;
 	int logScroll = 0;
 	int toolsScroll = 0;
-	int debugScroll = 0;
 	
 	char sampleName[64] = "Choose Sample..."; 
 	
@@ -168,8 +171,8 @@ int main(int /*argc*/, char** /*argv*/)
 	
 	glDepthFunc(GL_LEQUAL);
 	
-	glEnable(GL_POINT_SMOOTH);
-	glEnable(GL_LINE_SMOOTH);
+//	glEnable(GL_POINT_SMOOTH);
+//	glEnable(GL_LINE_SMOOTH);
 	
 	bool done = false;
 	while(!done)
@@ -370,11 +373,7 @@ int main(int /*argc*/, char** /*argv*/)
 		if (processHitTest && geom && sample)
 		{
 			float t;
-			TimeVal t0 = getPerfTime();
 			bool hit = geom->raycastMesh(rays, raye, t);
-			TimeVal t1 = getPerfTime();
-			
-			printf("raycast() %.4fms\n", getPerfDeltaTimeUsec(t0,t1)/1000.0f);
 			
 			if (hit)
 			{
@@ -512,24 +511,19 @@ int main(int /*argc*/, char** /*argv*/)
 		// Help text.
 		if (showMenu)
 		{
-			const char msg[] = "W/S/A/D: Move  RMB: Rotate   LMB+SHIFT: Place Start   LMB: Place End";
-			imguiDrawText(width/2, height-20, IMGUI_ALIGN_CENTER, msg, imguiRGBA(255,255,255,128));
+			const char msg[] = "W/S/A/D: Move  RMB: Rotate";
+			imguiDrawText(280, height-20, IMGUI_ALIGN_LEFT, msg, imguiRGBA(255,255,255,128));
 		}
 		
 		if (showMenu)
 		{
-			int propDiv = showDebugMode ? (int)(height*0.6f) : height;
-			
-			if (imguiBeginScrollArea("Properties",
-									 width-250-10, 10+height-propDiv, 250, propDiv-20, &propScroll))
+			if (imguiBeginScrollArea("Properties", width-250-10, 10, 250, height-20, &propScroll))
 				mouseOverMenu = true;
 
 			if (imguiCheck("Show Log", showLog))
 				showLog = !showLog;
 			if (imguiCheck("Show Tools", showTools))
 				showTools = !showTools;
-			if (imguiCheck("Show Debug Mode", showDebugMode))
-				showDebugMode = !showDebugMode;
 
 			imguiSeparator();
 			imguiLabel("Sample");
@@ -572,9 +566,11 @@ int main(int /*argc*/, char** /*argv*/)
 				imguiValue(text);
 			}
 			imguiSeparator();
-					
+
 			if (geom && sample)
 			{
+				imguiSeparatorLine();
+				
 				sample->handleSettings();
 
 				if (imguiButton("Build"))
@@ -595,20 +591,13 @@ int main(int /*argc*/, char** /*argv*/)
 				imguiSeparator();
 			}
 			
-			imguiEndScrollArea();
-			
-			if (showDebugMode)
+			if (sample)
 			{
-				if (imguiBeginScrollArea("Debug Mode",
-										 width-250-10, 10,
-										 250, height-propDiv-10, &debugScroll))
-					mouseOverMenu = true;
-
-				if (sample)
-					sample->handleDebugMode();
-
-				imguiEndScrollArea();
+				imguiSeparatorLine();
+				sample->handleDebugMode();
 			}
+
+			imguiEndScrollArea();
 		}
 		
 		// Sample selection dialog.
@@ -874,7 +863,7 @@ int main(int /*argc*/, char** /*argv*/)
 		// Log
 		if (showLog && showMenu)
 		{
-			if (imguiBeginScrollArea("Log", 10, 10, width - 300, 200, &logScroll))
+			if (imguiBeginScrollArea("Log", 250+20, 10, width - 300 - 250, 200, &logScroll))
 				mouseOverMenu = true;
 			for (int i = 0; i < ctx.getLogCount(); ++i)
 				imguiLabel(ctx.getLogText(i));
@@ -882,12 +871,13 @@ int main(int /*argc*/, char** /*argv*/)
 		}
 		
 		// Tools
-		if (!showTestCases && showTools && showMenu && geom && sample)
+		if (!showTestCases && showTools && showMenu) // && geom && sample)
 		{
-			if (imguiBeginScrollArea("Tools", 10, height - 10 - 350, 250, 350, &toolsScroll))
+			if (imguiBeginScrollArea("Tools", 10, 10, 250, height-20, &toolsScroll))
 				mouseOverMenu = true;
 
-			sample->handleTools();
+			if (sample)
+				sample->handleTools();
 			
 			imguiEndScrollArea();
 		}

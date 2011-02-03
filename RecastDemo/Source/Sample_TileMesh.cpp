@@ -108,8 +108,6 @@ public:
 			if (m_sample)
 				m_sample->removeAllTiles();
 		}
-		imguiValue("Click LMB to create a tile.");
-		imguiValue("Shift+LMB to remove a tile.");
 	}
 
 	virtual void handleClick(const float* /*s*/, const float* p, bool shift)
@@ -163,6 +161,9 @@ public:
 			imguiDrawText((int)x, (int)y-25, IMGUI_ALIGN_CENTER, text, imguiRGBA(0,0,0,220));
 		}
 		
+		// Tool help
+		const int h = view[3];
+		imguiDrawText(280, h-40, IMGUI_ALIGN_LEFT, "LMB: Rebuild hit tile.  Shift+LMB: Clear hit tile.", imguiRGBA(255,255,255,192));	
 	}
 };
 
@@ -865,7 +866,7 @@ void Sample_TileMesh::buildAllTiles()
 	}
 	
 	// Start the build process.	
-	m_ctx->startTimer(RC_TIMER_TEMP);
+	m_ctx->stopTimer(RC_TIMER_TEMP);
 
 	m_totalBuildTimeMs = m_ctx->getAccumulatedTime(RC_TIMER_TEMP)/1000.0f;
 }
@@ -1036,18 +1037,30 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	for (int i  = 0; i < m_geom->getConvexVolumeCount(); ++i)
 		rcMarkConvexPolyArea(m_ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned char)vols[i].area, *m_chf);
 	
-	// Prepare for region partitioning, by calculating distance field along the walkable surface.
-	if (!rcBuildDistanceField(m_ctx, *m_chf))
+	if (m_monotonePartitioning)
 	{
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
-		return 0;
+		// Partition the walkable surface into simple regions without holes.
+		if (!rcBuildRegionsMonotone(m_ctx, *m_chf, m_cfg.borderSize, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
+		{
+			m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
+			return 0;
+		}
 	}
-	
-	// Partition the walkable surface into simple regions without holes.
-	if (!rcBuildRegions(m_ctx, *m_chf, m_cfg.borderSize, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
+	else
 	{
-		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
-		return 0;
+		// Prepare for region partitioning, by calculating distance field along the walkable surface.
+		if (!rcBuildDistanceField(m_ctx, *m_chf))
+		{
+			m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
+			return 0;
+		}
+		
+		// Partition the walkable surface into simple regions without holes.
+		if (!rcBuildRegions(m_ctx, *m_chf, m_cfg.borderSize, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
+		{
+			m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build regions.");
+			return 0;
+		}
 	}
  
 	// Create contours.
