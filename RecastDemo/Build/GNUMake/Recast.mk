@@ -15,4 +15,4 @@ HEADERS = \
 	RecastAlloc.h \
 	RecastAssert.h
 
-include $(BUILD)/Library.mk
+include $(BUILD)/HelperLibrary.mk

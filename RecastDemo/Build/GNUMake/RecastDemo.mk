@@ -53,18 +53,23 @@ HEADERS = \
 
 CPPFLAGS = \
 	-I $(NAME)/Contrib \
+	-I $(NAME)/Contrib/fastlz \
 	-I DebugUtils/Include \
 	-I Detour/Include \
+	-I DetourCrowd/Include \
 	-I Recast/Include \
 	`pkg-config --cflags sdl`
   
 LDFLAGS = \
 	-L $(BIN) \
-	-lDetour \
-	-lRecast \
 	-lGL -lGLU \
 	`pkg-config --libs sdl`
 
-LIBS = $(BIN)/DebugUtils.a
+LIBS = \
+	$(BIN)/DebugUtils.a \
+	$(BIN)/Detour.a \
+	$(BIN)/DetourCrowd.a \
+	$(BIN)/Recast.a \
+	$(BIN)/fastlz.a
 
 include $(BUILD)/Program.mk

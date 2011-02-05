@@ -19,4 +19,4 @@ HEADERS = \
 	DetourNode.h \
 	DetourObstacleAvoidance.h
 
-include $(BUILD)/Library.mk
+include $(BUILD)/HelperLibrary.mk
