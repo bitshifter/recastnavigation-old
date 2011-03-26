@@ -36,6 +36,7 @@
 #include "ConvexVolumeTool.h"
 #include "CrowdTool.h"
 
+
 #ifdef WIN32
 #	define snprintf _snprintf
 #endif
@@ -174,7 +175,6 @@ Sample_TileMesh::Sample_TileMesh() :
 	m_keepInterResults(false),
 	m_buildAll(true),
 	m_totalBuildTimeMs(0),
-	m_drawPortals(false),
 	m_triareas(0),
 	m_solid(0),
 	m_chf(0),
@@ -512,7 +512,7 @@ void Sample_TileMesh::handleDebugMode()
 		m_drawMode = DRAWMODE_POLYMESH;
 	if (imguiCheck("Poly Mesh Detail", m_drawMode == DRAWMODE_POLYMESH_DETAIL, valid[DRAWMODE_POLYMESH_DETAIL]))
 		m_drawMode = DRAWMODE_POLYMESH_DETAIL;
-	
+		
 	if (unavail)
 	{
 		imguiValue("Tick 'Keep Itermediate Results'");
@@ -528,27 +528,18 @@ void Sample_TileMesh::handleRender()
 	
 	DebugDrawGL dd;
 
+	const float texScale = 1.0f / (m_cellSize * 10.0f);
+	
 	// Draw mesh
-	if (m_drawMode == DRAWMODE_MESH)
+	if (m_drawMode != DRAWMODE_NAVMESH_TRANS)
 	{
 		// Draw mesh
 		duDebugDrawTriMeshSlope(&dd, m_geom->getMesh()->getVerts(), m_geom->getMesh()->getVertCount(),
 								m_geom->getMesh()->getTris(), m_geom->getMesh()->getNormals(), m_geom->getMesh()->getTriCount(),
-								m_agentMaxSlope);
+								m_agentMaxSlope, texScale);
 		m_geom->drawOffMeshConnections(&dd);
 	}
-	else if (m_drawMode != DRAWMODE_NAVMESH_TRANS)
-	{
-		// Draw mesh
-		duDebugDrawTriMesh(&dd, m_geom->getMesh()->getVerts(), m_geom->getMesh()->getVertCount(),
-						   m_geom->getMesh()->getTris(), m_geom->getMesh()->getNormals(), m_geom->getMesh()->getTriCount(), 0);
-		m_geom->drawOffMeshConnections(&dd);
-	}
-	
-/*	duDebugDrawTriMesh(&dd, m_geom->getMesh()->getVerts(), m_geom->getMesh()->getVertCount(),
-					   m_geom->getMesh()->getTris(), m_geom->getMesh()->getNormals(), m_geom->getMesh()->getTriCount(), 0);
-	m_geom->drawOffMeshConnections(&dd);*/
-	
+		
 	glDepthMask(GL_FALSE);
 	
 	// Draw bounds
@@ -565,15 +556,9 @@ void Sample_TileMesh::handleRender()
 	duDebugDrawGridXZ(&dd, bmin[0],bmin[1],bmin[2], tw,th, s, duRGBA(0,0,0,64), 1.0f);
 	
 	// Draw active tile
-	duDebugDrawBoxWire(&dd, m_tileBmin[0],m_tileBmin[1],m_tileBmin[2], m_tileBmax[0],m_tileBmax[1],m_tileBmax[2], m_tileCol, 2.0f);
-	
-/*	if (m_navMesh)
-	{
-		duDebugDrawNavMeshWithClosedList(&dd, *m_navMesh, *m_navQuery, m_navMeshDrawFlags);
-		if (m_drawPortals)
-			duDebugDrawNavMeshPortals(&dd, *m_navMesh);
-	}*/
-	
+	duDebugDrawBoxWire(&dd, m_tileBmin[0],m_tileBmin[1],m_tileBmin[2],
+					   m_tileBmax[0],m_tileBmax[1],m_tileBmax[2], m_tileCol, 1.0f);
+		
 	if (m_navMesh && m_navQuery &&
 		(m_drawMode == DRAWMODE_NAVMESH ||
 		 m_drawMode == DRAWMODE_NAVMESH_TRANS ||
@@ -614,12 +599,14 @@ void Sample_TileMesh::handleRender()
 		duDebugDrawHeightfieldWalkable(&dd, *m_solid);
 		glDisable(GL_FOG);
 	}
+	
 	if (m_cset && m_drawMode == DRAWMODE_RAW_CONTOURS)
 	{
 		glDepthMask(GL_FALSE);
 		duDebugDrawRawContours(&dd, *m_cset);
 		glDepthMask(GL_TRUE);
 	}
+	
 	if (m_cset && m_drawMode == DRAWMODE_BOTH_CONTOURS)
 	{
 		glDepthMask(GL_FALSE);
@@ -653,7 +640,7 @@ void Sample_TileMesh::handleRender()
 		duDebugDrawPolyMeshDetail(&dd, *m_dmesh);
 		glDepthMask(GL_TRUE);
 	}
-	
+		
 	m_geom->drawConvexVolumes(&dd);
 	
 	if (m_tool)
@@ -764,7 +751,7 @@ void Sample_TileMesh::buildTile(const float* pos)
 	m_tileBmax[1] = bmax[1];
 	m_tileBmax[2] = bmin[2] + (ty+1)*ts;
 	
-	m_tileCol = duRGBA(77,204,0,255);
+	m_tileCol = duRGBA(255,255,255,64);
 	
 	m_ctx->resetLog();
 	
@@ -774,7 +761,7 @@ void Sample_TileMesh::buildTile(const float* pos)
 	if (data)
 	{
 		// Remove any previous data (navmesh owns and deletes the data).
-		m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty),0,0);
+		m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty,0),0,0);
 		
 		// Let the navmesh own the data.
 		dtStatus status = m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA,0,0);
@@ -816,9 +803,9 @@ void Sample_TileMesh::removeTile(const float* pos)
 	m_tileBmax[1] = bmax[1];
 	m_tileBmax[2] = bmin[2] + (ty+1)*ts;
 	
-	m_tileCol = duRGBA(204,25,0,255);
+	m_tileCol = duRGBA(128,32,16,64);
 	
-	m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty),0,0);
+	m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty,0),0,0);
 }
 
 void Sample_TileMesh::buildAllTiles()
@@ -835,7 +822,7 @@ void Sample_TileMesh::buildAllTiles()
 	const int th = (gh + ts-1) / ts;
 	const float tcs = m_tileSize*m_cellSize;
 
-
+	
 	// Start the build process.
 	m_ctx->startTimer(RC_TIMER_TEMP);
 
@@ -856,7 +843,7 @@ void Sample_TileMesh::buildAllTiles()
 			if (data)
 			{
 				// Remove any previous data (navmesh owns and deletes the data).
-				m_navMesh->removeTile(m_navMesh->getTileRefAt(x,y),0,0);
+				m_navMesh->removeTile(m_navMesh->getTileRefAt(x,y,0),0,0);
 				// Let the navmesh own the data.
 				dtStatus status = m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA,0,0);
 				if (dtStatusFailed(status))
@@ -869,6 +856,7 @@ void Sample_TileMesh::buildAllTiles()
 	m_ctx->stopTimer(RC_TIMER_TEMP);
 
 	m_totalBuildTimeMs = m_ctx->getAccumulatedTime(RC_TIMER_TEMP)/1000.0f;
+	
 }
 
 void Sample_TileMesh::removeAllTiles()
@@ -883,8 +871,9 @@ void Sample_TileMesh::removeAllTiles()
 	
 	for (int y = 0; y < th; ++y)
 		for (int x = 0; x < tw; ++x)
-			m_navMesh->removeTile(m_navMesh->getTileRefAt(x,y),0,0);
+			m_navMesh->removeTile(m_navMesh->getTileRefAt(x,y,0),0,0);
 }
+
 
 unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const float* bmin, const float* bmax, int& dataSize)
 {
@@ -1029,7 +1018,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	if (!rcErodeWalkableArea(m_ctx, m_cfg.walkableRadius, *m_chf))
 	{
 		m_ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
-		return false;
+		return 0;
 	}
 
 	// (Optional) Mark areas.
@@ -1062,7 +1051,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 			return 0;
 		}
 	}
- 
+ 	
 	// Create contours.
 	m_cset = rcAllocContourSet();
 	if (!m_cset)
@@ -1122,14 +1111,6 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	int navDataSize = 0;
 	if (m_cfg.maxVertsPerPoly <= DT_VERTS_PER_POLYGON)
 	{
-		// Remove padding from the polymesh data. TODO: Remove this odditity.
-		for (int i = 0; i < m_pmesh->nverts; ++i)
-		{
-			unsigned short* v = &m_pmesh->verts[i*3];
-			v[0] -= (unsigned short)m_cfg.borderSize;
-			v[2] -= (unsigned short)m_cfg.borderSize;
-		}
-		
 		if (m_pmesh->nverts >= 0xffff)
 		{
 			// The vertex indices are ushorts, and cannot point to more than 0xffff vertices.
@@ -1185,26 +1166,18 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		params.walkableClimb = m_agentMaxClimb;
 		params.tileX = tx;
 		params.tileY = ty;
-		rcVcopy(params.bmin, bmin);
-		rcVcopy(params.bmax, bmax);
+		params.tileLayer = 0;
+		rcVcopy(params.bmin, m_pmesh->bmin);
+		rcVcopy(params.bmax, m_pmesh->bmax);
 		params.cs = m_cfg.cs;
 		params.ch = m_cfg.ch;
-		params.tileSize = m_cfg.tileSize;
+		params.buildBvTree = true;
 		
 		if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
 		{
 			m_ctx->log(RC_LOG_ERROR, "Could not build Detour navmesh.");
 			return 0;
-		}
-		
-		// Restore padding so that the debug visualization is correct.
-		for (int i = 0; i < m_pmesh->nverts; ++i)
-		{
-			unsigned short* v = &m_pmesh->verts[i*3];
-			v[0] += (unsigned short)m_cfg.borderSize;
-			v[2] += (unsigned short)m_cfg.borderSize;
-		}
-		
+		}		
 	}
 	m_tileMemUsage = navDataSize/1024.0f;
 	

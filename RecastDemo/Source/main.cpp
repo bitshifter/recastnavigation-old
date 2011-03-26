@@ -30,14 +30,14 @@
 #include "Filelist.h"
 #include "SlideShow.h"
 
-#include "Sample_SoloMeshSimple.h"
-#include "Sample_SoloMeshTiled.h"
+#include "Sample_SoloMesh.h"
 #include "Sample_TileMesh.h"
 #include "Sample_TempObstacles.h"
 #include "Sample_Debug.h"
 
 #ifdef WIN32
 #	define snprintf _snprintf
+#	define putenv _putenv
 #endif
 
 struct SampleItem
@@ -46,16 +46,14 @@ struct SampleItem
 	const char* name;
 };
 
-Sample* createSoloSimple() { return new Sample_SoloMeshSimple(); }
-Sample* createSoloTiled() { return new Sample_SoloMeshTiled(); }
+Sample* createSolo() { return new Sample_SoloMesh(); }
 Sample* createTile() { return new Sample_TileMesh(); }
-Sample* createDebug() { return new Sample_Debug(); }
 Sample* createTempObstacle() { return new Sample_TempObstacles(); }
+Sample* createDebug() { return new Sample_Debug(); }
 
 static SampleItem g_samples[] =
 {
-	{ createSoloSimple, "Solo Mesh Simple" },
-	{ createSoloTiled, "Solo Mesh Tiled" },
+	{ createSolo, "Solo Mesh" },
 	{ createTile, "Tile Mesh" },
 	{ createTempObstacle, "Temp Obstacles" },
 //	{ createDebug, "Debug" },
@@ -72,6 +70,9 @@ int main(int /*argc*/, char** /*argv*/)
 		return -1;
 	}
 	
+	// Center window
+	putenv("SDL_VIDEO_CENTERED=1");
+
 	// Init OpenGL
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -79,9 +80,11 @@ int main(int /*argc*/, char** /*argv*/)
 	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
 	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+//#ifndef WIN32
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
-	
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+//#endif
+
 	const SDL_VideoInfo* vi = SDL_GetVideoInfo();
 
 	bool presentationMode = false;
@@ -107,7 +110,9 @@ int main(int /*argc*/, char** /*argv*/)
 		printf("Could not initialise SDL opengl\n");
 		return -1;
 	}
-	
+
+	glEnable(GL_MULTISAMPLE);
+
 	SDL_WM_SetCaption("Recast Demo", 0);
 	
 	if (!imguiRenderGLInit("DroidSans.ttf"))
@@ -162,17 +167,14 @@ int main(int /*argc*/, char** /*argv*/)
 	
 	glEnable(GL_CULL_FACE);
 	
-	float fogCol[4] = { 0.32f,0.25f,0.25f,1 };
+	float fogCol[4] = { 0.32f, 0.31f, 0.30f, 1.0f };
 	glEnable(GL_FOG);
 	glFogi(GL_FOG_MODE, GL_LINEAR);
-	glFogf(GL_FOG_START, camr*0.2f);
+	glFogf(GL_FOG_START, camr*0.1f);
 	glFogf(GL_FOG_END, camr*1.25f);
 	glFogfv(GL_FOG_COLOR, fogCol);
 	
 	glDepthFunc(GL_LEQUAL);
-	
-//	glEnable(GL_POINT_SMOOTH);
-//	glEnable(GL_LINE_SMOOTH);
 	
 	bool done = false;
 	while(!done)
@@ -419,7 +421,18 @@ int main(int /*argc*/, char** /*argv*/)
 			}
 			simIter++;
 		}
- 		
+
+		// Clamp the framerate so that we do not hog all the CPU.
+		const float FRAME_RATE = 40;
+		if (dt < FRAME_RATE)
+		{
+			int ms = (int)((FRAME_RATE - dt)*1000.0f);
+			if (ms > 10) ms = 10;
+			if (ms >= 0)
+				SDL_Delay(ms);
+		}
+		
+		
 		// Update and render
 		glViewport(0, 0, width, height);
 		glClearColor(0.3f, 0.3f, 0.32f, 1.0f);
@@ -656,7 +669,7 @@ int main(int /*argc*/, char** /*argv*/)
 				}
 				rx = 45;
 				ry = -45;
-				glFogf(GL_FOG_START, camr*0.2f);
+				glFogf(GL_FOG_START, camr*0.1f);
 				glFogf(GL_FOG_END, camr*1.25f);
 			}
 			
@@ -732,7 +745,7 @@ int main(int /*argc*/, char** /*argv*/)
 					}
 					rx = 45;
 					ry = -45;
-					glFogf(GL_FOG_START, camr*0.2f);
+					glFogf(GL_FOG_START, camr*0.1f);
 					glFogf(GL_FOG_END, camr*1.25f);
 				}
 			}
@@ -846,7 +859,7 @@ int main(int /*argc*/, char** /*argv*/)
 						}
 						rx = 45;
 						ry = -45;
-						glFogf(GL_FOG_START, camr*0.2f);
+						glFogf(GL_FOG_START, camr*0.1f);
 						glFogf(GL_FOG_END, camr*1.25f);
 					}
 					
