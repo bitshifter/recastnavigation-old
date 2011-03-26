@@ -4,10 +4,11 @@ OBJ = $(BUILD)/Objects
 
 # Add new targets here and add a corresponding
 # .mk file to RecastDemo/Build/GNUMake
-TARGETS = DebugUtils Detour DetourCrowd Recast fastlz RecastDemo
+LIBS = DebugUtils Detour DetourCrowd DetourTileCache Recast fastlz
+TARGETS = $(LIBS) RecastDemo
 
 # Dependencies
-RecastDemo: $(OBJ) DebugUtils Detour DetourCrowd Recast fastlz
+RecastDemo: $(OBJ) $(LIBS)
 
 $(OBJ):
 	mkdir -p $(OBJ)

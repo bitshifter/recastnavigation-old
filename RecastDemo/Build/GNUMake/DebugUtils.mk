@@ -14,6 +14,7 @@ HEADERS = \
 
 CPPFLAGS = \
 	-I Detour/Include \
+	-I DetourTileCache \
 	-I Recast/Include
 
 include $(BUILD)/HelperLibrary.mk

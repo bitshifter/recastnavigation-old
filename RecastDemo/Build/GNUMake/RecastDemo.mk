@@ -56,6 +56,7 @@ CPPFLAGS = \
 	-I $(NAME)/Contrib/fastlz \
 	-I DebugUtils/Include \
 	-I Detour/Include \
+	-I DetourTileCache \
 	-I DetourCrowd/Include \
 	-I Recast/Include \
 	`pkg-config --cflags sdl`
@@ -69,6 +70,7 @@ LIBS = \
 	$(BIN)/DebugUtils.a \
 	$(BIN)/Detour.a \
 	$(BIN)/DetourCrowd.a \
+	$(BIN)/DetourTileCache.a \
 	$(BIN)/Recast.a \
 	$(BIN)/fastlz.a
 
