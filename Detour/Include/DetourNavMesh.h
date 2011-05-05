@@ -217,7 +217,7 @@ public:
 
 	/// Returns pointer to tile at specified location.
 	/// @param x,y [in] Location of the tile to get.
-	/// @return pointer to tile if tile exists or 0 tile does not exists.
+	/// @returns pointer to tile if tile exists or 0 tile does not exists.
 	const dtMeshTile* getTileAt(const int x, const int y, const int layer) const;
 
 	int getTilesAt(const int x, const int y,
@@ -225,7 +225,7 @@ public:
 	
 	/// Returns reference to tile at specified location.
 	/// @param x,y [in] Location of the tile to get.
-	/// @return reference to tile if tile exists or 0 tile does not exists.
+	/// @returns reference to tile if tile exists or 0 tile does not exists.
 	dtTileRef getTileRefAt(int x, int y, int layer) const;
 
 	/// Returns tile references of a tile based on tile pointer.
@@ -239,7 +239,7 @@ public:
 	
 	/// Returns pointer to tile in the tile array.
 	/// @param i [in] Index to the tile to retrieve, max index is getMaxTiles()-1.
-	/// @return Pointer to specified tile.
+	/// @returns Pointer to specified tile.
 	const dtMeshTile* getTile(int i) const;
 
 	/// Returns pointer to tile and polygon pointed by the polygon reference.
@@ -267,7 +267,7 @@ public:
 	/// @param polyRef [in] ref to the off-mesh link polygon.
 	/// @param startPos[3] [out] start point of the link.
 	/// @param endPos[3] [out] end point of the link.
-	/// @return true if link is found.
+	/// @returns true if link is found.
 	dtStatus getOffMeshConnectionPolyEndPoints(dtPolyRef prevRef, dtPolyRef polyRef, float* startPos, float* endPos) const;
 
 	/// Returns pointer to off-mesh connection based on polyref, or null if ref not valid.

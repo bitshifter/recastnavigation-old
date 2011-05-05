@@ -612,7 +612,11 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = Detour
+INPUT                  = Detour \
+                         DebugUtils \
+                         DetourCrowd \
+                         DetourTileCache \
+                         Recast
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
@@ -646,7 +650,10 @@ RECURSIVE              = YES
 EXCLUDE                = Doxyfile \
                          License.txt \
                          Readme.txt \
-                         TODO.txt
+                         TODO.txt \
+                         RecastDemo/Contrib \
+                         RecastDemo/Build \
+                         RecastDemo/Bin
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix file system feature) are excluded 
