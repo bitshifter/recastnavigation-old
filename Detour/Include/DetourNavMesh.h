@@ -178,14 +178,14 @@ public:
 	~dtNavMesh();
 
 	/// Initializes the nav mesh for tiled use.
-	/// @param params [in] navmesh initialization params, see dtNavMeshParams.
+	///  @param params [in] navmesh initialization params, see dtNavMeshParams.
 	/// @return True if succeed, else false.
 	dtStatus init(const dtNavMeshParams* params);
 
 	/// Initializes the nav mesh for single tile use.
-	/// @param data - [in] Data of the new tile mesh.
-	/// @param dataSize - [in] Data size of the new tile mesh.
-	/// @param flags - [in] Tile flags, see dtTileFlags.
+	///  @param data - [in] Data of the new tile mesh.
+	///  @param dataSize - [in] Data size of the new tile mesh.
+	///  @param flags - [in] Tile flags, see dtTileFlags.
 	/// @return True if succeed, else false.
 	dtStatus init(unsigned char* data, const int dataSize, const int flags);
 	
@@ -195,37 +195,37 @@ public:
 	/// Adds new tile into the navmesh.
 	/// The add will fail if the data is in wrong format,
 	/// there is not enough tiles left, or if there is a tile already at the location.
-	/// @param data [in] Data of the new tile mesh.
-	/// @param dataSize [in] Data size of the new tile mesh.
+	///  @param data [in] Data of the new tile mesh.
+	///  @param dataSize [in] Data size of the new tile mesh.
 	///	@param flags [in] Tile flags, see dtTileFlags.
-	/// @param lastRef [in,optional] Last tile ref, the tile will be restored so that
+	///  @param lastRef [in,optional] Last tile ref, the tile will be restored so that
 	///            the reference (as well as poly references) will be the same. Default: 0.
-	/// @param result [out,optional] tile ref if the tile was succesfully added.
+	///  @param result [out,optional] tile ref if the tile was succesfully added.
 	dtStatus addTile(unsigned char* data, int dataSize, int flags, dtTileRef lastRef, dtTileRef* result);
 	
 	/// Removes specified tile.
-	/// @param ref [in] Reference to the tile to remove.
-	/// @param data [out] Data associated with deleted tile.
-	/// @param dataSize [out] Size of the data associated with deleted tile.
+	///  @param ref [in] Reference to the tile to remove.
+	///  @param data [out] Data associated with deleted tile.
+	///  @param dataSize [out] Size of the data associated with deleted tile.
 	dtStatus removeTile(dtTileRef ref, unsigned char** data, int* dataSize);
 
 	/// Calculates tile location based in input world position.
-	/// @param pos [in] world position of the query.
-	/// @param tx [out] tile x location.
-	/// @param ty [out] tile y location.
+	///  @param pos [in] world position of the query.
+	///  @param tx [out] tile x location.
+	///  @param ty [out] tile y location.
 	void calcTileLoc(const float* pos, int* tx, int* ty) const;
 
 	/// Returns pointer to tile at specified location.
-	/// @param x,y [in] Location of the tile to get.
-	/// @returns pointer to tile if tile exists or 0 tile does not exists.
+	///  @param x,y [in] Location of the tile to get.
+	///  @returns pointer to tile if tile exists or 0 tile does not exists.
 	const dtMeshTile* getTileAt(const int x, const int y, const int layer) const;
 
 	int getTilesAt(const int x, const int y,
 				   dtMeshTile const** tiles, const int maxTiles) const;
 	
 	/// Returns reference to tile at specified location.
-	/// @param x,y [in] Location of the tile to get.
-	/// @returns reference to tile if tile exists or 0 tile does not exists.
+	///  @param x,y [in] Location of the tile to get.
+	///  @returns reference to tile if tile exists or 0 tile does not exists.
 	dtTileRef getTileRefAt(int x, int y, int layer) const;
 
 	/// Returns tile references of a tile based on tile pointer.
@@ -238,22 +238,22 @@ public:
 	int getMaxTiles() const;
 	
 	/// Returns pointer to tile in the tile array.
-	/// @param i [in] Index to the tile to retrieve, max index is getMaxTiles()-1.
-	/// @returns Pointer to specified tile.
+	///  @param i [in] Index to the tile to retrieve, max index is getMaxTiles()-1.
+	///  @returns Pointer to specified tile.
 	const dtMeshTile* getTile(int i) const;
 
 	/// Returns pointer to tile and polygon pointed by the polygon reference.
-	/// @param ref [in] reference to a polygon.
-	/// @param tile [out] pointer to the tile containing the polygon.
-	/// @param poly [out] pointer to the polygon.
+	///  @param ref [in] reference to a polygon.
+	///  @param tile [out] pointer to the tile containing the polygon.
+	///  @param poly [out] pointer to the polygon.
 	dtStatus getTileAndPolyByRef(const dtPolyRef ref, const dtMeshTile** tile, const dtPoly** poly) const;
 	
 	/// Returns pointer to tile and polygon pointed by the polygon reference.
 	/// Note: this function does not check if 'ref' s valid, and is thus faster. Use only with valid refs!
 	///
-	/// @param ref [in] reference to a polygon.
-	/// @param tile [out] pointer to the tile containing the polygon.
-	/// @param poly [out] pointer to the polygon.
+	///  @param ref [in] reference to a polygon.
+	///  @param tile [out] pointer to the tile containing the polygon.
+	///  @param poly [out] pointer to the polygon.
 	void getTileAndPolyByRefUnsafe(const dtPolyRef ref, const dtMeshTile** tile, const dtPoly** poly) const;
 
 	/// Returns true if polygon reference points to valid data.
@@ -263,11 +263,11 @@ public:
 	dtPolyRef getPolyRefBase(const dtMeshTile* tile) const;
 	
 	/// Returns start and end location of an off-mesh link polygon.
-	/// @param prevRef [in] ref to the polygon before the link (used to select direction).
-	/// @param polyRef [in] ref to the off-mesh link polygon.
-	/// @param startPos[3] [out] start point of the link.
-	/// @param endPos[3] [out] end point of the link.
-	/// @returns true if link is found.
+	///  @param prevRef [in] ref to the polygon before the link (used to select direction).
+	///  @param polyRef [in] ref to the off-mesh link polygon.
+	///  @param startPos[3] [out] start point of the link.
+	///  @param endPos[3] [out] end point of the link.
+	///  @returns true if link is found.
 	dtStatus getOffMeshConnectionPolyEndPoints(dtPolyRef prevRef, dtPolyRef polyRef, float* startPos, float* endPos) const;
 
 	/// Returns pointer to off-mesh connection based on polyref, or null if ref not valid.
