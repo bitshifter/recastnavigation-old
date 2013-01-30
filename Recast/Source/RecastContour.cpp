@@ -21,9 +21,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "Recast.h"
-#include "RecastLog.h"
-#include "RecastTimer.h"
 #include "RecastAlloc.h"
+#include "RecastAssert.h"
 
 
 static int getCornerHeight(int x, int y, int i, int dir,
@@ -341,7 +340,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 			endi = ai;
 		}
 		
-		// Tesselate only outer edges oredges between areas.
+		// Tessellate only outer edges or edges between areas.
 		if ((points[ci*4+3] & RC_CONTOUR_REG_MASK) == 0 ||
 			(points[ci*4+3] & RC_AREA_BORDER))
 		{
@@ -403,7 +402,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 			int maxi = -1;
 			int ci = (ai+1) % pn;
 
-			// Tesselate only outer edges or edges between areas.
+			// Tessellate only outer edges or edges between areas.
 			bool tess = false;
 			// Wall edges.
 			if ((buildFlags & RC_CONTOUR_TESS_WALL_EDGES) && (points[ci*4+3] & RC_CONTOUR_REG_MASK) == 0)
@@ -421,15 +420,13 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 					// Round based on the segments in lexilogical order so that the
 					// max tesselation is consistent regardles in which direction
 					// segments are traversed.
-					if (bx > ax || (bx == ax && bz > az))
+					const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
+					if (n > 1)
 					{
-						const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
-						maxi = (ai + n/2) % pn;
-					}
-					else
-					{
-						const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
-						maxi = (ai + (n+1)/2) % pn;
+						if (bx > ax || (bx == ax && bz > az))
+							maxi = (ai + n/2) % pn;
+						else
+							maxi = (ai + (n+1)/2) % pn;
 					}
 				}
 			}
@@ -467,7 +464,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 		// and the neighbour region is take from the next raw point.
 		const int ai = (simplified[i*4+3]+1) % pn;
 		const int bi = simplified[i*4+3];
-		simplified[i*4+3] = (points[ai*4+3] & RC_CONTOUR_REG_MASK) | (points[bi*4+3] & RC_BORDER_VERTEX);
+		simplified[i*4+3] = (points[ai*4+3] & (RC_CONTOUR_REG_MASK|RC_AREA_BORDER)) | (points[bi*4+3] & RC_BORDER_VERTEX);
 	}
 	
 }
@@ -593,19 +590,47 @@ static bool mergeContours(rcContour& ca, rcContour& cb, int ia, int ib)
 	return true;
 }
 
-bool rcBuildContours(rcCompactHeightfield& chf,
+/// @par
+///
+/// The raw contours will match the region outlines exactly. The @p maxError and @p maxEdgeLen
+/// parameters control how closely the simplified contours will match the raw contours.
+///
+/// Simplified contours are generated such that the vertices for portals between areas match up. 
+/// (They are considered mandatory vertices.)
+///
+/// Setting @p maxEdgeLength to zero will disabled the edge length feature.
+/// 
+/// See the #rcConfig documentation for more information on the configuration parameters.
+/// 
+/// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
+bool rcBuildContours(rcContext* ctx, rcCompactHeightfield& chf,
 					 const float maxError, const int maxEdgeLen,
 					 rcContourSet& cset, const int buildFlags)
 {
+	rcAssert(ctx);
+	
 	const int w = chf.width;
 	const int h = chf.height;
+	const int borderSize = chf.borderSize;
 	
-	rcTimeVal startTime = rcGetPerformanceTimer();
+	ctx->startTimer(RC_TIMER_BUILD_CONTOURS);
 	
 	rcVcopy(cset.bmin, chf.bmin);
 	rcVcopy(cset.bmax, chf.bmax);
+	if (borderSize > 0)
+	{
+		// If the heightfield was build with bordersize, remove the offset.
+		const float pad = borderSize*chf.cs;
+		cset.bmin[0] += pad;
+		cset.bmin[2] += pad;
+		cset.bmax[0] -= pad;
+		cset.bmax[2] -= pad;
+	}
 	cset.cs = chf.cs;
 	cset.ch = chf.ch;
+	cset.width = chf.width - chf.borderSize*2;
+	cset.height = chf.height - chf.borderSize*2;
+	cset.borderSize = chf.borderSize;
 	
 	int maxContours = rcMax((int)chf.maxRegions, 8);
 	cset.conts = (rcContour*)rcAlloc(sizeof(rcContour)*maxContours, RC_ALLOC_PERM);
@@ -616,13 +641,11 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 	rcScopedDelete<unsigned char> flags = (unsigned char*)rcAlloc(sizeof(unsigned char)*chf.spanCount, RC_ALLOC_TEMP);
 	if (!flags)
 	{
-		if (rcGetLog())
-			rcGetLog()->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'flags' (%d).", chf.spanCount);
+		ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'flags' (%d).", chf.spanCount);
 		return false;
 	}
 	
-	rcTimeVal traceStartTime = rcGetPerformanceTimer();
-					
+	ctx->startTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
 	
 	// Mark boundaries.
 	for (int y = 0; y < h; ++y)
@@ -657,9 +680,7 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 		}
 	}
 	
-	rcTimeVal traceEndTime = rcGetPerformanceTimer();
-	
-	rcTimeVal simplifyStartTime = rcGetPerformanceTimer();
+	ctx->stopTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
 	
 	rcIntArray verts(256);
 	rcIntArray simplified(64);
@@ -683,10 +704,17 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 				
 				verts.resize(0);
 				simplified.resize(0);
+
+				ctx->startTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
 				walkContour(x, y, i, chf, flags, verts);
+				ctx->stopTimer(RC_TIMER_BUILD_CONTOURS_TRACE);
+
+				ctx->startTimer(RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
 				simplifyContour(verts, simplified, maxError, maxEdgeLen, buildFlags);
 				removeDegenerateSegments(simplified);
+				ctx->stopTimer(RC_TIMER_BUILD_CONTOURS_SIMPLIFY);
 				
+
 				// Store region->contour remap info.
 				// Create contour.
 				if (simplified.size()/4 >= 3)
@@ -694,7 +722,7 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 					if (cset.nconts >= maxContours)
 					{
 						// Allocate more contours.
-						// This can happen when there are tiny holes in the heighfield.
+						// This can happen when there are tiny holes in the heightfield.
 						const int oldMax = maxContours;
 						maxContours *= 2;
 						rcContour* newConts = (rcContour*)rcAlloc(sizeof(rcContour)*maxContours, RC_ALLOC_PERM);
@@ -708,8 +736,7 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 						rcFree(cset.conts);
 						cset.conts = newConts;
 					
-						if (rcGetLog())
-							rcGetLog()->log(RC_LOG_WARNING, "rcBuildContours: Expanding max contours from %d to %d.", oldMax, maxContours);
+						ctx->log(RC_LOG_WARNING, "rcBuildContours: Expanding max contours from %d to %d.", oldMax, maxContours);
 					}
 						
 					rcContour* cont = &cset.conts[cset.nconts++];
@@ -718,21 +745,39 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 					cont->verts = (int*)rcAlloc(sizeof(int)*cont->nverts*4, RC_ALLOC_PERM);
 					if (!cont->verts)
 					{
-						if (rcGetLog())
-							rcGetLog()->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'verts' (%d).", cont->nverts);
+						ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'verts' (%d).", cont->nverts);
 						return false;
 					}
 					memcpy(cont->verts, &simplified[0], sizeof(int)*cont->nverts*4);
+					if (borderSize > 0)
+					{
+						// If the heightfield was build with bordersize, remove the offset.
+						for (int j = 0; j < cont->nverts; ++j)
+						{
+							int* v = &cont->verts[j*4];
+							v[0] -= borderSize;
+							v[2] -= borderSize;
+						}
+					}
 					
 					cont->nrverts = verts.size()/4;
 					cont->rverts = (int*)rcAlloc(sizeof(int)*cont->nrverts*4, RC_ALLOC_PERM);
 					if (!cont->rverts)
 					{
-						if (rcGetLog())
-							rcGetLog()->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'rverts' (%d).", cont->nrverts);
+						ctx->log(RC_LOG_ERROR, "rcBuildContours: Out of memory 'rverts' (%d).", cont->nrverts);
 						return false;
 					}
 					memcpy(cont->rverts, &verts[0], sizeof(int)*cont->nrverts*4);
+					if (borderSize > 0)
+					{
+						// If the heightfield was build with bordersize, remove the offset.
+						for (int j = 0; j < cont->nrverts; ++j)
+						{
+							int* v = &cont->rverts[j*4];
+							v[0] -= borderSize;
+							v[2] -= borderSize;
+						}
+					}
 					
 /*					cont->cx = cont->cy = cont->cz = 0;
 					for (int i = 0; i < cont->nverts; ++i)
@@ -753,7 +798,7 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 	}
 	
 	// Check and merge droppings.
-	// Sometimes the previous algorithms can fail and create several countours
+	// Sometimes the previous algorithms can fail and create several contours
 	// per area. This pass will try to merge the holes into the main region.
 	for (int i = 0; i < cset.nconts; ++i)
 	{
@@ -778,8 +823,7 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 			}
 			if (mergeIdx == -1)
 			{
-				if (rcGetLog())
-					rcGetLog()->log(RC_LOG_WARNING, "rcBuildContours: Could not find merge target for bad contour %d.", i);
+				ctx->log(RC_LOG_WARNING, "rcBuildContours: Could not find merge target for bad contour %d.", i);
 			}
 			else
 			{
@@ -789,37 +833,19 @@ bool rcBuildContours(rcCompactHeightfield& chf,
 				getClosestIndices(mcont.verts, mcont.nverts, cont.verts, cont.nverts, ia, ib);
 				if (ia == -1 || ib == -1)
 				{
-					if (rcGetLog())
-						rcGetLog()->log(RC_LOG_WARNING, "rcBuildContours: Failed to find merge points for %d and %d.", i, mergeIdx);
+					ctx->log(RC_LOG_WARNING, "rcBuildContours: Failed to find merge points for %d and %d.", i, mergeIdx);
 					continue;
 				}
 				if (!mergeContours(mcont, cont, ia, ib))
 				{
-					if (rcGetLog())
-						rcGetLog()->log(RC_LOG_WARNING, "rcBuildContours: Failed to merge contours %d and %d.", i, mergeIdx);
+					ctx->log(RC_LOG_WARNING, "rcBuildContours: Failed to merge contours %d and %d.", i, mergeIdx);
 					continue;
 				}
 			}
 		}
 	}
 	
-	rcTimeVal simplifyEndTime = rcGetPerformanceTimer();
-	
-	rcTimeVal endTime = rcGetPerformanceTimer();
-	
-//	if (rcGetLog())
-//	{
-//		rcGetLog()->log(RC_LOG_PROGRESS, "Create contours: %.3f ms", rcGetDeltaTimeUsec(startTime, endTime)/1000.0f);
-//		rcGetLog()->log(RC_LOG_PROGRESS, " - boundary: %.3f ms", rcGetDeltaTimeUsec(boundaryStartTime, boundaryEndTime)/1000.0f);
-//		rcGetLog()->log(RC_LOG_PROGRESS, " - contour: %.3f ms", rcGetDeltaTimeUsec(contourStartTime, contourEndTime)/1000.0f);
-//	}
-
-	if (rcGetBuildTimes())
-	{
-		rcGetBuildTimes()->buildContours += rcGetDeltaTimeUsec(startTime, endTime);
-		rcGetBuildTimes()->buildContoursTrace += rcGetDeltaTimeUsec(traceStartTime, traceEndTime);
-		rcGetBuildTimes()->buildContoursSimplify += rcGetDeltaTimeUsec(simplifyStartTime, simplifyEndTime);
-	}
+	ctx->stopTimer(RC_TIMER_BUILD_CONTOURS);
 	
 	return true;
 }

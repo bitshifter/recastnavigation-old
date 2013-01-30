@@ -16,45 +16,18 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "RecastTimer.h"
+#ifndef RECASTASSERT_H
+#define RECASTASSERT_H
 
-#if defined(WIN32)
+// Note: This header file's only purpose is to include define assert.
+// Feel free to change the file and include your own implementation instead.
 
-// Win32
-#include <windows.h>
-
-rcTimeVal rcGetPerformanceTimer()
-{
-	__int64 count;
-	QueryPerformanceCounter((LARGE_INTEGER*)&count);
-	return count;
-}
-
-int rcGetDeltaTimeUsec(rcTimeVal start, rcTimeVal end)
-{
-	static __int64 freq = 0;
-	if (freq == 0)
-		QueryPerformanceFrequency((LARGE_INTEGER*)&freq);
-	__int64 elapsed = end - start;
-	return (int)(elapsed*1000000 / freq);
-}
-
+#ifdef NDEBUG
+// From http://cnicholson.net/2009/02/stupid-c-tricks-adventures-in-assert/
+#	define rcAssert(x) do { (void)sizeof(x); } while((void)(__LINE__==-1),false)  
 #else
-
-// Linux, BSD, OSX
-
-#include <sys/time.h>
-
-rcTimeVal rcGetPerformanceTimer()
-{
-	timeval now;
-	gettimeofday(&now, 0);
-	return (rcTimeVal)now.tv_sec*1000000L + (rcTimeVal)now.tv_usec;
-}
-
-int rcGetDeltaTimeUsec(rcTimeVal start, rcTimeVal end)
-{
-	return (int)(end - start);
-}
-
+#	include <assert.h> 
+#	define rcAssert assert
 #endif
+
+#endif // RECASTASSERT_H

@@ -238,6 +238,25 @@ bool dtClosestHeightPointTriangle(const float* p, const float* a, const float* b
 	return false;
 }
 
+/// @par
+///
+/// All points are projected onto the xz-plane, so the y-values are ignored.
+bool dtPointInPolygon(const float* pt, const float* verts, const int nverts)
+{
+	// TODO: Replace pnpoly with triArea2D tests?
+	int i, j;
+	bool c = false;
+	for (i = 0, j = nverts-1; i < nverts; j = i++)
+	{
+		const float* vi = &verts[i*3];
+		const float* vj = &verts[j*3];
+		if (((vi[2] > pt[2]) != (vj[2] > pt[2])) &&
+			(pt[0] < (vj[0]-vi[0]) * (pt[2]-vi[2]) / (vj[2]-vi[2]) + vi[0]) )
+			c = !c;
+	}
+	return c;
+}
+
 bool dtDistancePtPolyEdgesSqr(const float* pt, const float* verts, const int nverts,
 							  float* ed, float* et)
 {
@@ -255,3 +274,120 @@ bool dtDistancePtPolyEdgesSqr(const float* pt, const float* verts, const int nve
 	}
 	return c;
 }
+
+static void projectPoly(const float* axis, const float* poly, const int npoly,
+						float& rmin, float& rmax)
+{
+	rmin = rmax = dtVdot2D(axis, &poly[0]);
+	for (int i = 1; i < npoly; ++i)
+	{
+		const float d = dtVdot2D(axis, &poly[i*3]);
+		rmin = dtMin(rmin, d);
+		rmax = dtMax(rmax, d);
+	}
+}
+
+inline bool overlapRange(const float amin, const float amax,
+						 const float bmin, const float bmax,
+						 const float eps)
+{
+	return ((amin+eps) > bmax || (amax-eps) < bmin) ? false : true;
+}
+
+/// @par
+///
+/// All vertices are projected onto the xz-plane, so the y-values are ignored.
+bool dtOverlapPolyPoly2D(const float* polya, const int npolya,
+						 const float* polyb, const int npolyb)
+{
+	const float eps = 1e-4f;
+	
+	for (int i = 0, j = npolya-1; i < npolya; j=i++)
+	{
+		const float* va = &polya[j*3];
+		const float* vb = &polya[i*3];
+		const float n[3] = { vb[2]-va[2], 0, -(vb[0]-va[0]) };
+		float amin,amax,bmin,bmax;
+		projectPoly(n, polya, npolya, amin,amax);
+		projectPoly(n, polyb, npolyb, bmin,bmax);
+		if (!overlapRange(amin,amax, bmin,bmax, eps))
+		{
+			// Found separating axis
+			return false;
+		}
+	}
+	for (int i = 0, j = npolyb-1; i < npolyb; j=i++)
+	{
+		const float* va = &polyb[j*3];
+		const float* vb = &polyb[i*3];
+		const float n[3] = { vb[2]-va[2], 0, -(vb[0]-va[0]) };
+		float amin,amax,bmin,bmax;
+		projectPoly(n, polya, npolya, amin,amax);
+		projectPoly(n, polyb, npolyb, bmin,bmax);
+		if (!overlapRange(amin,amax, bmin,bmax, eps))
+		{
+			// Found separating axis
+			return false;
+		}
+	}
+	return true;
+}
+
+// Returns a random point in a convex polygon.
+// Adapted from Graphics Gems article.
+void dtRandomPointInConvexPoly(const float* pts, const int npts, float* areas,
+							   const float s, const float t, float* out)
+{
+	// Calc triangle araes
+	float areasum = 0.0f;
+	for (int i = 2; i < npts; i++) {
+		areas[i] = dtTriArea2D(&pts[0], &pts[(i-1)*3], &pts[i*3]);
+		areasum += dtMax(0.001f, areas[i]);
+	}
+	// Find sub triangle weighted by area.
+	const float thr = s*areasum;
+	float acc = 0.0f;
+	float u = 0.0f;
+	int tri = 0;
+	for (int i = 2; i < npts; i++) {
+		const float dacc = areas[i];
+		if (thr >= acc && thr < (acc+dacc))
+		{
+			u = (thr - acc) / dacc;
+			tri = i;
+			break;
+		}
+		acc += dacc;
+	}
+	
+	float v = dtSqrt(t);
+	
+	const float a = 1 - v;
+	const float b = (1 - u) * v;
+	const float c = u * v;
+	const float* pa = &pts[0];
+	const float* pb = &pts[(tri-1)*3];
+	const float* pc = &pts[tri*3];
+	
+	out[0] = a*pa[0] + b*pb[0] + c*pc[0];
+	out[1] = a*pa[1] + b*pb[1] + c*pc[1];
+	out[2] = a*pa[2] + b*pb[2] + c*pc[2];
+}
+
+inline float vperpXZ(const float* a, const float* b) { return a[0]*b[2] - a[2]*b[0]; }
+
+bool dtIntersectSegSeg2D(const float* ap, const float* aq,
+						 const float* bp, const float* bq,
+						 float& s, float& t)
+{
+	float u[3], v[3], w[3];
+	dtVsub(u,aq,ap);
+	dtVsub(v,bq,bp);
+	dtVsub(w,ap,bp);
+	float d = vperpXZ(u,v);
+	if (fabsf(d) < 1e-6f) return false;
+	s = vperpXZ(v,w) / d;
+	t = vperpXZ(u,w) / d;
+	return true;
+}
+

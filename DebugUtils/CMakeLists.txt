@@ -1,10 +1,11 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
 SET(debugutils_SRCS 
-	Source/DebugDraw.cpp 
-	Source/DetourDebugDraw.cpp 
-	Source/RecastDebugDraw.cpp 
-	Source/RecastDump.cpp)
+	Source/DebugDraw.cpp
+	Source/DetourDebugDraw.cpp
+	Source/RecastDebugDraw.cpp
+	Source/RecastDump.cpp
+)
 
 SET(debugutils_HDRS
 	Include/DebugDraw.h
@@ -13,6 +14,10 @@ SET(debugutils_HDRS
 	Include/RecastDump.h
 )
 
-INCLUDE_DIRECTORIES(Include ../Detour/Include ../Recast/Include)
+INCLUDE_DIRECTORIES(Include 
+	../Detour/Include
+	../DetourTileCache/Include
+	../Recast/Include
+)
 
 ADD_LIBRARY(DebugUtils ${debugutils_SRCS} ${debugutils_HDRS})

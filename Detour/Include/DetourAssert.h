@@ -16,62 +16,18 @@
 // 3. This notice may not be removed or altered from any source distribution.
 //
 
-#include "RecastLog.h"
-#include <stdio.h>
-#include <stdarg.h>
+#ifndef DETOURASSERT_H
+#define DETOURASSERT_H
 
-static rcLog* g_log = 0;
-static rcBuildTimes* g_btimes = 0;
+// Note: This header file's only purpose is to include define assert.
+// Feel free to change the file and include your own implementation instead.
 
-rcLog::rcLog() :
-	m_messageCount(0),
-	m_textPoolSize(0)
-{
-}
+#ifdef NDEBUG
+// From http://cnicholson.net/2009/02/stupid-c-tricks-adventures-in-assert/
+#	define dtAssert(x) do { (void)sizeof(x); } while((void)(__LINE__==-1),false)  
+#else
+#	include <assert.h> 
+#	define dtAssert assert
+#endif
 
-rcLog::~rcLog()
-{
-	if (g_log == this)
-		g_log = 0;
-}
-
-void rcLog::log(rcLogCategory category, const char* format, ...)
-{
-	if (m_messageCount >= MAX_MESSAGES)
-		return;
-	char* dst = &m_textPool[m_textPoolSize];
-	int n = TEXT_POOL_SIZE - m_textPoolSize;
-	if (n < 2)
-		return;
-	// Store category
-	*dst = (char)category;
-	n--;
-	// Store message
-	va_list ap;
-	va_start(ap, format);
-	int ret = vsnprintf(dst+1, n-1, format, ap);
-	va_end(ap);
-	if (ret > 0)
-		m_textPoolSize += ret+2;
-	m_messages[m_messageCount++] = dst;
-}
-
-void rcSetLog(rcLog* log)
-{
-	g_log = log;
-}
-
-rcLog* rcGetLog()
-{
-	return g_log;
-}
-
-void rcSetBuildTimes(rcBuildTimes* btimes)
-{
-	g_btimes = btimes;
-}
-
-rcBuildTimes* rcGetBuildTimes()
-{
-	return g_btimes;
-}
+#endif // DETOURASSERT_H
