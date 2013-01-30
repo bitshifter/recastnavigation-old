@@ -1,0 +1,277 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5E2C33082CC2467E69FC0212 /* DetourCrowd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04625A7C65DC3F2A4F0C7526 /* DetourCrowd.cpp */; };
+		3B8C185B336E232216261BD5 /* DetourLocalBoundary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329970B218AB4E1F611A0766 /* DetourLocalBoundary.cpp */; };
+		02F36A3252F168CF295D21FD /* DetourObstacleAvoidance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329B402666E46DF765CF7875 /* DetourObstacleAvoidance.cpp */; };
+		0CCA00A02FB525754EBF10CF /* DetourPathCorridor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5DF6078955060AB84E073F02 /* DetourPathCorridor.cpp */; };
+		7C21600A7F7863054E026548 /* DetourPathQueue.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2CDC0A4C292B604B2D6F3F51 /* DetourPathQueue.cpp */; };
+		506A17BB0061257022734E68 /* DetourProximityGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5B7A50F54F7A2E6C39C578D8 /* DetourProximityGrid.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		3D4C7A28468A3C5F27E12C35 /* DetourCrowd.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourCrowd.h"; path = "DetourCrowd.h"; sourceTree = "<group>"; };
+		62A72BE47BA84682599E5EB9 /* DetourLocalBoundary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourLocalBoundary.h"; path = "DetourLocalBoundary.h"; sourceTree = "<group>"; };
+		48EB50E13AC8748F0F491F01 /* DetourObstacleAvoidance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourObstacleAvoidance.h"; path = "DetourObstacleAvoidance.h"; sourceTree = "<group>"; };
+		63FC379C685236F4554F6C1B /* DetourPathCorridor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourPathCorridor.h"; path = "DetourPathCorridor.h"; sourceTree = "<group>"; };
+		06B616991B8570686EBB6D6D /* DetourPathQueue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourPathQueue.h"; path = "DetourPathQueue.h"; sourceTree = "<group>"; };
+		37402C0767967DCA68670F78 /* DetourProximityGrid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourProximityGrid.h"; path = "DetourProximityGrid.h"; sourceTree = "<group>"; };
+		04625A7C65DC3F2A4F0C7526 /* DetourCrowd.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourCrowd.cpp"; path = "DetourCrowd.cpp"; sourceTree = "<group>"; };
+		329970B218AB4E1F611A0766 /* DetourLocalBoundary.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourLocalBoundary.cpp"; path = "DetourLocalBoundary.cpp"; sourceTree = "<group>"; };
+		329B402666E46DF765CF7875 /* DetourObstacleAvoidance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourObstacleAvoidance.cpp"; path = "DetourObstacleAvoidance.cpp"; sourceTree = "<group>"; };
+		5DF6078955060AB84E073F02 /* DetourPathCorridor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourPathCorridor.cpp"; path = "DetourPathCorridor.cpp"; sourceTree = "<group>"; };
+		2CDC0A4C292B604B2D6F3F51 /* DetourPathQueue.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourPathQueue.cpp"; path = "DetourPathQueue.cpp"; sourceTree = "<group>"; };
+		5B7A50F54F7A2E6C39C578D8 /* DetourProximityGrid.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourProximityGrid.cpp"; path = "DetourProximityGrid.cpp"; sourceTree = "<group>"; };
+		6E2C26A944356EC60DAD3F45 /* libDetourCrowdD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDetourCrowdD.a"; path = "libDetourCrowdD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3A881B5526083AE940C5487C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		77435C0F2BA43E6864386F6C /* DetourCrowd */ = {
+			isa = PBXGroup;
+			children = (
+				2852495052F81DB303C94FC2 /* DetourCrowd */,
+				64722F3E4F09142754B41DC9 /* Products */,
+			);
+			name = "DetourCrowd";
+			sourceTree = "<group>";
+		};
+		2852495052F81DB303C94FC2 /* DetourCrowd */ = {
+			isa = PBXGroup;
+			children = (
+				41492F6A69B2582251E846D8 /* Include */,
+				2A004B0E3B5C25A9119014FB /* Source */,
+			);
+			name = "DetourCrowd";
+			path = ../../DetourCrowd;
+			sourceTree = "<group>";
+		};
+		41492F6A69B2582251E846D8 /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				3D4C7A28468A3C5F27E12C35 /* DetourCrowd.h */,
+				62A72BE47BA84682599E5EB9 /* DetourLocalBoundary.h */,
+				48EB50E13AC8748F0F491F01 /* DetourObstacleAvoidance.h */,
+				63FC379C685236F4554F6C1B /* DetourPathCorridor.h */,
+				06B616991B8570686EBB6D6D /* DetourPathQueue.h */,
+				37402C0767967DCA68670F78 /* DetourProximityGrid.h */,
+			);
+			name = "Include";
+			path = Include;
+			sourceTree = "<group>";
+		};
+		2A004B0E3B5C25A9119014FB /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				04625A7C65DC3F2A4F0C7526 /* DetourCrowd.cpp */,
+				329970B218AB4E1F611A0766 /* DetourLocalBoundary.cpp */,
+				329B402666E46DF765CF7875 /* DetourObstacleAvoidance.cpp */,
+				5DF6078955060AB84E073F02 /* DetourPathCorridor.cpp */,
+				2CDC0A4C292B604B2D6F3F51 /* DetourPathQueue.cpp */,
+				5B7A50F54F7A2E6C39C578D8 /* DetourProximityGrid.cpp */,
+			);
+			name = "Source";
+			path = Source;
+			sourceTree = "<group>";
+		};
+		64722F3E4F09142754B41DC9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6E2C26A944356EC60DAD3F45 /* libDetourCrowdD.a */,
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5D680D467FB173911D045DD1 /* DetourCrowd */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 24F7019128164E2361DC5585 /* Build configuration list for PBXNativeTarget "DetourCrowd" */;
+			buildPhases = (
+				0D745DFD35900CED41030392 /* Resources */,
+				72351C7E548841B04AEA0E4D /* Sources */,
+				3A881B5526083AE940C5487C /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DetourCrowd";
+			productName = "DetourCrowd";
+			productReference = 6E2C26A944356EC60DAD3F45 /* libDetourCrowdD.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DetourCrowd" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 77435C0F2BA43E6864386F6C /* DetourCrowd */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5D680D467FB173911D045DD1 /* libDetourCrowdD.a */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0D745DFD35900CED41030392 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		72351C7E548841B04AEA0E4D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E2C33082CC2467E69FC0212 /* DetourCrowd.cpp in Sources */,
+				3B8C185B336E232216261BD5 /* DetourLocalBoundary.cpp in Sources */,
+				02F36A3252F168CF295D21FD /* DetourObstacleAvoidance.cpp in Sources */,
+				0CCA00A02FB525754EBF10CF /* DetourPathCorridor.cpp in Sources */,
+				7C21600A7F7863054E026548 /* DetourPathQueue.cpp in Sources */,
+				506A17BB0061257022734E68 /* DetourProximityGrid.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		6518638B75613A787CC92396 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "DetourCrowdD";
+			};
+			name = "Debug";
+		};
+		28407FB17F122DB965AB2648 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				CONFIGURATION_BUILD_DIR = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "DetourCrowd";
+			};
+			name = "Release";
+		};
+		2BA019EF16D8227D5D26652A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../DetourCrowd/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Debug/DetourCrowd";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "lib";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Debug";
+		};
+		04024F7363DA2DB963100269 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../DetourCrowd/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Release/DetourCrowd";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "lib";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Release";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		24F7019128164E2361DC5585 /* Build configuration list for PBXNativeTarget "libDetourCrowdD.a" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6518638B75613A787CC92396 /* Debug */,
+				28407FB17F122DB965AB2648 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DetourCrowd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2BA019EF16D8227D5D26652A /* Debug */,
+				04024F7363DA2DB963100269 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

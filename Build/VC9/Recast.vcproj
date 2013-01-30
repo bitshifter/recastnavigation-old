@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="Recast"
-	ProjectGUID="{6DB821BA-0A3A-F787-7EEA-9688DAE2CDBE}"
+	ProjectGUID="{A99E587E-34C0-D6A4-4D8E-8C9AEF55775E}"
 	RootNamespace="Recast"
 	Keyword="Win32Proj"
 	>
@@ -183,11 +183,11 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Recast\Include\RecastLog.h"
+					RelativePath="..\..\Recast\Include\RecastAssert.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Recast\Include\RecastTimer.h"
+					RelativePath="..\..\Recast\Include\RecastAlloc.h"
 					>
 				</File>
 				<File
@@ -200,31 +200,7 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Recast\Source\RecastLog.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastRegion.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastTimer.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastFilter.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastRasterization.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastContour.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Recast\Source\RecastMesh.cpp"
+					RelativePath="..\..\Recast\Source\RecastMeshDetail.cpp"
 					>
 				</File>
 				<File
@@ -232,11 +208,35 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\Recast\Source\RecastMeshDetail.cpp"
+					RelativePath="..\..\Recast\Source\RecastRegion.cpp"
 					>
 				</File>
 				<File
 					RelativePath="..\..\Recast\Source\Recast.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastRasterization.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastLayers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastFilter.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastAlloc.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\Recast\Source\RecastContour.cpp"
 					>
 				</File>
 			</Filter>

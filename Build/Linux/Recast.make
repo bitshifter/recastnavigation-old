@@ -64,16 +64,16 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/RecastLog.o \
-	$(OBJDIR)/RecastRegion.o \
-	$(OBJDIR)/RecastTimer.o \
-	$(OBJDIR)/RecastFilter.o \
-	$(OBJDIR)/RecastRasterization.o \
-	$(OBJDIR)/RecastContour.o \
-	$(OBJDIR)/RecastMesh.o \
-	$(OBJDIR)/RecastArea.o \
 	$(OBJDIR)/RecastMeshDetail.o \
+	$(OBJDIR)/RecastArea.o \
+	$(OBJDIR)/RecastRegion.o \
 	$(OBJDIR)/Recast.o \
+	$(OBJDIR)/RecastRasterization.o \
+	$(OBJDIR)/RecastLayers.o \
+	$(OBJDIR)/RecastFilter.o \
+	$(OBJDIR)/RecastMesh.o \
+	$(OBJDIR)/RecastAlloc.o \
+	$(OBJDIR)/RecastContour.o \
 
 RESOURCES := \
 
@@ -88,6 +88,7 @@ endif
 .PHONY: clean prebuild prelink
 
 all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
+	@:
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES)
 	@echo Linking Recast
@@ -129,38 +130,39 @@ prelink:
 ifneq (,$(PCH))
 $(GCH): $(PCH)
 	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	-$(SILENT) cp $< $(OBJDIR)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/RecastLog.o: ../../Recast/Source/RecastLog.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastRegion.o: ../../Recast/Source/RecastRegion.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastTimer.o: ../../Recast/Source/RecastTimer.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastFilter.o: ../../Recast/Source/RecastFilter.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastRasterization.o: ../../Recast/Source/RecastRasterization.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastContour.o: ../../Recast/Source/RecastContour.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastMesh.o: ../../Recast/Source/RecastMesh.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/RecastArea.o: ../../Recast/Source/RecastArea.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 $(OBJDIR)/RecastMeshDetail.o: ../../Recast/Source/RecastMeshDetail.cpp
 	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastArea.o: ../../Recast/Source/RecastArea.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastRegion.o: ../../Recast/Source/RecastRegion.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 $(OBJDIR)/Recast.o: ../../Recast/Source/Recast.cpp
 	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastRasterization.o: ../../Recast/Source/RecastRasterization.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastLayers.o: ../../Recast/Source/RecastLayers.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastFilter.o: ../../Recast/Source/RecastFilter.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastMesh.o: ../../Recast/Source/RecastMesh.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastAlloc.o: ../../Recast/Source/RecastAlloc.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/RecastContour.o: ../../Recast/Source/RecastContour.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)

@@ -20,11 +20,11 @@ ifndef AR
 endif
 
 ifeq ($(config),debug)
-  OBJDIR     = obj/Debug/DebugUtils
+  OBJDIR     = obj/Debug/DetourTileCache
   TARGETDIR  = lib
-  TARGET     = $(TARGETDIR)/libDebugUtilsD.a
+  TARGET     = $(TARGETDIR)/libDetourTileCacheD.a
   DEFINES   += -DDEBUG
-  INCLUDES  += -I../../DebugUtils/Include -I../../Detour/Include -I../../DetourTileCache/Include -I../../Recast/Include
+  INCLUDES  += -I../../DetourTileCache/Include -I../../Detour/Include -I../../Recast/Include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
@@ -42,11 +42,11 @@ ifeq ($(config),debug)
 endif
 
 ifeq ($(config),release)
-  OBJDIR     = obj/Release/DebugUtils
+  OBJDIR     = obj/Release/DetourTileCache
   TARGETDIR  = lib
-  TARGET     = $(TARGETDIR)/libDebugUtils.a
+  TARGET     = $(TARGETDIR)/libDetourTileCache.a
   DEFINES   += -DNDEBUG
-  INCLUDES  += -I../../DebugUtils/Include -I../../Detour/Include -I../../DetourTileCache/Include -I../../Recast/Include
+  INCLUDES  += -I../../DetourTileCache/Include -I../../Detour/Include -I../../Recast/Include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
@@ -64,10 +64,8 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/DebugDraw.o \
-	$(OBJDIR)/RecastDump.o \
-	$(OBJDIR)/RecastDebugDraw.o \
-	$(OBJDIR)/DetourDebugDraw.o \
+	$(OBJDIR)/DetourTileCacheBuilder.o \
+	$(OBJDIR)/DetourTileCache.o \
 
 RESOURCES := \
 
@@ -85,7 +83,7 @@ all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
 	@:
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES)
-	@echo Linking DebugUtils
+	@echo Linking DetourTileCache
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -106,7 +104,7 @@ else
 endif
 
 clean:
-	@echo Cleaning DebugUtils
+	@echo Cleaning DetourTileCache
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(OBJDIR)
@@ -128,16 +126,10 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/DebugDraw.o: ../../DebugUtils/Source/DebugDraw.cpp
+$(OBJDIR)/DetourTileCacheBuilder.o: ../../DetourTileCache/Source/DetourTileCacheBuilder.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/RecastDump.o: ../../DebugUtils/Source/RecastDump.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/RecastDebugDraw.o: ../../DebugUtils/Source/RecastDebugDraw.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/DetourDebugDraw.o: ../../DebugUtils/Source/DetourDebugDraw.cpp
+$(OBJDIR)/DetourTileCache.o: ../../DetourTileCache/Source/DetourTileCache.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

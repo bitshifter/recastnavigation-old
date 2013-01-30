@@ -20,11 +20,11 @@ ifndef AR
 endif
 
 ifeq ($(config),debug)
-  OBJDIR     = obj/Debug/DebugUtils
+  OBJDIR     = obj/Debug/DetourCrowd
   TARGETDIR  = lib
-  TARGET     = $(TARGETDIR)/libDebugUtilsD.a
+  TARGET     = $(TARGETDIR)/libDetourCrowdD.a
   DEFINES   += -DDEBUG
-  INCLUDES  += -I../../DebugUtils/Include -I../../Detour/Include -I../../DetourTileCache/Include -I../../Recast/Include
+  INCLUDES  += -I../../DetourCrowd/Include -I../../Detour/Include -I../../Recast/Include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -g
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
@@ -42,11 +42,11 @@ ifeq ($(config),debug)
 endif
 
 ifeq ($(config),release)
-  OBJDIR     = obj/Release/DebugUtils
+  OBJDIR     = obj/Release/DetourCrowd
   TARGETDIR  = lib
-  TARGET     = $(TARGETDIR)/libDebugUtils.a
+  TARGET     = $(TARGETDIR)/libDetourCrowd.a
   DEFINES   += -DNDEBUG
-  INCLUDES  += -I../../DebugUtils/Include -I../../Detour/Include -I../../DetourTileCache/Include -I../../Recast/Include
+  INCLUDES  += -I../../DetourCrowd/Include -I../../Detour/Include -I../../Recast/Include
   CPPFLAGS  += -MMD -MP $(DEFINES) $(INCLUDES)
   CFLAGS    += $(CPPFLAGS) $(ARCH) -Wall -O2
   CXXFLAGS  += $(CFLAGS) -fno-exceptions -fno-rtti
@@ -64,10 +64,12 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/DebugDraw.o \
-	$(OBJDIR)/RecastDump.o \
-	$(OBJDIR)/RecastDebugDraw.o \
-	$(OBJDIR)/DetourDebugDraw.o \
+	$(OBJDIR)/DetourPathCorridor.o \
+	$(OBJDIR)/DetourObstacleAvoidance.o \
+	$(OBJDIR)/DetourLocalBoundary.o \
+	$(OBJDIR)/DetourPathQueue.o \
+	$(OBJDIR)/DetourProximityGrid.o \
+	$(OBJDIR)/DetourCrowd.o \
 
 RESOURCES := \
 
@@ -85,7 +87,7 @@ all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
 	@:
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES)
-	@echo Linking DebugUtils
+	@echo Linking DetourCrowd
 	$(SILENT) $(LINKCMD)
 	$(POSTBUILDCMDS)
 
@@ -106,7 +108,7 @@ else
 endif
 
 clean:
-	@echo Cleaning DebugUtils
+	@echo Cleaning DetourCrowd
 ifeq (posix,$(SHELLTYPE))
 	$(SILENT) rm -f  $(TARGET)
 	$(SILENT) rm -rf $(OBJDIR)
@@ -128,16 +130,22 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/DebugDraw.o: ../../DebugUtils/Source/DebugDraw.cpp
+$(OBJDIR)/DetourPathCorridor.o: ../../DetourCrowd/Source/DetourPathCorridor.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/RecastDump.o: ../../DebugUtils/Source/RecastDump.cpp
+$(OBJDIR)/DetourObstacleAvoidance.o: ../../DetourCrowd/Source/DetourObstacleAvoidance.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/RecastDebugDraw.o: ../../DebugUtils/Source/RecastDebugDraw.cpp
+$(OBJDIR)/DetourLocalBoundary.o: ../../DetourCrowd/Source/DetourLocalBoundary.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-$(OBJDIR)/DetourDebugDraw.o: ../../DebugUtils/Source/DetourDebugDraw.cpp
+$(OBJDIR)/DetourPathQueue.o: ../../DetourCrowd/Source/DetourPathQueue.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourProximityGrid.o: ../../DetourCrowd/Source/DetourProximityGrid.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourCrowd.o: ../../DetourCrowd/Source/DetourCrowd.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 

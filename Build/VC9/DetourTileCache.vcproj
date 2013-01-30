@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Detour"
-	ProjectGUID="{9C43FF00-1FA6-21F7-24F7-7C6A8542A5B5}"
-	RootNamespace="Detour"
+	Name="DetourTileCache"
+	ProjectGUID="{E9C79DB4-DFB3-158B-ACD3-C2027B2DC39F}"
+	RootNamespace="DetourTileCache"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Debug\Detour"
+			IntermediateDirectory="obj\Debug\DetourTileCache"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourTileCache\Include;..\..\Detour\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -50,7 +50,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\DetourD.pdb"
+				ProgramDataBaseFileName="$(OutDir)\DetourTileCacheD.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -59,14 +59,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourTileCache\Include;..\..\Detour\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\DetourD.lib"
+				OutputFile="$(OutDir)\DetourTileCacheD.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -96,7 +96,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Release\Detour"
+			IntermediateDirectory="obj\Release\DetourTileCache"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourTileCache\Include;..\..\Detour\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				StringPooling="true"
@@ -127,7 +127,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\Detour.pdb"
+				ProgramDataBaseFileName="$(OutDir)\DetourTileCache.pdb"
 				DebugInformationFormat="0"
 			/>
 			<Tool
@@ -136,14 +136,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourTileCache\Include;..\..\Detour\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\Detour.lib"
+				OutputFile="$(OutDir)\DetourTileCache.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,7 +175,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Detour"
+			Name="DetourTileCache"
 			Filter=""
 			>
 			<Filter
@@ -183,35 +183,11 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Detour\Include\DetourAlloc.h"
+					RelativePath="..\..\DetourTileCache\Include\DetourTileCacheBuilder.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourNavMeshBuilder.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourCommon.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourNavMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourNode.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourStatus.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourNavMeshQuery.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourAssert.h"
+					RelativePath="..\..\DetourTileCache\Include\DetourTileCache.h"
 					>
 				</File>
 			</Filter>
@@ -220,27 +196,11 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNode.cpp"
+					RelativePath="..\..\DetourTileCache\Source\DetourTileCacheBuilder.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNavMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Source\DetourAlloc.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Source\DetourNavMeshBuilder.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Source\DetourNavMeshQuery.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Source\DetourCommon.cpp"
+					RelativePath="..\..\DetourTileCache\Source\DetourTileCache.cpp"
 					>
 				</File>
 			</Filter>

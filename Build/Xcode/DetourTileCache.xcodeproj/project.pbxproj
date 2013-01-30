@@ -1,0 +1,253 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4B3D2DD5696C1A8E3E404FB5 /* DetourTileCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 22A8756F4F7A5A426B6A2160 /* DetourTileCache.cpp */; };
+		48B169B05D627E5D72110F12 /* DetourTileCacheBuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165B7E8929C04C174CAD2D1E /* DetourTileCacheBuilder.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		40485A0B35BC4E24035D7C99 /* DetourTileCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourTileCache.h"; path = "DetourTileCache.h"; sourceTree = "<group>"; };
+		1D03304335AC086031B0306F /* DetourTileCacheBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "DetourTileCacheBuilder.h"; path = "DetourTileCacheBuilder.h"; sourceTree = "<group>"; };
+		22A8756F4F7A5A426B6A2160 /* DetourTileCache.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourTileCache.cpp"; path = "DetourTileCache.cpp"; sourceTree = "<group>"; };
+		165B7E8929C04C174CAD2D1E /* DetourTileCacheBuilder.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "DetourTileCacheBuilder.cpp"; path = "DetourTileCacheBuilder.cpp"; sourceTree = "<group>"; };
+		4A963A150B4D0290281A6EB3 /* libDetourTileCacheD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "libDetourTileCacheD.a"; path = "libDetourTileCacheD.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6B584EDC498548BA4D3A3B96 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FBA354C519D35C370361262 /* DetourTileCache */ = {
+			isa = PBXGroup;
+			children = (
+				7E407988379A75FB51E570FA /* DetourTileCache */,
+				2ECD30BA507E1489410047AD /* Products */,
+			);
+			name = "DetourTileCache";
+			sourceTree = "<group>";
+		};
+		7E407988379A75FB51E570FA /* DetourTileCache */ = {
+			isa = PBXGroup;
+			children = (
+				426A480C4F51106B66487BCC /* Include */,
+				3EA8416B65BB1046772E55F1 /* Source */,
+			);
+			name = "DetourTileCache";
+			path = ../../DetourTileCache;
+			sourceTree = "<group>";
+		};
+		426A480C4F51106B66487BCC /* Include */ = {
+			isa = PBXGroup;
+			children = (
+				40485A0B35BC4E24035D7C99 /* DetourTileCache.h */,
+				1D03304335AC086031B0306F /* DetourTileCacheBuilder.h */,
+			);
+			name = "Include";
+			path = Include;
+			sourceTree = "<group>";
+		};
+		3EA8416B65BB1046772E55F1 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				22A8756F4F7A5A426B6A2160 /* DetourTileCache.cpp */,
+				165B7E8929C04C174CAD2D1E /* DetourTileCacheBuilder.cpp */,
+			);
+			name = "Source";
+			path = Source;
+			sourceTree = "<group>";
+		};
+		2ECD30BA507E1489410047AD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A963A150B4D0290281A6EB3 /* libDetourTileCacheD.a */,
+			);
+			name = "Products";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0F8E3FA02A3A779F45923F28 /* DetourTileCache */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6A7B63A83D1C39F63DEB2886 /* Build configuration list for PBXNativeTarget "DetourTileCache" */;
+			buildPhases = (
+				5B570928565C44C423B7149C /* Resources */,
+				14793A1313263E3A062A5FD4 /* Sources */,
+				6B584EDC498548BA4D3A3B96 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "DetourTileCache";
+			productName = "DetourTileCache";
+			productReference = 4A963A150B4D0290281A6EB3 /* libDetourTileCacheD.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DetourTileCache" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 0FBA354C519D35C370361262 /* DetourTileCache */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0F8E3FA02A3A779F45923F28 /* libDetourTileCacheD.a */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5B570928565C44C423B7149C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		14793A1313263E3A062A5FD4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B3D2DD5696C1A8E3E404FB5 /* DetourTileCache.cpp in Sources */,
+				48B169B05D627E5D72110F12 /* DetourTileCacheBuilder.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0952253777BB585C395F4C6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CONFIGURATION_BUILD_DIR = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "DetourTileCacheD";
+			};
+			name = "Debug";
+		};
+		73C239EF0DDB295246DD4EDE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				CONFIGURATION_BUILD_DIR = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = "DetourTileCache";
+			};
+			name = "Release";
+		};
+		76265E574E001E3C2C7A2FDD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../DetourTileCache/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Debug/DetourTileCache";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "lib";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Debug";
+		};
+		2CE539126B5D016D7AC33648 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_ACTUAL)";
+				CONFIGURATION_BUILD_DIR = "$(SYMROOT)";
+				CONFIGURATION_TEMP_DIR = "$(OBJROOT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"NDEBUG",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"../../DetourTileCache/Include",
+					"../../Detour/Include",
+					"../../Recast/Include",
+				);
+				OBJROOT = "obj/Release/DetourTileCache";
+				ONLY_ACTIVE_ARCH = NO;
+				PREBINDING = NO;
+				SYMROOT = "lib";
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = "Release";
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		6A7B63A83D1C39F63DEB2886 /* Build configuration list for PBXNativeTarget "libDetourTileCacheD.a" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0952253777BB585C395F4C6F /* Debug */,
+				73C239EF0DDB295246DD4EDE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+		1DEB928908733DD80010E9CD /* Build configuration list for PBXProject "DetourTileCache" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				76265E574E001E3C2C7A2FDD /* Debug */,
+				2CE539126B5D016D7AC33648 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug";
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

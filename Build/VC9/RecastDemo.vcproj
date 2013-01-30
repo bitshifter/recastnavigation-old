@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="RecastDemo"
-	ProjectGUID="{FBAF4CDF-494D-65F7-EB12-9B67D4392C81}"
+	ProjectGUID="{05C2DD69-B8F2-EB1C-96F6-935C40CC9289}"
 	RootNamespace="RecastDemo"
 	Keyword="Win32Proj"
 	>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
+				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\RecastDemo\Contrib\fastlz;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourCrowd\Include;..\..\DetourTileCache\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -59,14 +59,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
+				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\RecastDemo\Contrib\fastlz;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourCrowd\Include;..\..\DetourTileCache\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="lib\DebugUtilsD.lib lib\DetourD.lib lib\RecastD.lib opengl32.lib glu32.lib sdlmain.lib sdl.lib"
+				AdditionalDependencies="lib\DebugUtilsD.lib lib\DetourD.lib lib\DetourCrowdD.lib lib\DetourTileCacheD.lib lib\RecastD.lib opengl32.lib glu32.lib sdlmain.lib sdl.lib"
 				OutputFile="$(OutDir)\RecastDemoD.exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\..\RecastDemo\Contrib\SDL\lib"
@@ -126,7 +126,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
+				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\RecastDemo\Contrib\fastlz;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourCrowd\Include;..\..\DetourTileCache\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				StringPooling="true"
@@ -144,14 +144,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
+				AdditionalIncludeDirectories="..\..\RecastDemo\Include;..\..\RecastDemo\Contrib;..\..\RecastDemo\Contrib\fastlz;..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourCrowd\Include;..\..\DetourTileCache\Include;..\..\Recast\Include;..\..\RecastDemo\Contrib\SDL\include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="lib\DebugUtils.lib lib\Detour.lib lib\Recast.lib opengl32.lib glu32.lib sdlmain.lib sdl.lib"
+				AdditionalDependencies="lib\DebugUtils.lib lib\Detour.lib lib\DetourCrowd.lib lib\DetourTileCache.lib lib\Recast.lib opengl32.lib glu32.lib sdlmain.lib sdl.lib"
 				OutputFile="$(OutDir)\RecastDemo.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\RecastDemo\Contrib\SDL\lib"
@@ -200,43 +200,7 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\RecastDemo\Include\Sample_SoloMeshSimple.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\InputGeom.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\SlideShow.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\Sample_TileMesh.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\MeshLoaderObj.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\Sample_SoloMeshTiled.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\imguiRenderGL.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\SDLMain.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\OffMeshConnectionTool.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Include\Sample.h"
+					RelativePath="..\..\RecastDemo\Include\CrowdTool.h"
 					>
 				</File>
 				<File
@@ -244,7 +208,55 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\RecastDemo\Include\Sample_TileMesh.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\NavMeshPruneTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\PerfTimer.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\NavMeshTesterTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\ValueHistory.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\RecastDemo\Include\Filelist.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\NavmeshPruneTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\OffMeshConnectionTool.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\Sample_TempObstacles.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\SDLMain.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\imguiRenderGL.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\ChunkyTriMesh.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\SampleInterfaces.h"
 					>
 				</File>
 				<File
@@ -256,11 +268,23 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\RecastDemo\Include\ChunkyTriMesh.h"
+					RelativePath="..\..\RecastDemo\Include\Sample.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\RecastDemo\Include\NavMeshTesterTool.h"
+					RelativePath="..\..\RecastDemo\Include\SlideShow.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\MeshLoaderObj.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\InputGeom.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Include\Sample_SoloMesh.h"
 					>
 				</File>
 				<File
@@ -273,51 +297,7 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\RecastDemo\Source\MeshLoaderObj.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\Sample_SoloMeshTiled.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\Sample_TileMesh.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\TestCase.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\Filelist.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\Sample.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\InputGeom.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\SlideShow.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\Sample_SoloMeshSimple.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\main.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\NavMeshTesterTool.cpp"
-					>
-				</File>
-				<File
-					RelativePath="..\..\RecastDemo\Source\imguiRenderGL.cpp"
+					RelativePath="..\..\RecastDemo\Source\Sample_SoloMesh.cpp"
 					>
 				</File>
 				<File
@@ -329,7 +309,27 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\RecastDemo\Source\imgui.cpp"
+					RelativePath="..\..\RecastDemo\Source\SampleInterfaces.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\PerfTimer.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\ConvexVolumeTool.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\SlideShow.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\Sample_TempObstacles.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\CrowdTool.cpp"
 					>
 				</File>
 				<File
@@ -337,9 +337,71 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\RecastDemo\Source\ConvexVolumeTool.cpp"
+					RelativePath="..\..\RecastDemo\Source\NavMeshPruneTool.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\MeshLoaderObj.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\main.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\Filelist.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\Sample_TileMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\NavMeshTesterTool.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\imguiRenderGL.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\InputGeom.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\TestCase.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\ValueHistory.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\imgui.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\RecastDemo\Source\Sample.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Contrib"
+				Filter=""
+				>
+				<Filter
+					Name="fastlz"
+					Filter=""
+					>
+					<File
+						RelativePath="..\..\RecastDemo\Contrib\fastlz\fastlz.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\RecastDemo\Contrib\fastlz\fastlz.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>

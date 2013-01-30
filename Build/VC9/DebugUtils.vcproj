@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="DebugUtils"
-	ProjectGUID="{2BDEFF41-9CC9-C1C7-F49F-7E525AA3A9D1}"
+	ProjectGUID="{345D294B-B83F-A3A6-1446-94CF4ED62C3B}"
 	RootNamespace="DebugUtils"
 	Keyword="Win32Proj"
 	>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourTileCache\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -59,7 +59,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourTileCache\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourTileCache\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				StringPooling="true"
@@ -136,7 +136,7 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\Recast\Include"
+				AdditionalIncludeDirectories="..\..\DebugUtils\Include;..\..\Detour\Include;..\..\DetourTileCache\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -183,15 +183,15 @@
 				Filter=""
 				>
 				<File
+					RelativePath="..\..\DebugUtils\Include\DebugDraw.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\DebugUtils\Include\RecastDump.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\DebugUtils\Include\DetourDebugDraw.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\DebugUtils\Include\DebugDraw.h"
 					>
 				</File>
 				<File
@@ -204,7 +204,7 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\DebugUtils\Source\DetourDebugDraw.cpp"
+					RelativePath="..\..\DebugUtils\Source\DebugDraw.cpp"
 					>
 				</File>
 				<File
@@ -212,11 +212,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Source\DebugDraw.cpp"
+					RelativePath="..\..\DebugUtils\Source\RecastDebugDraw.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\DebugUtils\Source\RecastDebugDraw.cpp"
+					RelativePath="..\..\DebugUtils\Source\DetourDebugDraw.cpp"
 					>
 				</File>
 			</Filter>

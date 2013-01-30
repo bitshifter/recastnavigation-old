@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="Detour"
-	ProjectGUID="{9C43FF00-1FA6-21F7-24F7-7C6A8542A5B5}"
-	RootNamespace="Detour"
+	Name="DetourCrowd"
+	ProjectGUID="{AE9EE64F-9B12-EC2D-C852-C07D937204C2}"
+	RootNamespace="DetourCrowd"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -18,7 +18,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Debug\Detour"
+			IntermediateDirectory="obj\Debug\DetourCrowd"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourCrowd\Include;..\..\Detour\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -50,7 +50,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\DetourD.pdb"
+				ProgramDataBaseFileName="$(OutDir)\DetourCrowdD.pdb"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -59,14 +59,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="DEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourCrowd\Include;..\..\Detour\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\DetourD.lib"
+				OutputFile="$(OutDir)\DetourCrowdD.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -96,7 +96,7 @@
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="lib"
-			IntermediateDirectory="obj\Release\Detour"
+			IntermediateDirectory="obj\Release\DetourCrowd"
 			ConfigurationType="4"
 			CharacterSet="2"
 			>
@@ -118,7 +118,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="3"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourCrowd\Include;..\..\Detour\Include;..\..\Recast\Include"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
 				ExceptionHandling="0"
 				StringPooling="true"
@@ -127,7 +127,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
 				WarningLevel="4"
-				ProgramDataBaseFileName="$(OutDir)\Detour.pdb"
+				ProgramDataBaseFileName="$(OutDir)\DetourCrowd.pdb"
 				DebugInformationFormat="0"
 			/>
 			<Tool
@@ -136,14 +136,14 @@
 			<Tool
 				Name="VCResourceCompilerTool"
 				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS"
-				AdditionalIncludeDirectories="..\..\Detour\Include"
+				AdditionalIncludeDirectories="..\..\DetourCrowd\Include;..\..\Detour\Include;..\..\Recast\Include"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="$(OutDir)\Detour.lib"
+				OutputFile="$(OutDir)\DetourCrowd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,7 +175,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Detour"
+			Name="DetourCrowd"
 			Filter=""
 			>
 			<Filter
@@ -183,35 +183,27 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Detour\Include\DetourAlloc.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourCrowd.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourNavMeshBuilder.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourPathQueue.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourCommon.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourLocalBoundary.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourNavMesh.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourPathCorridor.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourNode.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourProximityGrid.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Include\DetourStatus.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourNavMeshQuery.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\Detour\Include\DetourAssert.h"
+					RelativePath="..\..\DetourCrowd\Include\DetourObstacleAvoidance.h"
 					>
 				</File>
 			</Filter>
@@ -220,27 +212,27 @@
 				Filter=""
 				>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNode.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourPathCorridor.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNavMesh.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourObstacleAvoidance.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourAlloc.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourLocalBoundary.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNavMeshBuilder.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourPathQueue.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourNavMeshQuery.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourProximityGrid.cpp"
 					>
 				</File>
 				<File
-					RelativePath="..\..\Detour\Source\DetourCommon.cpp"
+					RelativePath="..\..\DetourCrowd\Source\DetourCrowd.cpp"
 					>
 				</File>
 			</Filter>

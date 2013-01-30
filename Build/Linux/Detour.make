@@ -64,10 +64,12 @@ ifeq ($(config),release)
 endif
 
 OBJECTS := \
-	$(OBJDIR)/DetourCommon.o \
-	$(OBJDIR)/DetourNavMeshBuilder.o \
-	$(OBJDIR)/DetourNavMesh.o \
 	$(OBJDIR)/DetourNode.o \
+	$(OBJDIR)/DetourNavMesh.o \
+	$(OBJDIR)/DetourAlloc.o \
+	$(OBJDIR)/DetourNavMeshBuilder.o \
+	$(OBJDIR)/DetourNavMeshQuery.o \
+	$(OBJDIR)/DetourCommon.o \
 
 RESOURCES := \
 
@@ -82,6 +84,7 @@ endif
 .PHONY: clean prebuild prelink
 
 all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
+	@:
 
 $(TARGET): $(GCH) $(OBJECTS) $(LDDEPS) $(RESOURCES)
 	@echo Linking Detour
@@ -123,20 +126,27 @@ prelink:
 ifneq (,$(PCH))
 $(GCH): $(PCH)
 	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	-$(SILENT) cp $< $(OBJDIR)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 endif
 
-$(OBJDIR)/DetourCommon.o: ../../Detour/Source/DetourCommon.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/DetourNavMeshBuilder.o: ../../Detour/Source/DetourNavMeshBuilder.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
-$(OBJDIR)/DetourNavMesh.o: ../../Detour/Source/DetourNavMesh.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
 $(OBJDIR)/DetourNode.o: ../../Detour/Source/DetourNode.cpp
 	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(CXXFLAGS) -o $@ -c $<
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourNavMesh.o: ../../Detour/Source/DetourNavMesh.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourAlloc.o: ../../Detour/Source/DetourAlloc.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourNavMeshBuilder.o: ../../Detour/Source/DetourNavMeshBuilder.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourNavMeshQuery.o: ../../Detour/Source/DetourNavMeshQuery.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+$(OBJDIR)/DetourCommon.o: ../../Detour/Source/DetourCommon.cpp
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)

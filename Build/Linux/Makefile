@@ -6,31 +6,41 @@ ifndef config
 endif
 export config
 
-PROJECTS := DebugUtils Detour Recast RecastDemo
+PROJECTS := DebugUtils Detour DetourCrowd DetourTileCache Recast RecastDemo
 
 .PHONY: all clean help $(PROJECTS)
 
 all: $(PROJECTS)
 
 DebugUtils: 
-	@echo ==== Building DebugUtils ====
+	@echo "==== Building DebugUtils ($(config)) ===="
 	@${MAKE} --no-print-directory -C . -f DebugUtils.make
 
 Detour: 
-	@echo ==== Building Detour ====
+	@echo "==== Building Detour ($(config)) ===="
 	@${MAKE} --no-print-directory -C . -f Detour.make
 
+DetourCrowd: 
+	@echo "==== Building DetourCrowd ($(config)) ===="
+	@${MAKE} --no-print-directory -C . -f DetourCrowd.make
+
+DetourTileCache: 
+	@echo "==== Building DetourTileCache ($(config)) ===="
+	@${MAKE} --no-print-directory -C . -f DetourTileCache.make
+
 Recast: 
-	@echo ==== Building Recast ====
+	@echo "==== Building Recast ($(config)) ===="
 	@${MAKE} --no-print-directory -C . -f Recast.make
 
-RecastDemo: DebugUtils Detour Recast
-	@echo ==== Building RecastDemo ====
+RecastDemo: DebugUtils Detour DetourCrowd DetourTileCache Recast
+	@echo "==== Building RecastDemo ($(config)) ===="
 	@${MAKE} --no-print-directory -C . -f RecastDemo.make
 
 clean:
 	@${MAKE} --no-print-directory -C . -f DebugUtils.make clean
 	@${MAKE} --no-print-directory -C . -f Detour.make clean
+	@${MAKE} --no-print-directory -C . -f DetourCrowd.make clean
+	@${MAKE} --no-print-directory -C . -f DetourTileCache.make clean
 	@${MAKE} --no-print-directory -C . -f Recast.make clean
 	@${MAKE} --no-print-directory -C . -f RecastDemo.make clean
 
@@ -46,6 +56,8 @@ help:
 	@echo "   clean"
 	@echo "   DebugUtils"
 	@echo "   Detour"
+	@echo "   DetourCrowd"
+	@echo "   DetourTileCache"
 	@echo "   Recast"
 	@echo "   RecastDemo"
 	@echo ""
