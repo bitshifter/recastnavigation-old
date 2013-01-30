@@ -16,11 +16,18 @@ else
 end
 
 solution "recastnavigation"
-	configurations { "Debug", "Release" }
-	location ( todir )
+	configurations { 
+		"Debug",
+		"Release"
+	}
+	location (todir)
 
 	-- extra warnings, no exceptions or rtti
-	flags { "ExtraWarnings", "NoExceptions", "NoRTTI" }
+	flags { 
+		"ExtraWarnings",
+		"NoExceptions",
+		"NoRTTI"
+	}
 	
 	-- debug configs
 	configuration "Debug*"
@@ -41,65 +48,147 @@ solution "recastnavigation"
 project "DebugUtils"
 	language "C++"
 	kind "StaticLib"
-	location ( todir )
-	includedirs { "../DebugUtils/Include", "../Detour/Include", "../Recast/Include" }
-	files { "../DebugUtils/Include/*.h", "../DebugUtils/Source/*.cpp" }
-	targetdir ( todir .. "/lib" )
+	location (todir)
+	includedirs { 
+		"../DebugUtils/Include",
+		"../Detour/Include",
+		"../DetourTileCache/Include",
+		"../Recast/Include"
+	}
+	files { 
+		"../DebugUtils/Include/*.h",
+		"../DebugUtils/Source/*.cpp"
+	}
+	targetdir (todir .. "/lib")
 
 project "Detour"
 	language "C++"
 	kind "StaticLib"
-	location ( todir )
-	includedirs { "../Detour/Include" }
-	files { "../Detour/Include/*.h", "../Detour/Source/*.cpp" }
-	targetdir ( todir .. "/lib" )
+	location (todir)
+	includedirs { 
+		"../Detour/Include" 
+	}
+	files { 
+		"../Detour/Include/*.h", 
+		"../Detour/Source/*.cpp" 
+	}
+	targetdir (todir .. "/lib")
+
+project "DetourCrowd"
+	language "C++"
+	kind "StaticLib"
+	location (todir)
+	includedirs {
+		"../DetourCrowd/Include",
+		"../Detour/Include",
+		"../Recast/Include"
+	}
+	files {
+		"../DetourCrowd/Include/*.h",
+		"../DetourCrowd/Source/*.cpp"
+	}
+	targetdir (todir .. "/lib")
+
+project "DetourTileCache"
+	language "C++"
+	kind "StaticLib"
+	location (todir)
+	includedirs {
+		"../DetourTileCache/Include",
+		"../Detour/Include",
+		"../Recast/Include"
+	}
+	files {
+		"../DetourTileCache/Include/*.h",
+		"../DetourTileCache/Source/*.cpp"
+	}
+	targetdir (todir .. "/lib")
 
 project "Recast"
 	language "C++"
 	kind "StaticLib"
-	location ( todir )
-	includedirs { "../Recast/Include" }
-	files { "../Recast/Include/*.h", "../Recast/Source/*.cpp" }
-	targetdir ( todir .. "/lib" )
+	location (todir)
+	includedirs { 
+		"../Recast/Include" 
+	}
+	files { 
+		"../Recast/Include/*.h",
+		"../Recast/Source/*.cpp" 
+	}
+	targetdir (todir .. "/lib")
 	
 project "RecastDemo"
 	language "C++"
 	kind "WindowedApp"
-	location ( todir )
-	includedirs { "../RecastDemo/Include", "../RecastDemo/Contrib", "../DebugUtils/Include", "../Detour/Include", "../Recast/Include" }
-	files	{ "../RecastDemo/Include/*.h", "../RecastDemo/Source/*.cpp" }
+	location (todir)
+	includedirs { 
+		"../RecastDemo/Include",
+		"../RecastDemo/Contrib",
+		"../RecastDemo/Contrib/fastlz",
+		"../DebugUtils/Include",
+		"../Detour/Include",
+		"../DetourCrowd/Include",
+		"../DetourTileCache/Include",
+		"../Recast/Include"
+	}
+	files	{ 
+		"../RecastDemo/Include/*.h",
+		"../RecastDemo/Source/*.cpp",
+		"../RecastDemo/Contrib/fastlz/*.h",
+		"../RecastDemo/Contrib/fastlz/*.c"
+	}
 	
 	-- project dependencies
-	links { "DebugUtils", "Detour", "Recast" }
+	links { 
+		"DebugUtils",
+		"Detour",
+		"DetourCrowd",
+		"DetourTileCache",
+		"Recast"
+	}
 
 	-- distribute executable in RecastDemo/Bin directory
 	targetdir "../RecastDemo/Bin"
 	
 	-- linux library cflags and libs
 	configuration { "linux", "gmake" }
-		buildoptions { "`pkg-config --cflags sdl`", "`pkg-config --cflags gl`", "`pkg-config --cflags glu`" }
-		linkoptions { "`pkg-config --libs sdl`", "`pkg-config --libs gl`", "`pkg-config --libs glu`" }
+		buildoptions { 
+			"`pkg-config --cflags sdl`",
+			"`pkg-config --cflags gl`",
+			"`pkg-config --cflags glu`" 
+		}
+		linkoptions { 
+			"`pkg-config --libs sdl`",
+			"`pkg-config --libs gl`",
+			"`pkg-config --libs glu`" 
+		}
 	
 	-- windows library cflags and libs
 	configuration { "windows" }
 		includedirs { "../RecastDemo/Contrib/SDL/include" }
 		libdirs { "../RecastDemo/Contrib/SDL/lib" }
-		links { "opengl32", "glu32", "sdlmain", "sdl" }
+		links { 
+			"opengl32",
+			"glu32",
+			"sdlmain",
+			"sdl"
+		}
  
 	 -- mac includes and libs
 	 configuration { "macosx" }
 		 includedirs { "/Library/Frameworks/SDL.framework/Headers" }
 		 buildoptions { "-Wreorder -Wsign-compare" }
 		 links { 
-		 	"OpenGL.framework", 
-		 	"/Library/Frameworks/SDL.framework", 
-		 	"Cocoa.framework",
+			 "OpenGL.framework", 
+			 "/Library/Frameworks/SDL.framework", 
+			 "Cocoa.framework",
 		 }
 		 files {
-		 	"../RecastDemo/Include/SDLMain.h", 
-		 	"../RecastDemo/Source/SDLMain.m",
-		 	"Info.plist",
-		 	"Icon.icns",
-		 	"English.lproj/InfoPlist.strings",
-		 	"English.lproj/MainMenu.xib",
+			 "../RecastDemo/Include/SDLMain.h", 
+			 "../RecastDemo/Source/SDLMain.m",
+			 "Info.plist",
+			 "Icon.icns",
+			 "English.lproj/InfoPlist.strings",
+			 "English.lproj/MainMenu.xib",
 		 }
+
