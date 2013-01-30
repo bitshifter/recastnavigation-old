@@ -32,6 +32,7 @@
 #include "DetourNavMeshBuilder.h"
 #include "DetourDebugDraw.h"
 #include "NavMeshTesterTool.h"
+#include "NavMeshPruneTool.h"
 #include "OffMeshConnectionTool.h"
 #include "ConvexVolumeTool.h"
 #include "CrowdTool.h"
@@ -412,6 +413,10 @@ void Sample_TileMesh::handleTools()
 	{
 		setTool(new NavMeshTesterTool);
 	}
+	if (imguiCheck("Prune Navmesh", type == TOOL_NAVMESH_PRUNE))
+	{
+		setTool(new NavMeshPruneTool);
+	}
 	if (imguiCheck("Create Tiles", type == TOOL_TILE_EDIT))
 	{
 		setTool(new NavMeshTileTool);
@@ -575,6 +580,7 @@ void Sample_TileMesh::handleRender()
 			duDebugDrawNavMeshPortals(&dd, *m_navMesh);
 		if (m_drawMode == DRAWMODE_NAVMESH_NODES)
 			duDebugDrawNavMeshNodes(&dd, *m_navQuery);
+		duDebugDrawNavMeshPolysWithFlags(&dd, *m_navMesh, SAMPLE_POLYFLAGS_DISABLED, duRGBA(0,0,0,128));
 	}
 	
 	
@@ -645,7 +651,8 @@ void Sample_TileMesh::handleRender()
 	
 	if (m_tool)
 		m_tool->handleRender();
-	
+	renderToolStates();
+
 	glDepthMask(GL_TRUE);
 }
 
@@ -664,6 +671,7 @@ void Sample_TileMesh::handleRenderOverlay(double* proj, double* model, int* view
 	
 	if (m_tool)
 		m_tool->handleRenderOverlay(proj, model, view);
+	renderOverlayToolStates(proj, model, view);
 }
 
 void Sample_TileMesh::handleMeshChanged(class InputGeom* geom)
@@ -680,6 +688,8 @@ void Sample_TileMesh::handleMeshChanged(class InputGeom* geom)
 		m_tool->reset();
 		m_tool->init(this);
 	}
+	resetToolStates();
+	initToolStates(this);
 }
 
 bool Sample_TileMesh::handleBuild()
@@ -727,6 +737,7 @@ bool Sample_TileMesh::handleBuild()
 	
 	if (m_tool)
 		m_tool->init(this);
+	initToolStates(this);
 
 	return true;
 }
@@ -757,12 +768,13 @@ void Sample_TileMesh::buildTile(const float* pos)
 	
 	int dataSize = 0;
 	unsigned char* data = buildTileMesh(tx, ty, m_tileBmin, m_tileBmax, dataSize);
-	
+
+	// Remove any previous data (navmesh owns and deletes the data).
+	m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty,0),0,0);
+
+	// Add tile, or leave the location empty.
 	if (data)
 	{
-		// Remove any previous data (navmesh owns and deletes the data).
-		m_navMesh->removeTile(m_navMesh->getTileRefAt(tx,ty,0),0,0);
-		
 		// Let the navmesh own the data.
 		dtStatus status = m_navMesh->addTile(data,dataSize,DT_TILE_FREE_DATA,0,0);
 		if (dtStatusFailed(status))
@@ -968,16 +980,16 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	for (int i = 0; i < ncid; ++i)
 	{
 		const rcChunkyTriMeshNode& node = chunkyMesh->nodes[cid[i]];
-		const int* tris = &chunkyMesh->tris[node.i*3];
-		const int ntris = node.n;
+		const int* ctris = &chunkyMesh->tris[node.i*3];
+		const int nctris = node.n;
 		
-		m_tileTriCount += ntris;
+		m_tileTriCount += nctris;
 		
-		memset(m_triareas, 0, ntris*sizeof(unsigned char));
+		memset(m_triareas, 0, nctris*sizeof(unsigned char));
 		rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
-								verts, nverts, tris, ntris, m_triareas);
+								verts, nverts, ctris, nctris, m_triareas);
 		
-		rcRasterizeTriangles(m_ctx, verts, nverts, tris, m_triareas, ntris, *m_solid, m_cfg.walkableClimb);
+		rcRasterizeTriangles(m_ctx, verts, nverts, ctris, m_triareas, nctris, *m_solid, m_cfg.walkableClimb);
 	}
 	
 	if (!m_keepInterResults)
@@ -1115,7 +1127,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		{
 			// The vertex indices are ushorts, and cannot point to more than 0xffff vertices.
 			m_ctx->log(RC_LOG_ERROR, "Too many vertices per tile %d (max: %d).", m_pmesh->nverts, 0xffff);
-			return false;
+			return 0;
 		}
 		
 		// Update poly flags from areas.

@@ -420,15 +420,13 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 					// Round based on the segments in lexilogical order so that the
 					// max tesselation is consistent regardles in which direction
 					// segments are traversed.
-					if (bx > ax || (bx == ax && bz > az))
+					const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
+					if (n > 1)
 					{
-						const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
-						maxi = (ai + n/2) % pn;
-					}
-					else
-					{
-						const int n = bi < ai ? (bi+pn - ai) : (bi - ai);
-						maxi = (ai + (n+1)/2) % pn;
+						if (bx > ax || (bx == ax && bz > az))
+							maxi = (ai + n/2) % pn;
+						else
+							maxi = (ai + (n+1)/2) % pn;
 					}
 				}
 			}
@@ -466,7 +464,7 @@ static void simplifyContour(rcIntArray& points, rcIntArray& simplified,
 		// and the neighbour region is take from the next raw point.
 		const int ai = (simplified[i*4+3]+1) % pn;
 		const int bi = simplified[i*4+3];
-		simplified[i*4+3] = (points[ai*4+3] & RC_CONTOUR_REG_MASK) | (points[bi*4+3] & RC_BORDER_VERTEX);
+		simplified[i*4+3] = (points[ai*4+3] & (RC_CONTOUR_REG_MASK|RC_AREA_BORDER)) | (points[bi*4+3] & RC_BORDER_VERTEX);
 	}
 	
 }
@@ -592,6 +590,19 @@ static bool mergeContours(rcContour& ca, rcContour& cb, int ia, int ib)
 	return true;
 }
 
+/// @par
+///
+/// The raw contours will match the region outlines exactly. The @p maxError and @p maxEdgeLen
+/// parameters control how closely the simplified contours will match the raw contours.
+///
+/// Simplified contours are generated such that the vertices for portals between areas match up. 
+/// (They are considered mandatory vertices.)
+///
+/// Setting @p maxEdgeLength to zero will disabled the edge length feature.
+/// 
+/// See the #rcConfig documentation for more information on the configuration parameters.
+/// 
+/// @see rcAllocContourSet, rcCompactHeightfield, rcContourSet, rcConfig
 bool rcBuildContours(rcContext* ctx, rcCompactHeightfield& chf,
 					 const float maxError, const int maxEdgeLen,
 					 rcContourSet& cset, const int buildFlags)
@@ -741,9 +752,9 @@ bool rcBuildContours(rcContext* ctx, rcCompactHeightfield& chf,
 					if (borderSize > 0)
 					{
 						// If the heightfield was build with bordersize, remove the offset.
-						for (int i = 0; i < cont->nverts; ++i)
+						for (int j = 0; j < cont->nverts; ++j)
 						{
-							int* v = &cont->verts[i*4];
+							int* v = &cont->verts[j*4];
 							v[0] -= borderSize;
 							v[2] -= borderSize;
 						}
@@ -760,9 +771,9 @@ bool rcBuildContours(rcContext* ctx, rcCompactHeightfield& chf,
 					if (borderSize > 0)
 					{
 						// If the heightfield was build with bordersize, remove the offset.
-						for (int i = 0; i < cont->nrverts; ++i)
+						for (int j = 0; j < cont->nrverts; ++j)
 						{
-							int* v = &cont->rverts[i*4];
+							int* v = &cont->rverts[j*4];
 							v[0] -= borderSize;
 							v[2] -= borderSize;
 						}

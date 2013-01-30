@@ -267,11 +267,11 @@ static int addEdge(rcContext* ctx, int* edges, int& nedges, const int maxEdges, 
 	int e = findEdge(edges, nedges, s, t);
 	if (e == UNDEF)
 	{
-		int* e = &edges[nedges*4];
-		e[0] = s;
-		e[1] = t;
-		e[2] = l;
-		e[3] = r;
+		int* edge = &edges[nedges*4];
+		edge[0] = s;
+		edge[1] = t;
+		edge[2] = l;
+		edge[3] = r;
 		return nedges++;
 	}
 	else
@@ -583,10 +583,10 @@ static bool buildPolyDetail(rcContext* ctx, const float* in, const int nin,
 				int maxi = -1;
 				for (int m = a+1; m < b; ++m)
 				{
-					float d = distancePtSeg(&edge[m*3],va,vb);
-					if (d > maxd)
+					float dev = distancePtSeg(&edge[m*3],va,vb);
+					if (dev > maxd)
 					{
-						maxd = d;
+						maxd = dev;
 						maxi = m;
 					}
 				}
@@ -941,8 +941,11 @@ static unsigned char getTriFlags(const float* va, const float* vb, const float* 
 	return flags;
 }
 
-
-
+/// @par
+///
+/// See the #rcConfig documentation for more information on the configuration parameters.
+///
+/// @see rcAllocPolyMeshDetail, rcPolyMesh, rcCompactHeightfield, rcPolyMeshDetail, rcConfig
 bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompactHeightfield& chf,
 						   const float sampleDist, const float sampleMaxError,
 						   rcPolyMeshDetail& dmesh)
@@ -1161,6 +1164,7 @@ bool rcBuildPolyMeshDetail(rcContext* ctx, const rcPolyMesh& mesh, const rcCompa
 	return true;
 }
 
+/// @see rcAllocPolyMeshDetail, rcPolyMeshDetail
 bool rcMergePolyMeshDetails(rcContext* ctx, rcPolyMeshDetail** meshes, const int nmeshes, rcPolyMeshDetail& mesh)
 {
 	rcAssert(ctx);

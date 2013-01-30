@@ -39,8 +39,6 @@ public:
 	inline int size() const { return m_size; }
 };
 
-static const unsigned short DT_TILECACHE_NULL_IDX = 0xffff;
-
 inline int getDirOffsetX(int dir)
 {
 	const int offset[4] = { -1, 0, 1, 0, };
@@ -116,6 +114,7 @@ struct dtLayerMonotoneRegion
 	unsigned char neis[DT_LAYER_MAX_NEIS];
 	unsigned char nneis;
 	unsigned char regId;
+	unsigned char areaId;
 };
 
 struct dtTempContour
@@ -306,6 +305,7 @@ dtStatus dtBuildTileCacheRegions(dtTileCacheAlloc* alloc,
 			
 			// Update area.
 			regs[ri].area++;
+			regs[ri].areaId = layer.areas[idx];
 			
 			// Update neighbours
 			const int ymi = x+(y-1)*w;
@@ -335,6 +335,8 @@ dtStatus dtBuildTileCacheRegions(dtTileCacheAlloc* alloc,
 			const unsigned char nei = reg.neis[j];
 			dtLayerMonotoneRegion& regn = regs[nei];
 			if (reg.regId == regn.regId)
+				continue;
+			if (reg.areaId != regn.areaId)
 				continue;
 			if (regn.area > mergea)
 			{
@@ -694,6 +696,8 @@ static unsigned char getCornerHeight(dtTileCacheLayer& layer,
 	
 	unsigned char portal = 0xf;
 	unsigned char height = 0;
+	unsigned char preg = 0xff;
+	bool allSameReg = true;
 	
 	for (int dz = -1; dz <= 0; ++dz)
 	{
@@ -704,11 +708,14 @@ static unsigned char getCornerHeight(dtTileCacheLayer& layer,
 			if (px >= 0 && pz >= 0 && px < w && pz < h)
 			{
 				const int idx  = px + pz*w;
-				const int h = (int)layer.heights[idx];
-				if (dtAbs(h-y) <= walkableClimb && layer.areas[idx] != DT_TILECACHE_NULL_AREA)
+				const int lh = (int)layer.heights[idx];
+				if (dtAbs(lh-y) <= walkableClimb && layer.areas[idx] != DT_TILECACHE_NULL_AREA)
 				{
-					height = dtMax(height, (unsigned char)h);
+					height = dtMax(height, (unsigned char)lh);
 					portal &= (layer.cons[idx] >> 4);
+					if (preg != 0xff && preg != layer.regs[idx])
+						allSameReg = false;
+					preg = layer.regs[idx]; 
 					n++;
 				}
 			}
@@ -721,7 +728,7 @@ static unsigned char getCornerHeight(dtTileCacheLayer& layer,
 			portalCount++;
 	
 	shouldRemove = false;
-	if (n > 1 && portalCount == 1)
+	if (n > 1 && portalCount == 1 && allSameReg)
 	{
 		shouldRemove = true;
 	}
@@ -802,11 +809,11 @@ dtStatus dtBuildTileCacheContours(dtTileCacheAlloc* alloc,
 					unsigned char* vn = &temp.verts[i*4];
 					unsigned char nei = vn[3]; // The neighbour reg is stored at segment vertex of a segment. 
 					bool shouldRemove = false;
-					unsigned char h = getCornerHeight(layer, (int)v[0], (int)v[1], (int)v[2],
-													  walkableClimb, shouldRemove);
+					unsigned char lh = getCornerHeight(layer, (int)v[0], (int)v[1], (int)v[2],
+													   walkableClimb, shouldRemove);
 					
 					dst[0] = v[0];
-					dst[1] = h;
+					dst[1] = lh;
 					dst[2] = v[2];
 					
 					// Store portal direction and remove status to the fourth component.
@@ -982,9 +989,9 @@ static bool buildMeshAdjacency(dtTileCacheAlloc* alloc,
 				if (zmin > zmax)
 					dtSwap(zmin, zmax);
 				
-				for (int i = 0; i < edgeCount; ++i)
+				for (int m = 0; m < edgeCount; ++m)
 				{
-					rcEdge& e = edges[i];
+					rcEdge& e = edges[m];
 					// Skip connected edges.
 					if (e.poly[0] != e.poly[1])
 						continue;
@@ -1012,9 +1019,9 @@ static bool buildMeshAdjacency(dtTileCacheAlloc* alloc,
 				unsigned short xmax = (unsigned short)vb[0];
 				if (xmin > xmax)
 					dtSwap(xmin, xmax);
-				for (int i = 0; i < edgeCount; ++i)
+				for (int m = 0; m < edgeCount; ++m)
 				{
-					rcEdge& e = edges[i];
+					rcEdge& e = edges[m];
 					// Skip connected edges.
 					if (e.poly[0] != e.poly[1])
 						continue;
@@ -1363,7 +1370,7 @@ static void mergePolys(unsigned short* pa, unsigned short* pb, int ea, int eb)
 	const int nb = countPolyVerts(pb);
 	
 	// Merge polygons.
-	memset(tmp, 0xff, sizeof(unsigned short)*MAX_VERTS_PER_POLY);
+	memset(tmp, 0xff, sizeof(unsigned short)*MAX_VERTS_PER_POLY*2);
 	int n = 0;
 	// Add pa
 	for (int i = 0; i < na-1; ++i)
@@ -1451,9 +1458,9 @@ static bool canRemoveVertex(dtTileCachePolyMesh& mesh, const unsigned short rem)
 				
 				// Check if the edge exists
 				bool exists = false;
-				for (int k = 0; k < nedges; ++k)
+				for (int m = 0; m < nedges; ++m)
 				{
-					unsigned short* e = &edges[k*3];
+					unsigned short* e = &edges[m*3];
 					if (e[1] == b)
 					{
 						// Exists, increment vertex share count.
@@ -1751,6 +1758,8 @@ dtStatus dtBuildTileCachePolyMesh(dtTileCacheAlloc* alloc,
 	}
 
 	// TODO: warn about too many vertices?
+	
+	mesh.nvp = MAX_VERTS_PER_POLY;
 	
 	dtFixedArray<unsigned char> vflags(alloc, maxVertices);
 	if (!vflags)
@@ -2101,5 +2110,41 @@ dtStatus dtDecompressTileCacheLayer(dtTileCacheAlloc* alloc, dtTileCacheCompress
 	*layerOut = layer;
 	
 	return DT_SUCCESS;
+}
+
+
+
+bool dtTileCacheHeaderSwapEndian(unsigned char* data, const int dataSize)
+{
+	dtTileCacheLayerHeader* header = (dtTileCacheLayerHeader*)data;
+	
+	int swappedMagic = DT_TILECACHE_MAGIC;
+	int swappedVersion = DT_TILECACHE_VERSION;
+	dtSwapEndian(&swappedMagic);
+	dtSwapEndian(&swappedVersion);
+	
+	if ((header->magic != DT_TILECACHE_MAGIC || header->version != DT_TILECACHE_VERSION) &&
+		(header->magic != swappedMagic || header->version != swappedVersion))
+	{
+		return false;
+	}
+	
+	dtSwapEndian(&header->magic);
+	dtSwapEndian(&header->version);
+	dtSwapEndian(&header->tx);
+	dtSwapEndian(&header->ty);
+	dtSwapEndian(&header->tlayer);
+	dtSwapEndian(&header->bmin[0]);
+	dtSwapEndian(&header->bmin[1]);
+	dtSwapEndian(&header->bmin[2]);
+	dtSwapEndian(&header->bmax[0]);
+	dtSwapEndian(&header->bmax[1]);
+	dtSwapEndian(&header->bmax[2]);
+	dtSwapEndian(&header->hmin);
+	dtSwapEndian(&header->hmax);
+	
+	// width, height, minx, maxx, miny, maxy are unsigned char, no need to swap.
+	
+	return true;
 }
 

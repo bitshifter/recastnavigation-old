@@ -26,6 +26,7 @@
 #include "DetourDebugDraw.h"
 #include "DetourNavMesh.h"
 #include "DetourNavMeshQuery.h"
+#include "DetourCrowd.h"
 #include "imgui.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
@@ -38,19 +39,27 @@ Sample::Sample() :
 	m_geom(0),
 	m_navMesh(0),
 	m_navQuery(0),
+	m_crowd(0),
 	m_navMeshDrawFlags(DU_DRAWNAVMESH_OFFMESHCONS|DU_DRAWNAVMESH_CLOSEDLIST),
 	m_tool(0),
 	m_ctx(0)
 {
 	resetCommonSettings();
 	m_navQuery = dtAllocNavMeshQuery();
+	m_crowd = dtAllocCrowd();
+
+	for (int i = 0; i < MAX_TOOLS; i++)
+		m_toolStates[i] = 0;
 }
 
 Sample::~Sample()
 {
 	dtFreeNavMeshQuery(m_navQuery);
 	dtFreeNavMesh(m_navMesh);
+	dtFreeCrowd(m_crowd);
 	delete m_tool;
+	for (int i = 0; i < MAX_TOOLS; i++)
+		delete m_toolStates[i];
 }
 
 void Sample::setTool(SampleTool* tool)
@@ -200,5 +209,52 @@ void Sample::handleUpdate(const float dt)
 {
 	if (m_tool)
 		m_tool->handleUpdate(dt);
+	updateToolStates(dt);
+}
+
+
+void Sample::updateToolStates(const float dt)
+{
+	for (int i = 0; i < MAX_TOOLS; i++)
+	{
+		if (m_toolStates[i])
+			m_toolStates[i]->handleUpdate(dt);
+	}
+}
+
+void Sample::initToolStates(Sample* sample)
+{
+	for (int i = 0; i < MAX_TOOLS; i++)
+	{
+		if (m_toolStates[i])
+			m_toolStates[i]->init(sample);
+	}
+}
+
+void Sample::resetToolStates()
+{
+	for (int i = 0; i < MAX_TOOLS; i++)
+	{
+		if (m_toolStates[i])
+			m_toolStates[i]->reset();
+	}
+}
+
+void Sample::renderToolStates()
+{
+	for (int i = 0; i < MAX_TOOLS; i++)
+	{
+		if (m_toolStates[i])
+			m_toolStates[i]->handleRender();
+	}
+}
+
+void Sample::renderOverlayToolStates(double* proj, double* model, int* view)
+{
+	for (int i = 0; i < MAX_TOOLS; i++)
+	{
+		if (m_toolStates[i])
+			m_toolStates[i]->handleRenderOverlay(proj, model, view);
+	}
 }
 

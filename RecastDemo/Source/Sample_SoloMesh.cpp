@@ -33,6 +33,7 @@
 #include "DetourNavMeshBuilder.h"
 #include "DetourDebugDraw.h"
 #include "NavMeshTesterTool.h"
+#include "NavMeshPruneTool.h"
 #include "OffMeshConnectionTool.h"
 #include "ConvexVolumeTool.h"
 #include "CrowdTool.h"
@@ -102,6 +103,10 @@ void Sample_SoloMesh::handleTools()
 	if (imguiCheck("Test Navmesh", type == TOOL_NAVMESH_TESTER))
 	{
 		setTool(new NavMeshTesterTool);
+	}
+	if (imguiCheck("Prune Navmesh", type == TOOL_NAVMESH_PRUNE))
+	{
+		setTool(new NavMeshPruneTool);
 	}
 	if (imguiCheck("Create Off-Mesh Connections", type == TOOL_OFFMESH_CONNECTION))
 	{
@@ -233,6 +238,9 @@ void Sample_SoloMesh::handleRender()
 	const float* bmin = m_geom->getMeshBoundsMin();
 	const float* bmax = m_geom->getMeshBoundsMax();
 	duDebugDrawBoxWire(&dd, bmin[0],bmin[1],bmin[2], bmax[0],bmax[1],bmax[2], duRGBA(255,255,255,128), 1.0f);
+	dd.begin(DU_DRAW_POINTS, 5.0f);
+	dd.vertex(bmin[0],bmin[1],bmin[2],duRGBA(255,255,255,128));
+	dd.end();
 	
 	if (m_navMesh && m_navQuery &&
 		(m_drawMode == DRAWMODE_NAVMESH ||
@@ -247,6 +255,7 @@ void Sample_SoloMesh::handleRender()
 			duDebugDrawNavMeshBVTree(&dd, *m_navMesh);
 		if (m_drawMode == DRAWMODE_NAVMESH_NODES)
 			duDebugDrawNavMeshNodes(&dd, *m_navQuery);
+		duDebugDrawNavMeshPolysWithFlags(&dd, *m_navMesh, SAMPLE_POLYFLAGS_DISABLED, duRGBA(0,0,0,128));
 	}
 		
 	glDepthMask(GL_TRUE);
@@ -314,6 +323,7 @@ void Sample_SoloMesh::handleRender()
 
 	if (m_tool)
 		m_tool->handleRender();
+	renderToolStates();
 
 	glDepthMask(GL_TRUE);
 }
@@ -322,6 +332,7 @@ void Sample_SoloMesh::handleRenderOverlay(double* proj, double* model, int* view
 {
 	if (m_tool)
 		m_tool->handleRenderOverlay(proj, model, view);
+	renderOverlayToolStates(proj, model, view);
 }
 
 void Sample_SoloMesh::handleMeshChanged(class InputGeom* geom)
@@ -336,6 +347,8 @@ void Sample_SoloMesh::handleMeshChanged(class InputGeom* geom)
 		m_tool->reset();
 		m_tool->init(this);
 	}
+	resetToolStates();
+	initToolStates(this);
 }
 
 
@@ -677,6 +690,7 @@ bool Sample_SoloMesh::handleBuild()
 	
 	if (m_tool)
 		m_tool->init(this);
+	initToolStates(this);
 
 	return true;
 }
